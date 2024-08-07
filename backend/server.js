@@ -1,8 +1,10 @@
 import express from "express";
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import connectDB from "./db/connectDB.js";
-import supplierAuthRoutes from "./routes/supplierAuthRoutes.js";
+import connectDB from "./db/connectDB.js"
+import ProtectRoutes from "./middleware/protectRoute.js";
+
+import AuthRoutes from "./routes/AuthRoutes.js";
 import supplierUserRoutes from "./routes/supplierUserRoutes.js";
 
 dotenv.config();
@@ -14,8 +16,8 @@ app.use(express.urlencoded({extended: true})) // for parsing application/x-www-f
 app.use(cookieParser());
 
 // Routes
-app.use("/api/supplierAuth", supplierAuthRoutes)
-app.use("/api/supplierUser", supplierUserRoutes)
+app.use("/api/auth", AuthRoutes)
+app.use("/api/supplierUser", ProtectRoutes, supplierUserRoutes)
 
 app.listen(PORT, ()=>{
     console.log(`Sever is runnning on port ${PORT}`)

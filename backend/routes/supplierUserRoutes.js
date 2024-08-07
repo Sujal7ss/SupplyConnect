@@ -1,5 +1,5 @@
 import express from "express";
-import { getSupplier, updateSupplier, createContract, deleteContract, getContract, updateContract } from "../controller/supplierUserController.js";
+import { getSupplier, updateSupplier, createOrder, deleteOrder, getOrder, updateOrder } from "../controller/supplierUserController.js";
 
 const router = express.Router();
 
@@ -7,10 +7,10 @@ const router = express.Router();
 router.get("/getSupplier", getSupplier)
 router.patch("/updateSupplier/:id", updateSupplier)
 
-// post, get, and update contract details
-router.post("/createContract", createContract)
-router.delete("/deleteContract/:id", deleteContract)
-router.get("/getContract/:id", getContract)
-router.patch("/updateContract/:id", updateContract)
+// post, get, and update Order details
+router.post("/createOrder", createOrder)
+router.delete("/deleteOrder/:id", deleteOrder)
+router.get("/getOrder/:id", getOrder)
+router.patch("/updateOrder/:id", updateOrder)
 
 export default router;
