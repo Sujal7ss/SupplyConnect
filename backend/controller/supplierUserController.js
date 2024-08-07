@@ -6,18 +6,18 @@ export const updateSupplier = async(req, res) => {
     res.send("update supplier");
 }
 
-export const createContract = async(req, res) => {
-    res.send("create contract");
+export const createOrder = async(req, res) => {
+    res.send("create Order");
 }
 
-export const deleteContract = async(req, res) => {
-    res.send("delete contract");
+export const deleteOrder = async(req, res) => {
+    res.send("delete Order");
 }
 
-export const getContract = async(req, res) => {
-    res.send("get contract");
+export const getOrder = async(req, res) => {
+    res.send("get Order");
 }
 
-export const updateContract = async(req, res) => {
-    res.send("update contract");
+export const updateOrder = async(req, res) => {
+    res.send("update Order");
 }
