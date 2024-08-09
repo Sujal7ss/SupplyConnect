@@ -1,24 +1,28 @@
 import User from '../models/user.js';
 import bcrypt from 'bcryptjs';
 import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
+import { ApiError } from '../lib/utils/error.js';
+
 
 export const signup = async (req,res) =>{
     try {
         const {name, email, password, type} = req.body;
+        if(!name || !email || !password || !type){
+            res.status(400).json(new ApiError(400, "Please Provide all the fields"));
+        }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            res.status(400).json({ message: "Email is not valid." })
+            res.status(400).json(new ApiError(400, "Email is not valid."));
         }
         
 		const existingEmail = await User.findOne({ email });
 		if (existingEmail) {
-			return res.status(400).json({ error: "Email is already taken" });
+			return res.status(400).json(new ApiError(400, "Email is already taken"));
 		}
 
         if(password.length < 6){
-            return res.status(400).json({ message: "Password must be at least 6 characters."})
+            return res.status(400).json(new ApiError(400, "Password must be at least 6 characters.")); 
         }
-
         const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
         const user = new User({ name, email, password: hashedPassword, type });
@@ -51,7 +55,6 @@ export const login = async (req,res) =>{
         user.password = undefined;
         generateTokenAndSetCookie(user._id, res);
         res.status(200).json({ user });
-
     } catch (error) {
         console.log("Error in login route : ", error.message);
         res.status(500).json({ message: "Internal server error."})
