@@ -2,12 +2,16 @@
   "name": "supply-connect",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router": "^6.26.0",
+    "react-router-dom": "^6.26.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -16,7 +20,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "tail" : "npx tailwindcss -i ./src/input.css -o ./src/output.css --watch"
+    "tail": "npx tailwindcss -i ./src/styles/input.css -o ./src/styles/output.css --watch"
   },
   "eslintConfig": {
     "extends": [
