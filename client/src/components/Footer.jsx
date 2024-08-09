@@ -1,6 +1,8 @@
+import { Link } from "react-router-dom"
+
 export default function Footer() {
     return <footer class="bg-white shadow-md py-2 flex justify-around items-center">
-    <button class="flex flex-col items-center text-gray-600">
+    <Link to="/" class="flex flex-col items-center text-gray-600" >
       <svg
         class="w-6 h-6"
         fill="none"
@@ -15,8 +17,9 @@ export default function Footer() {
         />
       </svg>
       <span class="text-sm">Menu</span>
-    </button>
-    <button class="flex flex-col items-center text-gray-600">
+    </Link>
+
+    <Link to="/orders" class="flex flex-col items-center text-gray-600">
       <svg
         class="w-6 h-6"
         fill="none"
@@ -31,8 +34,8 @@ export default function Footer() {
         />
       </svg>
       <span class="text-sm">Orders</span>
-    </button>
-    <button class="flex flex-col items-center text-gray-600">
+    </Link>
+    <Link class="flex flex-col items-center text-gray-600">
       <svg
         class="w-6 h-6"
         fill="none"
@@ -47,6 +50,6 @@ export default function Footer() {
         />
       </svg>
       <span class="text-sm">Profile</span>
-    </button>
+    </Link>
   </footer>
 }
