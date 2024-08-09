@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createContext, useContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext({});
@@ -5,7 +6,7 @@ export const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
 
     const [token, setToken] = useState(localStorage.getItem('accessToken') || '');
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);  
 
     const storeTokenInLS = (serverToken) => {
@@ -22,16 +23,15 @@ export const AuthProvider = ({ children }) => {
 
     const userAuthentication = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/v1/', {
-                method: 'GET',
+            const url = import.meta.env.BACKEND_URL;
+            const response = await axios.get(`${url}/api/auth/user`, {
                 headers: {
                     'Authorization': `${token}`
                 }                
             });
-    
-            if (response.ok) {
-                const userData = await response.json();
-                setUser(userData.data);
+            const userData = response.data;
+            if (userData) {
+                setUser(userData);
             } else {
                 setUser(null);
             }

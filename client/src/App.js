@@ -9,10 +9,12 @@ import SypplierForm from "./pages/SypplierForm.jsx";
 import DriverForm from "./pages/DriverForm.jsx";
 import RideBooking from "./pages/RideBooking.jsx";
 import Orders from "./pages/Orders.jsx";
+import { AuthProvider } from "./Context/AuthContext.jsx";
 
 function App() {
   return (
     <>
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
           {/* <Route path="/" element={<Layout />}> */}
@@ -28,6 +30,7 @@ function App() {
           {/* </Route> */}
         </Routes>
       </BrowserRouter>
+    </AuthProvider>
     </>
   );
 }

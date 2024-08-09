@@ -7,7 +7,8 @@ import user from "../models/user";
 
 const CreateOrder = asyncHandler(async(req,res) => {
 
-    let userdetails = await user.findOne({_id : req.user._id});
+    // let userdetails = await user.findOne({_id : req.user._id});
+    let userdetails = req.user;
 
     if(userdetails.type === "driver"){
         return res.status(400).json(new ApiError(400,"Driver can not Place the Order (No Access)"))
@@ -19,7 +20,7 @@ const CreateOrder = asyncHandler(async(req,res) => {
     }
 
 
-    let supplierid = req.user._id;
+    let supplierid = userdetails._id;
     let driverid = NULL;
     // When driver is confirm change the Driver id
     // const today = new Date();
@@ -89,11 +90,11 @@ const allorders = asyncHandler(async (req,res) => {
 });
 
 const MyOrders = asyncHandler(async (req,res) =>{ 
-    let curruser = await user.find({_id : req.user._id});
-    if(!curruser){
-        res.status(404).json(new ApiError(404," please Authenticate yourSelf"));
-    }
-
+    // let curruser = await user.find({_id : req.user._id});
+    // if(!curruser){
+    //     res.status(404).json(new ApiError(404," please Authenticate yourSelf"));
+    // }
+    let curruser = req.user;
     if(curruser.type == "driver"){
         res.status(400).json(new ApiError(404,"Unauthorised User Access"));
     }

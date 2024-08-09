@@ -3,19 +3,31 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState("Male");
-  const [age, setAge] = useState("");
-  const [type, setType] = useState("Supplier");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
+  const [user,setuser] = useState({
+    email : "",
+    password : "",
+    name : "",
+    gender : "Male",
+    age : "",
+    type : "Supplier",
+  });
+
+  const handlechange = (e) => {
+    let id = e.target.id;
+    let value = e.target.value;
+
+    setuser({
+      ...user,
+      [id] : value,
+    });
+  }
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,18 +40,12 @@ export default function SignUp() {
       setLoading(false);
       return;
     }
-
     try {
       // Replace the URL with your API endpoint
-      const response = await axios.post("/api/signup", {
-        email,
-        password,
-        name,
-        gender,
-        age,
-        type,
-      });
+      let url = import.meta.env.BACKEND_URL;
+      const response = await axios.post(`${url}/api/signup`, user);
       setSuccess("Signup successful!");
+      navigate("/");
     } catch (err) {
       setError("Signup failed. Please try again.");
     } finally {
@@ -59,7 +65,7 @@ export default function SignUp() {
             type="text"
             id="name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={handlechange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           />
@@ -72,7 +78,7 @@ export default function SignUp() {
             type="email"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handlechange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           />
@@ -86,7 +92,7 @@ export default function SignUp() {
               type={passwordVisible ? "text" : "password"}
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlechange}
               required
               className="block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 pr-10 transition ease-in-out duration-150"
             />
@@ -109,7 +115,7 @@ export default function SignUp() {
               type={confirmPasswordVisible ? "text" : "password"}
               id="confirm-password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={handlechange}
               required
               className="block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 pr-10 transition ease-in-out duration-150"
             />
@@ -130,7 +136,7 @@ export default function SignUp() {
           <select
             id="gender"
             value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            onChange={handlechange}
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           >
             <option value="Male">Male</option>
@@ -146,7 +152,7 @@ export default function SignUp() {
             type="number"
             id="age"
             value={age}
-            onChange={(e) => setAge(e.target.value)}
+            onChange={handlechange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           />
@@ -158,7 +164,7 @@ export default function SignUp() {
           <select
             id="type"
             value={type}
-            onChange={(e) => setType(e.target.value)}
+            onChange={handlechange}
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           >
             <option value="Supplier">Supplier</option>
