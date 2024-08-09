@@ -20,8 +20,6 @@ function App() {
               <Route index element={<Home />} />
               <Route path="orders" element={<Orders />} />
             </Route>
-
-            
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/sypplierform" element={<SypplierForm />} />
