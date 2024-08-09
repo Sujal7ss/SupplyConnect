@@ -10,13 +10,12 @@ const orderSchema = new mongoose.Schema(
         driverId : {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Driver',
-            required: true,
         },
         pickUpLocation: {
             type: String,
             required: true,
         },
-        DeliveryLocation: {
+        deliveryLocation: {
             type: String,
             required: true,
         },

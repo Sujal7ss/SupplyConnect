@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 
 const supplierSchema = new mongoose.Schema({
+    supplierId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     companyName: {
         type: String,
         required: true

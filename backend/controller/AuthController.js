@@ -28,7 +28,7 @@ export const signup = async (req,res) =>{
         const user = new User({ name, email, password: hashedPassword, type });
         
         if(user){
-            generateTokenAndSetCookie(user._id, res);
+            generateTokenAndSetCookie(user.email, res);
             await user.save();
             user.password = undefined;
             res.status(201).json({ user });
@@ -53,7 +53,7 @@ export const login = async (req,res) =>{
             return res.status(400).json({ message: "Invalid credentials."})
         }
         user.password = undefined;
-        generateTokenAndSetCookie(user._id, res);
+        generateTokenAndSetCookie(user.email, res);
         res.status(200).json({ user });
     } catch (error) {
         console.log("Error in login route : ", error.message);
