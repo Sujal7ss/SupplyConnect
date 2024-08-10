@@ -10,27 +10,27 @@ import DriverForm from "./pages/DriverForm.jsx";
 import OrderBooking from "./pages/OrderBooking.jsx";
 import Orders from "./pages/Orders.jsx";
 import { AuthProvider } from "./Context/AuthContext.jsx";
+import OrderDetails from "./pages/OrderDetails.jsx";
 
 function App() {
   return (
     <>
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
               <Route path="orders" element={<Orders />} />
+              <Route path="/order-details/:id" element={<OrderDetails />} />
             </Route>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/sypplierform" element={<SypplierForm />} />
             <Route path="/driverform" element={<DriverForm />} />
             <Route path="/book-order" element={<OrderBooking />} />
-          
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </>
   );
 }

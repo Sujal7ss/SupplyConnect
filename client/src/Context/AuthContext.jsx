@@ -1,6 +1,5 @@
 import axios from "axios";
 import { createContext, useContext, useState, useEffect } from "react";
-
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -37,7 +36,7 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             console.error("Error in verifyJWT middleware:", error);
-            throw new ApiError(401, error?.message || "Invalid access token!!");
+            
         } finally {
             setLoading(false);  
         }

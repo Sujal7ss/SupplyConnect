@@ -25,7 +25,7 @@ export default function OrderBooking() {
 
     try {
       // Replace the URL with your API endpoint
-      const response = await axios.post("/api/book-ride", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/book-ride`, {
         pickupLocation,
         dropoffLocation,
         weight,
@@ -43,7 +43,7 @@ export default function OrderBooking() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-4xl p-8 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-gray-900">Book a Ride</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-900">Create Order</h1>
       <form onSubmit={handleSubmit} className="w-full bg-white p-6 rounded-lg shadow-lg space-y-6">
         {/* Row 1: Pickup and Dropoff Input Fields */}
         <div className="grid grid-cols-2 gap-4 mb-6">

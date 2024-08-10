@@ -1,10 +1,10 @@
 import React from "react";
 import TruckLoading from "../components/TruckLoader";
-
+import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <>
-      <button class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg flex items-center space-x-3">
+      <Link to="/book-order" class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg flex items-center space-x-3">
         <svg
           class="w-6 h-6"
           fill="none"
@@ -19,7 +19,7 @@ const Home = () => {
           />
         </svg>
         <span class="text-lg">Select Pickup Point</span>
-      </button>
+      </Link>
     </>
   );
 };
