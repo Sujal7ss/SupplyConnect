@@ -10,6 +10,7 @@ const orderSchema = new mongoose.Schema(
         driverId : {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Driver',
+            required: false,
         },
         pickUpLocation: {
             type: String,
@@ -36,7 +37,51 @@ const orderSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-    },{ timestamps: true }
+        bids: [
+            {
+              driverId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Driver',
+              },
+              bidAmount: {
+                type: Number,
+                required: true,
+              },
+              bidTime: {
+                type: Date,
+                default: Date.now,
+              },
+              status: {
+                type: String,
+                enum: ["pending", "accepted", "rejected"],
+                default: "pending",
+              },
+            }
+          ],
+          driverLocation: {
+            type: {
+              lat: { type: Number, required: true },
+              lng: { type: Number, required: true },
+            },
+            required: false,
+          },
+          chat: [
+            {
+              senderId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+              },
+              message: {
+                type: String,
+                required: true,
+              },
+              sentAt: {
+                type: Date,
+                default: Date.now,
+              },
+            },
+          ],
+        },{ timestamps: true }
 )
 
-export default mongoose.model('Order', orderSchema);
+export const Order = mongoose.model('Order', orderSchema);

@@ -2,6 +2,8 @@ import User from '../models/user.js';
 import bcrypt from 'bcryptjs';
 import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
 import { ApiError } from '../lib/utils/error.js';
+import { asyncHandler } from '../lib/utils/asyncHandler.js';
+import { ApiResponse } from '../lib/utils/ApiResponse.js';
 
 
 export const signup = async (req,res) =>{
@@ -71,3 +73,16 @@ export const logout = async (req,res) =>{
         res.status(500).json({ message: "Internal server error."})
     }
 }
+
+export const getcurrUser = asyncHandler(async (req,res) => {
+
+    try {
+        let userdata = req.user;
+        if(!userdata){
+            res.status(401).json(new ApiError(401,"User Not Authenticated "));
+        }
+        res.status(201).json(new ApiResponse(201,userdata,"Fetched UserDetails Succesfully!!"));
+    } catch (error) {
+        res.status(400).json(new ApiError(400,"Error in Fetching the User Data"));
+    }
+});
