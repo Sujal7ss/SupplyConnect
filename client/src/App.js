@@ -9,10 +9,12 @@ import SypplierForm from "./pages/SypplierForm.jsx";
 import DriverForm from "./pages/DriverForm.jsx";
 import RideBooking from "./pages/OrderBooking.jsx";
 import Orders from "./pages/Orders.jsx";
+import { AuthProvider } from "./Context/AuthContext.jsx";
 
 function App() {
   return (
     <>
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
           
@@ -20,8 +22,6 @@ function App() {
               <Route index element={<Home />} />
               <Route path="orders" element={<Orders />} />
             </Route>
-
-            
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/sypplierform" element={<SypplierForm />} />
@@ -30,6 +30,7 @@ function App() {
           
         </Routes>
       </BrowserRouter>
+    </AuthProvider>
     </>
   );
 }
