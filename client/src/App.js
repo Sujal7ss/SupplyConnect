@@ -7,7 +7,7 @@ import Home from "./pages/Home.jsx";
 import Layout from "./components/Layout.jsx";
 import SypplierForm from "./pages/SypplierForm.jsx";
 import DriverForm from "./pages/DriverForm.jsx";
-import RideBooking from "./pages/OrderBooking.jsx";
+import OrderBooking from "./pages/OrderBooking.jsx";
 import Orders from "./pages/Orders.jsx";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 
@@ -26,7 +26,7 @@ function App() {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/sypplierform" element={<SypplierForm />} />
             <Route path="/driverform" element={<DriverForm />} />
-            <Route path="book-ride" element={<RideBooking />} />
+            <Route path="/book-order" element={<OrderBooking />} />
           
         </Routes>
       </BrowserRouter>
