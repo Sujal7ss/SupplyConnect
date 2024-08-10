@@ -37,12 +37,11 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             console.error("Error in verifyJWT middleware:", error);
-            throw new ApiError(401, error?.message || "Invalid access token!!");
+            return;
         } finally {
             setLoading(false);  
         }
     };
-
     return (
         <AuthContext.Provider value={{ storeTokenInLS, isLoggedIn, logout, user, loading, token}}>
             {children}
