@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 
 export default function Footer() {
-    return <footer class="bg-white shadow-md py-2 flex justify-around items-center">
+    return <footer class="bg-white shadow-md py-2 flex justify-around items-center z-10">
     <Link to="/" class="flex flex-col items-center text-gray-600" >
       <svg
         class="w-6 h-6"

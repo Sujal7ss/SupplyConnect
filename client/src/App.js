@@ -7,7 +7,7 @@ import Home from "./pages/Home.jsx";
 import Layout from "./components/Layout.jsx";
 import SypplierForm from "./pages/SypplierForm.jsx";
 import DriverForm from "./pages/DriverForm.jsx";
-import RideBooking from "./pages/RideBooking.jsx";
+import RideBooking from "./pages/OrderBooking.jsx";
 import Orders from "./pages/Orders.jsx";
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={<Layout />}> */}
+          
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
               <Route path="orders" element={<Orders />} />
@@ -27,7 +27,7 @@ function App() {
             <Route path="/sypplierform" element={<SypplierForm />} />
             <Route path="/driverform" element={<DriverForm />} />
             <Route path="book-ride" element={<RideBooking />} />
-          {/* </Route> */}
+          
         </Routes>
       </BrowserRouter>
     </>
