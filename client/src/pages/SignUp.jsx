@@ -3,7 +3,13 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState("Male");
+  const [age, setAge] = useState("");
+  const [type, setType] = useState("Supplier");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");

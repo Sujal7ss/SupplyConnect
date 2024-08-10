@@ -7,30 +7,30 @@ import Home from "./pages/Home.jsx";
 import Layout from "./components/Layout.jsx";
 import SypplierForm from "./pages/SypplierForm.jsx";
 import DriverForm from "./pages/DriverForm.jsx";
-import RideBooking from "./pages/RideBooking.jsx";
+import OrderBooking from "./pages/OrderBooking.jsx";
 import Orders from "./pages/Orders.jsx";
 import { AuthProvider } from "./Context/AuthContext.jsx";
+import OrderDetails from "./pages/OrderDetails.jsx";
 
 function App() {
   return (
     <>
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* <Route path="/" element={<Layout />}> */}
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
               <Route path="orders" element={<Orders />} />
+              <Route path="/order-details/:id" element={<OrderDetails />} />
             </Route>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/sypplierform" element={<SypplierForm />} />
             <Route path="/driverform" element={<DriverForm />} />
-            <Route path="book-ride" element={<RideBooking />} />
-          {/* </Route> */}
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            <Route path="/book-order" element={<OrderBooking />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </>
   );
 }

@@ -3,10 +3,8 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import connectDB from "./db/connectDB.js"
 import ProtectRoutes from "./middleware/protectRoute.js";
-
-import AuthRoutes from "./routes/authRoutes.js";
 import supplierRoutes from "./routes/supplierRoutes.js";
-
+import AuthRoutes from "./routes/AuthRoutes.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000

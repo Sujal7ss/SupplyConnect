@@ -19,7 +19,6 @@ const CreateOrder = asyncHandler(async (req, res) => {
     const {
       pickUpLocation,
       DeliveryLocation,
-      orderStatus,
       pickUpTime,
       deliveryTime,
       orderAmount,
@@ -28,7 +27,6 @@ const CreateOrder = asyncHandler(async (req, res) => {
     if (
       !pickUpLocation ||
       !DeliveryLocation ||
-      !orderStatus ||
       !pickUpTime ||
       !deliveryTime ||
       !orderAmount
@@ -52,10 +50,11 @@ const CreateOrder = asyncHandler(async (req, res) => {
       driverid,
       pickUpLocation,
       DeliveryLocation,
-      orderStatus,
+      orderStatus : "waiting",
       pickUpTime,
       deliveryTime,
       orderAmount,
+      AssignedAmount : 0,
     });
 
     let createdorder = await order.save();
@@ -213,31 +212,6 @@ export const getBidsForOrder = asyncHandler(async (req, res) => {
 });
 
 // Assign a Driver to an Order
-export const setBidToOrder = asyncHandler(async (req, res) => {
-  try {
-    // I will get { bidid , Orderid , driverid };
-    let { orderId } = req.params;
-    let { bidId , driverId } = req.body();
-    if(!orderId || !bidId || !driverId){
-        res.status(400).json(new ApiError(400,"All Fields Required"));
-    }
-    orderId = await Order.find({_id : orderId});
-    if(!orderId){
-       return res.status(400).json(new ApiError(400,"Invalid OrderID"));
-    }
-    bidId = await Bid.find({bidId : bidId });
-    if(!bidId){
-        return res.status(400).json(new ApiError(400,"Invalid BidID"));
-    }
-    driverId = await Driver.find({driverId : driverId });
-    if(!driverId){
-        return res.status(400).json(new ApiError(400,"Invalid DriverID"));
-    }
-    
-  } catch (error) {
-    res.status(500).json(new ApiError(500,error.message));
-  }
-});
 
 module.exports = {
   CreateOrder,

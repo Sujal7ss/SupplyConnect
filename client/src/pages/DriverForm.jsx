@@ -27,7 +27,7 @@ export default function DriverDetails() {
 
     try {
       // Replace the URL with your API endpoint
-      const response = await axios.post("/api/driver-details", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/driver-details`, {
         licensePlateNumber,
         aadharNumber,
         vehicleType,

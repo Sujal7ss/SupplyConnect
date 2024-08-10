@@ -6,7 +6,7 @@ import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
 
-export default function RideBooking() {
+export default function OrderBooking() {
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [weight, setWeight] = useState("");
@@ -25,7 +25,7 @@ export default function RideBooking() {
 
     try {
       // Replace the URL with your API endpoint
-      const response = await axios.post("/api/book-ride", {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/book-ride`, {
         pickupLocation,
         dropoffLocation,
         weight,
@@ -43,7 +43,7 @@ export default function RideBooking() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-4xl p-8 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-gray-900">Book a Ride</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-900">Create Order</h1>
       <form onSubmit={handleSubmit} className="w-full bg-white p-6 rounded-lg shadow-lg space-y-6">
         {/* Row 1: Pickup and Dropoff Input Fields */}
         <div className="grid grid-cols-2 gap-4 mb-6">
@@ -148,7 +148,7 @@ export default function RideBooking() {
           disabled={loading}
           className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-blue-300 transition ease-in-out duration-150"
         >
-          {loading ? "Booking..." : "Book Ride"}
+          {loading ? "Creating..." : "Create Order"}
         </button>
         <div className="mt-4 flex flex-col items-center space-y-2">
           <Link to="/" className="text-blue-600 hover:underline text-sm">
