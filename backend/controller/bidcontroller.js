@@ -5,7 +5,7 @@ import Bid from "../models/bid";
 import Order from "../models/order";
 const { v4: uuidv4 } = require("uuid");
 
-const GenerateBid = async (req, res) => {
+export const GenerateBid = async (req, res) => {
   try {
     const { orderId, startTime, endTime, status, minimumIncrement } = req.body;
     if (!orderId || !startTime || !endTime || !status || !minimumIncrement) {
@@ -45,7 +45,7 @@ const GenerateBid = async (req, res) => {
   }
 };
 
-const bidToBeAssigned = asyncHandler(async (req, res) => {
+export const bidToBeAssigned = asyncHandler(async (req, res) => {
   const { bidId } = req.params;
   // Validate request
   if (!bidId) {
@@ -90,7 +90,3 @@ const bidToBeAssigned = asyncHandler(async (req, res) => {
   
   return res.status(200).json(new ApiResponse(200, {order : order,bid : bid} , "Bid successfully assigned to the order"));
 });
-module.exports = {
-  GenerateBid,
-  bidToBeAssigned
-}

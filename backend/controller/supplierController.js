@@ -1,6 +1,5 @@
 import Supplier from '../models/supplier.js';
 import Order from '../models/order.js';
-import Driver from '../models/Driver.js';
 
 // Supplier Controller Functions
 
@@ -39,31 +38,3 @@ export const getSupplierProfile = async (req, res) => {
         res.status(500).json({ error : error.message });
     }
 }
-
-export const setBidToOrder = asyncHandler(async (req, res) => {
-    try {
-      // I will get { bidid , Orderid , driverid };
-      let { orderId } = req.params;
-      let { bidId , driverId } = req.body();
-      if(!orderId || !bidId || !driverId){
-          res.status(400).json(new ApiError(400,"All Fields Required"));
-      }
-      orderId = await Order.find({_id : orderId});
-      if(!orderId){
-         return res.status(400).json(new ApiError(400,"Invalid OrderID"));
-      }
-      bidId = await Bid.find({bidId : bidId });
-      if(!bidId){
-          return res.status(400).json(new ApiError(400,"Invalid BidID"));
-      }
-      driverId = await Driver.find({driverId : driverId });
-      if(!driverId){
-          return res.status(400).json(new ApiError(400,"Invalid DriverID"));
-      }
-
-      
-
-    } catch (error) {
-      res.status(500).json(new ApiError(500,error.message));
-    }
-});

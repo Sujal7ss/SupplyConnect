@@ -2,11 +2,9 @@ import { ApiResponse } from "../lib/utils/ApiResponse";
 import { asyncHandler } from "../lib/utils/asyncHandler";
 import { ApiError } from "../lib/utils/error";
 import Bid from "../models/bid";
-import Driver from "../models/Driver";
-import { Order } from "../models/order";
-import user from "../models/user";
+import Order from "../models/order";
 
-const CreateOrder = asyncHandler(async (req, res) => {
+export const CreateOrder = asyncHandler(async (req, res) => {
   try {
     // let userdetails = await user.findOne({_id : req.user._id});
     let userdetails = req.user;
@@ -58,7 +56,10 @@ const CreateOrder = asyncHandler(async (req, res) => {
     });
 
     let createdorder = await order.save();
-
+    if(!createdorder){
+      console.log("Please Check the Database");
+      return res.status(400).json(new ApiError(400,"Error in adding Orderdata to the Database"));
+    }
     return res
       .status(200)
       .json(
@@ -70,12 +71,10 @@ const CreateOrder = asyncHandler(async (req, res) => {
   }
 });
 
-const orderDetails = asyncHandler(async (req, res) => {
+export const orderDetails = asyncHandler(async (req, res) => {
   try {
     let { orderId } = req.params;
-
     const orderdetails = await Order.findone({ _id: orderId });
-
     if (!orderdetails) {
       return res
         .status(400)
@@ -86,6 +85,11 @@ const orderDetails = asyncHandler(async (req, res) => {
           )
         );
     }
+    if(req.user.type === "supplier" ){
+      if(req.user.user_id !== orderdetails.supplierid){
+        res.status(400).json(new ApiError(400,"You Can't Access to the other Data"));
+      }
+    }
     res
       .status(200)
       .json(new ApiResponse(200, orderdetails, "Your Order Details"));
@@ -95,12 +99,13 @@ const orderDetails = asyncHandler(async (req, res) => {
   }
 });
 
-const updateorderdetails = asyncHandler(async (req, res) => {
+export const updateorderdetails = asyncHandler(async (req, res) => {
   try {
     let { orderId } = req.params;
-
+    if(req.user.type === "driver"){
+      return res.status(400).json(new ApiError(400,"You Can't Edit the Order Data"));
+    }
     const orderdetails = await Order.findone({ _id: orderId });
-
     if (!orderdetails) {
       return res
         .status(400)
@@ -135,38 +140,32 @@ const updateorderdetails = asyncHandler(async (req, res) => {
     return res.status(400).json(new ApiError(400, error.message));
   }
 });
-const allorders = asyncHandler(async (req, res) => {
+export const allorders = asyncHandler(async (req, res) => {
   try {
-    let { supplierid } = req.params;
-    if (!supplierid) {
-      res
-        .status(400)
-        .json(new ApiError(400, "Please Provide the Supplier Details"));
+    let user = req.user;
+    if(user.type === "supplier"){
+      return res.status(400).json(new ApiError(400,"Supplier can't get Access to the AllOrder Sections"));
     }
-    let allord = await Order.find({ _id: supplierid });
-    res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          allord,
-          `All Orders with Suppler id  = ${supplierid} is Fetched`
-        )
-      );
+    let allorders = await Order.find({orderStatus : "waiting"});
+    if(!allorders){
+      return res.status(400).json(new ApiError(400,"Can't Get order's Details"));
+    }
+
+    return res.status(200).json(new ApiResponse(200,allorders,"All Orders Fetched !!"));
   } catch (error) {
     console.log(error);
     return res.status(400).json(new ApiError(400, error.message));
   }
 });
 
-const MyOrders = asyncHandler(async (req, res) => {
+export const MyOrders = asyncHandler(async (req, res) => {
   try {
     // let curruser = await user.find({_id : req.user._id});
     // if(!curruser){
     //     res.status(404).json(new ApiError(404," please Authenticate yourSelf"));
     // }
     let curruser = req.user;
-    if (curruser.type == "driver") {
+    if (curruser.type === "driver") {
       res.status(400).json(new ApiError(404, "Unauthorised User Access"));
     }
 
@@ -210,13 +209,3 @@ export const getBidsForOrder = asyncHandler(async (req, res) => {
     res.status(500).json(new ApiError(500,error.message));
   }
 });
-
-// Assign a Driver to an Order
-
-module.exports = {
-  CreateOrder,
-  orderDetails,
-  updateorderdetails,
-  allorders,
-  MyOrders,
-};
