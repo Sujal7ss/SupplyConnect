@@ -36,13 +36,13 @@ const OrderCard = ({ order }) => {
                     <span className="text-gray-900 font-medium text-lg">{deliveryLocation}</span>
                 </div>
                 <div className="flex flex-row justify-between gap-3">
-                    <div className="flex-1 p-3 bg-gray-200 rounded-md border border-gray-300 text-center">
+                    <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
                         <span className="text-gray-800 text-sm font-semibold">{weight} kg</span>
                     </div>
-                    <div className="flex-1 p-3 bg-gray-200 rounded-md border border-gray-300 text-center">
+                    <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
                         <span className="text-gray-800 text-sm font-semibold">{vehicleType}</span>
                     </div>
-                    <div className="flex-1 p-3 bg-gray-200 rounded-md border border-gray-300 text-center">
+                    <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
                         <span className="text-gray-800 text-sm font-semibold">${orderAmount.toFixed(2)}</span>
                     </div>
                 </div>

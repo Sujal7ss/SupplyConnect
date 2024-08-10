@@ -1,28 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-
-// Import a map library component if you're using one, e.g., Google Maps, Leaflet, etc.
-// For demonstration, I'll use a placeholder for the map.
+import Bids from "../components/Bids.jsx";
 
 const OrderDetails = () => {
   const { id } = useParams(); // Get the ID from the URL
   const [order, setOrder] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableOrder, setEditableOrder] = useState(null);
+  const [showBids, setShowBids] = useState(false);
+  const [bids, setBids] = useState([]);
+  const navigate = useNavigate(); // Hook for navigation
 
-  // useEffect(() => {
-  //     const fetchOrder = async () => {
-  //         try {
-  //             const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}`);
-  //             setOrder(response.data);
-  //         } catch (error) {
-  //             console.error('Error fetching order details:', error);
-  //         }
-  //     };
-
-  //     fetchOrder();
-  // }, [id]);
-
-  //dummy
+  // Dummy data
   useEffect(() => {
     setOrder({
       pickUpLocation: "New York",
@@ -32,64 +22,224 @@ const OrderDetails = () => {
       orderAmount: 1000,
       orderStatus: "Pending",
     });
-  });
+
+    setEditableOrder({
+      pickUpLocation: "New York",
+      deliveryLocation: "Los Angeles",
+      weight: 100,
+      vehicleType: "Truck",
+      orderAmount: 1000,
+      orderStatus: "Pending",
+    });
+  }, []);
+
+  // Uncomment the following useEffect to fetch real data
+  // useEffect(() => {
+  //   const fetchOrder = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}`
+  //       );
+  // const bidsResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/orders/1/bids`);
+
+  // setBids(bidsResponse.data);
+  //       setOrder(response.data);
+  //       setEditableOrder(response.data); // Initialize editableOrder with fetched data
+  //     } catch (error) {
+  //       console.error("Error fetching order details:", error);
+  //     }
+  //   };
+
+  //   fetchOrder();
+  // }, [id]);
 
   if (!order) return <p>Loading...</p>;
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditableOrder((prevOrder) => ({
+      ...prevOrder,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdateOrder = async () => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/api/Updateorders/${id}`,
+        editableOrder
+      );
+      console.log("Order updated successfully:", response.data);
+      setOrder(editableOrder);
+      setIsEditing(false); // Switch back to view mode
+    } catch (error) {
+      console.error("Error updating order:", error);
+    }
+  };
+
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex flex-col space-y-4">
-        {/* Map Div */}
-        <div className="w-full h-80 bg-gray-200 rounded-lg shadow-md">
-          {/* Replace the following placeholder with an actual map component */}
-          <div className="flex items-center justify-center h-full text-gray-600">
-            <span>
-              Map showing route between {order.pickUpLocation} and{" "}
-              {order.deliveryLocation}
-            </span>
-            {/* Ideally, you would integrate a map component here */}
-          </div>
+    <>
+      <div className="p-4 space-y-4">
+        {/* Buttons Container */}
+        <div className="flex justify-between items-center mb-4">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(-1)} // Navigate back to the previous page
+            className="text-blue-500 hover:text-blue-700 flex items-center space-x-2"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            <span className="font-medium">Back</span>
+          </button>
+          {/* Bids Button */}
+          <button
+            onClick={() => setShowBids(!showBids)} // Toggle edit mode
+            className="bg-green-500 text-white  font-semibold py-2 px-4 rounded-md"
+          >
+            Bids
+          </button>
+          {/* Update Button */}
+          <button
+            onClick={() => setIsEditing(!isEditing)} // Toggle edit mode
+            className="bg-yellow-500 text-white hover:bg-yellow-600 font-semibold py-2 px-4 rounded-md"
+          >
+            {isEditing ? "Cancel" : "Edit"}
+          </button>
         </div>
 
-        {/* Basic Info Div */}
-        <div className="bg-white shadow-lg rounded-lg p-4 border border-gray-300">
-          <div className="flex flex-row justify-between align-middle items-center p-3">
-            <div className="text-gray-800 mb-2 p-2  bg-gray-200 rounded-md items-center">
-              {order.pickUpLocation}
-            </div>
-            <div className="text-gray-800 mb-2 p-2 bg-gray-200 rounded-md">
-              {order.deliveryLocation}
+        <div className="flex flex-col space-y-4 mt-4">
+          {/* Map Div */}
+          <div className="w-full h-80 bg-gray-200 rounded-lg shadow-md">
+            {/* Replace the following placeholder with an actual map component */}
+            <div className="flex items-center justify-center h-full text-gray-600">
+              <span>
+                Map showing route between {order.pickUpLocation} and{" "}
+                {order.deliveryLocation}
+              </span>
+              {/* Ideally, you would integrate a map component here */}
             </div>
           </div>
-          <div className="flex flex-row justify-between gap-3">
-            <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-              <span className="text-gray-800 text-sm font-semibold">
-                {order.weight} kg
-              </span>
+
+          {/* Basic Info Div */}
+          <div className="bg-white shadow-lg rounded-lg p-4 border border-gray-300">
+            <div className="flex flex-row justify-between align-middle items-center p-3">
+              <div className="flex-1">
+                <label className="block text-gray-700">Pick-Up Location</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="pickUpLocation"
+                    value={editableOrder.pickUpLocation}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  <div className="text-gray-800 p-2 bg-gray-200 rounded-md">
+                    {order.pickUpLocation}
+                  </div>
+                )}
+              </div>
+              <div className="flex-1">
+                <label className="block text-gray-700">Delivery Location</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="deliveryLocation"
+                    value={editableOrder.deliveryLocation}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  <div className="text-gray-800 p-2 bg-gray-200 rounded-md">
+                    {order.deliveryLocation}
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-              <span className="text-gray-800 text-sm font-semibold">
-                {order.vehicleType}
-              </span>
+            <div className="flex flex-row justify-between gap-3">
+              <div className="flex-1">
+                <label className="block text-gray-700">Weight</label>
+                {isEditing ? (
+                  <input
+                    type="number"
+                    name="weight"
+                    value={editableOrder.weight}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  <div className="p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
+                    <span className="text-gray-800 text-sm font-semibold">
+                      {order.weight} kg
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="flex-1">
+                <label className="block text-gray-700">Vehicle Type</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="vehicleType"
+                    value={editableOrder.vehicleType}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  <div className="p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
+                    <span className="text-gray-800 text-sm font-semibold">
+                      {order.vehicleType}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="flex-1">
+                <label className="block text-gray-700">Order Amount</label>
+                {isEditing ? (
+                  <input
+                    type="number"
+                    name="orderAmount"
+                    value={editableOrder.orderAmount}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  <div className="p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
+                    <span className="text-gray-800 text-sm font-semibold">
+                      ${order.orderAmount.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-              <span className="text-gray-800 text-sm font-semibold">
-                ${order.orderAmount.toFixed(2)}
-              </span>
-            </div>
+            {isEditing && (
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={handleUpdateOrder}
+                  className="bg-blue-500 text-white hover:bg-blue-600 font-semibold py-2 px-4 rounded-md"
+                >
+                  Save Changes
+                </button>
+              </div>
+            )}
           </div>
         </div>
-        {/* <div className="bg-white shadow-lg rounded-lg p-4 border border-gray-300">
-                    <h1 className="text-xl font-bold mb-4">Order Details</h1>
-                    <p className="text-gray-800 mb-2">Pick-Up Location: {order.pickUpLocation}</p>
-                    <p className="text-gray-800 mb-2">Delivery Location: {order.deliveryLocation}</p>
-                    <p className="text-gray-800 mb-2">Weight: {order.weight} kg</p>
-                    <p className="text-gray-800 mb-2">Vehicle Type: {order.vehicleType}</p>
-                    <p className="text-gray-800 mb-2">Order Amount: ${order.orderAmount.toFixed(2)}</p>
-                    <p className="text-gray-800">Status: {order.orderStatus}</p>
-                </div> */}
       </div>
-    </div>
+
+      {/* {showBids && <Bids order={order} bids={bids}/>} */}
+    </>
   );
 };
 
