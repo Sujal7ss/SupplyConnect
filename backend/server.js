@@ -24,6 +24,6 @@ app.use("/api/", ProtectRoutes , OrderRoutes)
 app.use("/api/", ProtectRoutes, supplierRoutes) 
 
 app.listen(PORT, ()=>{
-    console.log(`Sever is runnning on port ${PORT}`)
+    console.log(`Server is runnning on port ${PORT}`)
     connectDB();
 })
