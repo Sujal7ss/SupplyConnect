@@ -1,24 +1,38 @@
-import { ApiResponse } from "../lib/utils/ApiResponse";
-import { asyncHandler } from "../lib/utils/asyncHandler";
-import { ApiError } from "../lib/utils/error";
-import Bid from "../models/bid";
-import Order from "../models/order";
-const { v4: uuidv4 } = require("uuid");
+import { ApiResponse } from "../lib/utils/ApiResponse.js";
+import { asyncHandler } from "../lib/utils/asyncHandler.js";
+import { ApiError } from "../lib/utils/error.js";
+import { Bid } from "../models/bid.js";
+import Order from "../models/order.js";
+import { v4 as uuidv4 } from "uuid"; // Updated import for uuid
 
+// Generate a new bid
 export const GenerateBid = async (req, res) => {
   try {
-    const { orderId, startTime, endTime, status, minimumIncrement } = req.body;
-    if (!orderId || !startTime || !endTime || !status || !minimumIncrement) {
-      res.status(400).json(new ApiError(400, "Please Provide all the fields"));
+    const { orderId, startTime, endTime, status, minimumDecrement } = req.body;
+    let userdetails = req.user;
+
+    if (userdetails.type === "driver") {
+      return res.status(404).json(new ApiError(404, "Driver Can't Create Bid for the Order"));
     }
 
-    const existingOrderId = await Order.findOne({ orderId });
-    if (!existingOrderId) {
-      return res
-        .status(400)
-        .json(new ApiError(400, "Order Id does not exist."));
+    // Check if all required fields are provided
+    if (!orderId || !startTime || !endTime || !status || !minimumDecrement) {
+      return res.status(400).json(new ApiError(400, "Please provide all the fields"));
     }
 
+    // Verify that the orderId exists
+    const existingOrder = await Order.findById(orderId);
+    if (!existingOrder) {
+      return res.status(400).json(new ApiError(400, "Order ID does not exist."));
+    }
+
+    // Check if there's already an open bid for the given orderId
+    const existingBid = await Bid.findOne({ orderId: orderId, status: "open" });
+    if (existingBid) {
+      return res.status(400).json(new ApiError(400, "Already having an open bid for the same order."));
+    }
+
+    // Create a new bid instance
     const BidInstance = {
       bidId: uuidv4(),
       orderId: orderId,
@@ -26,60 +40,131 @@ export const GenerateBid = async (req, res) => {
       endTime: endTime,
       status: "open",
       bids: [],
-      finalHighestBid: {},
-      minimumIncrement: minimumIncrement,
+      finalLowestBid: {},
+      minimumDecrement: minimumDecrement,
       notifications: [],
       numberOfBidders: 0,
       totalBids: 0,
       biddingOver: false,
     };
-    if (BidInstance) {
-      const bid = new Bid(BidInstance);
 
-      await bid.save();
-      res.status(201).json({ bid });
-    }
+    // Save the new bid to the database
+    const bid = new Bid(BidInstance);
+    await bid.save();
+
+    // Respond with the created bid
+    res.status(201).json({ bid });
+
   } catch (error) {
-    console.log("Error in Bid System contoller : ", error.message);
+    console.log("Error in Bid System controller: ", error.message);
     res.status(500).json({ message: "Internal server error." });
   }
 };
 
+// Add a new bid
+export const addBid = async (req, res) => {
+  try {
+    const { driverId, amount } = req.body;
+    const { orderId } = req.params;
+
+    if (amount === 0) {
+      return res.status(400).json(new ApiError(400, "Some Amount Required."));
+    }
+
+    let userdetails = req.user;
+
+    if (userdetails.type === "supplier") {
+      return res.status(404).json(new ApiError(404, "Supplier can't bid for the order"));
+    }
+
+    if (!driverId || amount === undefined) {
+      return res.status(400).json(new ApiError(400, "Driver ID and bid amount are required."));
+    }
+
+    // Find the Bid by orderId
+    const bidd = await Bid.findOne({ orderId: orderId });
+    if (!bidd) {
+      return res.status(404).json(new ApiError(404, "Bid not found for this order."));
+    }
+
+    // Check if the bid is still open
+    if (bidd.biddingOver) {
+      return res.status(400).json(new ApiError(400, "Bidding is closed for this order."));
+    }
+
+    // Validate the bid amount against the minimum decrement
+    const currentLowestBid = bidd.finalLowestBid.amount || Infinity;
+    
+    if (amount >= currentLowestBid || amount > currentLowestBid - bidd.minimumDecrement) {
+      return res.status(400).json(new ApiError(400, `Bid amount must be at most ${currentLowestBid - bidd.minimumDecrement}.`));
+    }
+
+    // Add the new bid to the bids array
+    const newBid = {
+      bidder: req.user._id,
+      amount: amount, 
+      timestamp: new Date(),
+    };
+    bidd.bids.push(newBid);
+
+    // Update the final lowest bid
+    bidd.finalLowestBid = {
+      bidder: req.user._id,
+      amount: amount,
+      timestamp: new Date(),
+    };
+
+    // Update the total number of bids and number of bidders
+    bidd.totalBids += 1;
+    const uniqueBidders = new Set(bidd.bids.map(b => b.bidder.toString()));
+    bidd.numberOfBidders = uniqueBidders.size;
+
+    // Save the updated Bid document
+    await bidd.save();
+
+    // Respond with the updated bid
+    res.status(200).json(new ApiResponse(200, bidd, "Bid Added Successfully !!"));
+
+  } catch (error) {
+    console.log("Error in addBid controller: ", error.message);
+    res.status(500).json(new ApiError(500, "Internal server error."));
+  }
+};
+
+// Assign the lowest bid to the order
 export const bidToBeAssigned = asyncHandler(async (req, res) => {
-  const { bidId } = req.params;
+  const { OrderId } = req.params;
+
   // Validate request
-  if (!bidId) {
-      return res.status(400).json(new ApiError(400, "Bid ID is required"));
+  if (!OrderId) {
+    return res.status(400).json(new ApiError(400, "Order ID is required"));
   }
 
-  // Find the bid by ID
-  const bid = await Bid.findOne({ bidId });
+  // Find the bid by orderId
+  const bid = await Bid.find({ orderId: OrderId });
+  console.log(bid);
   if (!bid) {
-      return res.status(404).json(new ApiError(404, `Bid with ID ${bidId} not found`));
+    return res.status(404).json(new ApiError(404, `Bid with ID ${OrderId} not found`));
   }
 
-  // Retrieve the associated orderId from the bid
-  const orderId = bid.orderId;
+  // Retrieve the associated bidId from the bid
+  const bidId = bid._id;
 
   // Find the order by ID
-  const order = await Order.findById(orderId);
-  if (!order) {
-      return res.status(404).json(new ApiError(404, `Order with ID ${orderId} not found`));
+  const order = await Order.findById(OrderId);
+  if (bid.biddingOver) {
+    return res.status(400).json(new ApiError(400, `Bid with ID ${bidId} is not open for assignment`));
   }
 
-  // Check if the bid is still open
-  if (bid.status !== "open") {
-      return res.status(400).json(new ApiError(400, `Bid with ID ${bidId} is not open for assignment`));
+  // Assign the lowest bid to the order
+  const lowestBid = bid.finalLowestBid;
+  console.log(lowestBid);
+  if (!lowestBid || !lowestBid.bidder) {
+    return res.status(400).json(new ApiError(400, "No valid lowest bid found to assign"));
   }
 
-  // Assign the highest bid to the order
-  const highestBid = bid.finalHighestBid;
-  if (!highestBid || !highestBid.bidder) {
-      return res.status(400).json(new ApiError(400, "No valid highest bid found to assign"));
-  }
-
-  order.driverId = highestBid.bidder;
-  order.AssignedAmount = highestBid.amount;
+  order.driverId = lowestBid.bidder;
+  order.AssignedAmount = lowestBid.amount;
   order.orderStatus = "waiting";
   await order.save();
 
@@ -87,6 +172,6 @@ export const bidToBeAssigned = asyncHandler(async (req, res) => {
   bid.status = "closed";
   bid.biddingOver = true;
   await bid.save();
-  
-  return res.status(200).json(new ApiResponse(200, {order : order,bid : bid} , "Bid successfully assigned to the order"));
+
+  return res.status(200).json(new ApiResponse(200, { order: order, bid: bid }, "Bid successfully assigned to the order"));
 });

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 const BidSchema = new mongoose.Schema(
   {
     bidId: {
@@ -7,7 +8,7 @@ const BidSchema = new mongoose.Schema(
     },
     orderId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "order", // Assuming there's an order model
+      ref: "Order",
       required: true,
     },
     startTime: {
@@ -27,7 +28,7 @@ const BidSchema = new mongoose.Schema(
       {
         bidder: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Driver", // Assuming there's a Driver model
+          ref: "Driver",
           required: true,
         },
         amount: {
@@ -42,22 +43,23 @@ const BidSchema = new mongoose.Schema(
         },
       },
     ],
-    finalHighestBid: {
+    finalLowestBid: {
       bidder: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Driver",
       },
       amount: {
         type: Number,
+        default : Infinity,
         min: 0,
       },
       timestamp: {
         type: Date,
       },
     },
-    minimumIncrement: {
+    minimumDecrement: {
       type: Number,
-      default: 1, // Default increment, can be modified
+      default: 1,
     },
     notifications: [
       {
@@ -85,6 +87,4 @@ const BidSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Bid = mongoose.model("Bid", BidSchema);
-
-module.exports = Bid;
+export const Bid = mongoose.model("Bid", BidSchema);

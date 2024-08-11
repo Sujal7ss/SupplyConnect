@@ -4,7 +4,7 @@ import { createOrUpdateSupplierProfile, getSupplierProfile} from "../controller/
 const router = express.Router();
 
 // Supplier
-router.post('/supplier', createOrUpdateSupplierProfile);
-router.get('/suppliers/:supplierId', getSupplierProfile);
+router.post('/supplier/createORupdate', createOrUpdateSupplierProfile);
+router.get('/suppliers', getSupplierProfile);
 
 export default router;
