@@ -1,7 +1,7 @@
 import Driver from "../models/Driver";
 const { v4: uuidv4 } = require("uuid");
 
-const DriverRegistration = async (req, res) => {
+export const DriverRegistration = async (req, res) => {
   try {
     const {
       name,

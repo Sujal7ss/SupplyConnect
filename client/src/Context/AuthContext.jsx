@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);  
         }
     };
-
     return (
         <AuthContext.Provider value={{ storeTokenInLS, isLoggedIn, logout, user, loading, token}}>
             {children}
