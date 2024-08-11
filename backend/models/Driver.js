@@ -20,7 +20,9 @@ const DriverSchema = new mongoose.Schema({
       },
       Contact: {
         Phone: Number,
-        Email: Email,
+        Email: {
+          type : String
+        },
       },
       Address: String,
     },

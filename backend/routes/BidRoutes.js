@@ -1,9 +1,9 @@
 import express from "express";
-import { bidToBeAssigned, GenerateBid } from "../controller/bidcontroller";
+import { addBid, bidToBeAssigned, GenerateBid } from "../controller/bidcontroller.js";
 const router = express.Router();
 
 router.post('/Order/bid', GenerateBid);
-router.get('/Order/:bidId', bidToBeAssigned);
-
+router.get('/Order/:OrderId', bidToBeAssigned);
+router.post('/addBid/:orderId', addBid);
 
 export default router;
