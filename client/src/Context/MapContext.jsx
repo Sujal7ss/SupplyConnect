@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import OlaMapsClient from 'ola-map-sdk';
 import { Map as MapLibreMap, NavigationControl, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import axios from "axios";
 // import DistanceDuration from "./components/DistanceDuration";
 // import RecenterButton from "./components/RecenterButton";
 import mapboxgl from "mapbox-gl";
@@ -18,11 +19,12 @@ export const MapPr = ({ children }) => {
   const [duration, setDuration] = useState("");
   const [startMarker, setStartMarker] = useState(null);
   const [endMarker, setEndMarker] = useState(null);
-  const [userLocation, setUserLocation] = useState({ lng: null, lat: null });
+  const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
   const mapContainer = useRef(null);
   const searchBoxRef = useRef(null);
   const suggestionsRef = useRef(null);
   const [usermarker, setusermarker] = useState(null);
+  const [reversegeovalue,setreversegeovalue] = useState(null);
   const API_KEY = "Bkd1aAL6DtnBj1HCOLNaoHew2KQw4QNfJlRZFrKb"
   const STYLE_NAME = "default-light-standard";
   const transformRequest = useCallback((url, resourceType) => {
@@ -35,7 +37,6 @@ export const MapPr = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const client = new OlaMapsClient(API_KEY);
     const fetchStyleURL = async () => {
       try {
         const styleURL = `https://api.olamaps.io/tiles/vector/v1/styles/${STYLE_NAME}/style.json`;
@@ -52,13 +53,19 @@ export const MapPr = ({ children }) => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { longitude, latitude } = position.coords;
-          setUserLocation({ lng: longitude, lat: latitude });
-          const m = new Marker({ color: "#F30000", draggable: true })
+          const {  latitude , longitude } = position.coords;
+          setUserLocation({ latitude: latitude , longitude: longitude});
+          const m = new Marker({ color: "#F30000" , draggable : true})
             .setLngLat([longitude, latitude])
             .addTo(newMap);
           setusermarker(m);
+        //   map-> longitude ,latitude        
+
           newMap.flyTo({ center: [longitude, latitude], zoom: 14 });
+          m.on('dragend', () => {
+            const lngLat = m.getLngLat(); 
+            setUserLocation({ latitude: lngLat.lat, longitude: lngLat.lng });
+          });
         },
         (error) => {
           console.error("Error getting user location:", error);
@@ -68,7 +75,31 @@ export const MapPr = ({ children }) => {
       console.log("Device does not contain live location service");
     }
   };
+  const reversegeo = useCallback(async () => {
+    try {
+      const client = new OlaMapsClient(API_KEY);
+      const { latitude, longitude } = userLocation;
+      console.log(latitude, longitude);
+      const lat = latitude;
+     const lng = longitude;
 
+        const url = `https://api.olamaps.io/places/v1/reverse-geocode?latlng=${lat},${lng}&api_key=${API_KEY}`;
+
+    axios.get(url)
+      .then(response => {
+        // console.log('Reverse Geocode result:', response.data);
+        console.log('Reverse Geocode result:', response.data.results[0].formatted_address);
+        setreversegeovalue(response.data.results[0].formatted_address);
+      })
+      .catch(error => {
+        console.error('Error during reverse geocoding:', error);
+      });
+      
+    } catch (error) {
+      console.error('Error during reverse geocoding:', error);
+    }
+  }, [userLocation]);
+  
   useEffect(() => {
     if (!styleURL) return;
 
@@ -85,13 +116,18 @@ export const MapPr = ({ children }) => {
     newMap.on("load", () => {
       getuserlocation(newMap);
     });
-
     setMap(newMap);
 
     return () => {
       newMap.remove();
     };
   }, [styleURL, transformRequest]);
+
+  useEffect(() => {
+    if (userLocation.longitude !== null && userLocation.latitude !== null) {
+        reversegeo();
+    }
+  }, [userLocation, reversegeo]);
 
   const debounce = (func, wait) => {
     let timeout;
@@ -225,6 +261,7 @@ export const MapPr = ({ children }) => {
         searchBoxRef,
         suggestionsRef,
         usermarker,
+        reversegeovalue,
         handleSearchInputChange,
         handleSuggestionClick,
         handleFormSubmit,

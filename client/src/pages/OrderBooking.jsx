@@ -6,8 +6,6 @@ import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
 
-
-
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useMapp } from "../Context/MapContext";
 
@@ -21,8 +19,15 @@ export default function OrderBooking() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { mapContainer } = useMapp();
-  
+  const {
+    mapContainer,
+    searchBoxRef,
+    handleSearchInputChange,
+    autocompleteResults,
+    suggestionsRef,
+    handleSuggestionClick,
+  } = useMapp();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -66,30 +71,70 @@ export default function OrderBooking() {
             >
               Pickup Location
             </label>
-            <input
-              type="text"
-              id="pickupLocation"
-              value={pickupLocation}
-              onChange={(e) => setPickupLocation(e.target.value)}
-              required
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
-            />
+            <div className="relative">
+              <input
+                type="search"
+                id="pickupLocation"
+                // value={pickupLocation}
+                onChange={handleSearchInputChange}
+                required
+                className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
+                ref={searchBoxRef}
+              />
+              <ul
+                className={`absolute left-0 right-0 mt-1 w-full space-y-1 list-none list-inside bg-white shadow-lg rounded-md ${
+                  autocompleteResults.length === 0 ? "hidden" : ""
+                }`}
+                id="suggestions"
+                ref={suggestionsRef}
+              >
+                {autocompleteResults.map((place, index) => (
+                  <li
+                    key={index}
+                    className="p-2 hover:bg-blue-50 rounded-md cursor-pointer text-gray-800 text-start break-word"
+                    onClick={() => handleSuggestionClick(place, 'start')}
+                  >
+                    {place.description}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           <div>
             <label
               htmlFor="dropoffLocation"
               className="block text-sm font-medium text-gray-800"
             >
-              Dropoff Location` 1`
+              Dropoff Location
             </label>
-            <input
-              type="text"
-              id="dropoffLocation"
-              value={dropoffLocation}
-              onChange={(e) => setDropoffLocation(e.target.value)}
-              required
-              className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
-            />
+            <div className="relative">
+              <input
+                type="search"
+                id="dropoffLocation"
+                // value={dropoffLocation}
+                onChange={handleSearchInputChange}
+                required
+                className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
+                ref={searchBoxRef}
+              />
+              <ul
+                className={`absolute left-0 right-0 mt-1 w-full space-y-1 list-none list-inside bg-white shadow-lg rounded-md ${
+                  autocompleteResults.length === 0 ? "hidden" : ""
+                }`}
+                id="suggestions"
+                ref={suggestionsRef}
+              >
+                {autocompleteResults.map((place, index) => (
+                  <li
+                    key={index}
+                    className="p-2 hover:bg-blue-50 rounded-md cursor-pointer text-gray-800 text-start break-word"
+                    onClick={() => handleSuggestionClick(place, 'end')}
+                  >
+                    {place.description}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -98,9 +143,10 @@ export default function OrderBooking() {
           <label className="block text-sm font-medium text-gray-800">
             Map for Location Selection
           </label>
-          <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-600" ref={mapContainer}>
-            {/* Write Here */}
-          </div>
+          <div
+            className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-600"
+            ref={mapContainer}
+          ></div>
         </div>
 
         {/* Row 3: Order Details */}
