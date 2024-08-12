@@ -1,7 +1,14 @@
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import { toast } from "react-toastify";
-  // Import the OlaMapsClient SDK
-import OlaMapsClient from 'ola-map-sdk';
+// Import the OlaMapsClient SDK
+import OlaMapsClient from "ola-map-sdk";
 import { Map as MapLibreMap, NavigationControl, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import axios from "axios";
@@ -19,30 +26,36 @@ export const MapPr = ({ children }) => {
   const [duration, setDuration] = useState("");
   const [startMarker, setStartMarker] = useState(null);
   const [endMarker, setEndMarker] = useState(null);
-  const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
+  const [userLocation, setUserLocation] = useState({
+    latitude: null,
+    longitude: null,
+  });
+  const [DropLocation, setDropLocation] = useState({
+    latitude: null,
+    longitude: null,
+  });
   const mapContainer = useRef(null);
   const searchBoxRef = useRef(null);
   const suggestionsRef = useRef(null);
   const [usermarker, setusermarker] = useState(null);
-  const [reversegeovalue,setreversegeovalue] = useState(null);
-  const API_KEY = "Bkd1aAL6DtnBj1HCOLNaoHew2KQw4QNfJlRZFrKb"
+  const [reversegeovalue, setreversegeovalue] = useState(null);
+  const API_KEY = "Bkd1aAL6DtnBj1HCOLNaoHew2KQw4QNfJlRZFrKb";
   const STYLE_NAME = "default-light-standard";
   const transformRequest = useCallback((url, resourceType) => {
     url = url.replace("app.olamaps.io", "api.olamaps.io");
     const separator = url.includes("?") ? "&" : "?";
     return {
       url: `${url}${separator}api_key=${API_KEY}`,
-      resourceType
+      resourceType,
     };
   }, []);
-
   useEffect(() => {
     const fetchStyleURL = async () => {
       try {
         const styleURL = `https://api.olamaps.io/tiles/vector/v1/styles/${STYLE_NAME}/style.json`;
         setStyleURL(styleURL);
       } catch (error) {
-        console.error('Error fetching style URL:', error);
+        console.error("Error fetching style URL:", error);
       }
     };
 
@@ -53,17 +66,15 @@ export const MapPr = ({ children }) => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const {  latitude , longitude } = position.coords;
-          setUserLocation({ latitude: latitude , longitude: longitude});
-          const m = new Marker({ color: "#F30000" , draggable : true})
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ latitude: latitude, longitude: longitude });
+          const m = new Marker({ color: "#F30000", draggable: true })
             .setLngLat([longitude, latitude])
             .addTo(newMap);
           setusermarker(m);
-        //   map-> longitude ,latitude        
-
           newMap.flyTo({ center: [longitude, latitude], zoom: 14 });
-          m.on('dragend', () => {
-            const lngLat = m.getLngLat(); 
+          m.on("dragend", () => {
+            const lngLat = m.getLngLat();
             setUserLocation({ latitude: lngLat.lat, longitude: lngLat.lng });
           });
         },
@@ -77,29 +88,31 @@ export const MapPr = ({ children }) => {
   };
   const reversegeo = useCallback(async () => {
     try {
-      const client = new OlaMapsClient(API_KEY);
       const { latitude, longitude } = userLocation;
       console.log(latitude, longitude);
       const lat = latitude;
-     const lng = longitude;
+      const lng = longitude;
 
-        const url = `https://api.olamaps.io/places/v1/reverse-geocode?latlng=${lat},${lng}&api_key=${API_KEY}`;
+      const url = `https://api.olamaps.io/places/v1/reverse-geocode?latlng=${lat},${lng}&api_key=${API_KEY}`;
 
-    axios.get(url)
-      .then(response => {
-        // console.log('Reverse Geocode result:', response.data);
-        console.log('Reverse Geocode result:', response.data.results[0].formatted_address);
-        setreversegeovalue(response.data.results[0].formatted_address);
-      })
-      .catch(error => {
-        console.error('Error during reverse geocoding:', error);
-      });
-      
+      axios
+        .get(url)
+        .then((response) => {
+          // console.log('Reverse Geocode result:', response.data);
+          console.log(
+            "Reverse Geocode result:",
+            response.data.results[0].formatted_address
+          );
+          setreversegeovalue(response.data.results[0].formatted_address);
+        })
+        .catch((error) => {
+          console.error("Error during reverse geocoding:", error);
+        });
     } catch (error) {
-      console.error('Error during reverse geocoding:', error);
+      console.error("Error during reverse geocoding:", error);
     }
-  }, [userLocation]);
-  
+  }, []);
+
   useEffect(() => {
     if (!styleURL) return;
 
@@ -111,21 +124,24 @@ export const MapPr = ({ children }) => {
       transformRequest,
     });
 
-    newMap.addControl(new NavigationControl({ visualizePitch: false, showCompass: true }), "bottom-left");
+    newMap.addControl(
+      new NavigationControl({ visualizePitch: false, showCompass: true }),
+      "bottom-left"
+    );
 
     newMap.on("load", () => {
       getuserlocation(newMap);
     });
     setMap(newMap);
 
-    return () => {
-      newMap.remove();
-    };
+    // return () => {
+    //   newMap.remove();
+    // };
   }, [styleURL, transformRequest]);
 
   useEffect(() => {
     if (userLocation.longitude !== null && userLocation.latitude !== null) {
-        reversegeo();
+      reversegeo();
     }
   }, [userLocation, reversegeo]);
 
@@ -137,15 +153,18 @@ export const MapPr = ({ children }) => {
     };
   };
 
-  const handleAutocomplete = useCallback(debounce(async (query) => {
-    const client = new OlaMapsClient(API_KEY);
-    try {
-      const result = await client.places.autocomplete(query);
-      setAutocompleteResults(result.predictions || []);
-    } catch (error) {
-      console.error('Error during autocomplete:', error);
-    }
-  }, 300), [map]);
+  const handleAutocomplete = useCallback(
+    debounce(async (query) => {
+      const client = new OlaMapsClient(API_KEY);
+      try {
+        const result = await client.places.autocomplete(query);
+        setAutocompleteResults(result.predictions || []);
+      } catch (error) {
+        console.error("Error during autocomplete:", error);
+      }
+    }, 300),
+    [map]
+  );
 
   const handleSearchInputChange = (e) => {
     const query = e.target.value.trim();
@@ -158,15 +177,19 @@ export const MapPr = ({ children }) => {
 
   const handleSuggestionClick = (place, type) => {
     searchBoxRef.current.value = place.description;
-    if (type === 'start') {
+    if (type === "start") {
       if (startMarker) startMarker.remove();
       const { lat, lng } = place.geometry.location;
-      const newMarker = new Marker({ color: "#00F" }).setLngLat([lng, lat]).addTo(map);
+      const newMarker = new Marker({ color: "#00F" })
+        .setLngLat([lng, lat])
+        .addTo(map);
       setStartMarker(newMarker);
     } else {
       if (endMarker) endMarker.remove();
       const { lat, lng } = place.geometry.location;
-      const newMarker = new Marker({ color: "#F00" }).setLngLat([lng, lat]).addTo(map);
+      const newMarker = new Marker({ color: "#F00" })
+        .setLngLat([lng, lat])
+        .addTo(map);
       setEndMarker(newMarker);
     }
     setAutocompleteResults([]);
@@ -187,9 +210,9 @@ export const MapPr = ({ children }) => {
           {
             alternatives: true,
             steps: true,
-            overview: 'full',
-            language: 'en',
-            traffic_metadata: true
+            overview: "full",
+            language: "en",
+            traffic_metadata: true,
           }
         );
 
@@ -197,45 +220,47 @@ export const MapPr = ({ children }) => {
         setDuration(`${result.routes[0].legs[0].readable_duration}`);
 
         const stepsArray = result.routes[0].legs[0].steps;
-        let routeCoordinates = stepsArray.map(step => [step.end_location.lng, step.end_location.lat]);
+        let routeCoordinates = stepsArray.map((step) => [
+          step.end_location.lng,
+          step.end_location.lat,
+        ]);
         routeCoordinates.push([endLngLat.lng, endLngLat.lat]);
 
         if (map.isStyleLoaded()) {
-          if (map.getLayer('route')) {
-            map.removeLayer('route');
-            map.removeSource('route');
+          if (map.getLayer("route")) {
+            map.removeLayer("route");
+            map.removeSource("route");
           }
 
           map.addLayer({
-            id: 'route',
-            type: 'line',
+            id: "route",
+            type: "line",
             source: {
-              type: 'geojson',
+              type: "geojson",
               data: {
-                type: 'Feature',
+                type: "Feature",
                 geometry: {
-                  type: 'LineString',
-                  coordinates: routeCoordinates
-                }
-              }
+                  type: "LineString",
+                  coordinates: routeCoordinates,
+                },
+              },
             },
             layout: {
-              'line-join': 'round',
-              'line-cap': 'round'
+              "line-join": "round",
+              "line-cap": "round",
             },
             paint: {
-              'line-color': '#FF0000',
-              'line-width': 4
-            }
+              "line-color": "#FF0000",
+              "line-width": 4,
+            },
           });
 
           const bounds = new mapboxgl.LngLatBounds();
-          routeCoordinates.forEach(coord => bounds.extend(coord));
+          routeCoordinates.forEach((coord) => bounds.extend(coord));
           map.fitBounds(bounds, { padding: 50 });
         }
-
       } catch (error) {
-        console.error('Error fetching directions:', error);
+        console.error("Error fetching directions:", error);
       }
     }
   };
@@ -266,7 +291,7 @@ export const MapPr = ({ children }) => {
         handleSuggestionClick,
         handleFormSubmit,
         handleRecenter,
-        getuserlocation
+        getuserlocation,
       }}
     >
       {children}
