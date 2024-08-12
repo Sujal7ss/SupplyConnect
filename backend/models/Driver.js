@@ -6,51 +6,48 @@ const DriverSchema = new mongoose.Schema({
     ref: "Driver",
     required: true,
   },
-  Driver_Detail: {
-    PersonalDetails: {
-      Name: { type: String, required: true },
-      DOB: {
-        type: Date,
-        required: true,
-      },
-      Gender: {
-        type: String,
-        enum: ["M", "F", "O"],
-        required: true,
-      },
-      Contact: {
-        Phone: Number,
-        Email: {
-          type : String
-        },
-      },
-      Address: String,
+  dob: {
+    type: Date,
+    required: true,
+  },
+  gender: {
+    type: String,
+    enum: ["M", "F", "O"],
+    required: true,
+  },
+  address:{
+    type: String,
+    required: true,
+  },
+  documents: {
+    drivingLicense: {
+      type: String,
+      required: true,
     },
-    Document: {
-      DrivingLicense: {
-        LicenseNumber: String,
-        ExpiryDate: Date,
-      },
-      IdCard: {
-        AadharNumber: String,
-        Verfied: Boolean,
-      },
+    adhaarCard: {
+      type: String,
+      required: true,
     },
   },
-  VehicleDetails: {
-    VehicleRegistrationNumber: String,
-    MakeModel: String,
-    Color: String,
-    Year: Number,
-    Insurance: {
-      PolicyNumber: String,
-      ExpiryDate: Date,
+  vehicle: {
+    registrationNumber: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
     },
   },
-  AgreementAndConscent: {
-    TnCAgreement: String,
-    DataPrivacyConsent: String,
-    HealthAndSafty: String,
+  agreements: {
+    tnc:{
+      type: Boolean,
+      required: true,
+    },
+    health: {
+      type: Boolean,
+      required: true,
+    },
   },
 });
 
