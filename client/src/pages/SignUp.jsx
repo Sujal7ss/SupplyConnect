@@ -1,15 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import {toast} from 'react-toastify';
 
 export default function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState("Male");
-  const [age, setAge] = useState("");
-  const [type, setType] = useState("Supplier");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -20,8 +15,6 @@ export default function SignUp() {
     email : "",
     password : "",
     name : "",
-    gender : "Male",
-    age : "",
     type : "Supplier",
   });
 
@@ -41,18 +34,21 @@ export default function SignUp() {
     setError("");
     setSuccess("");
 
-    if (password !== confirmPassword) {
+    if (user.password !== confirmPassword) {
       setError("Passwords do not match.");
       setLoading(false);
       return;
     }
     try {
       // Replace the URL with your API endpoint
-      let url = import.meta.env.BACKEND_URL;
-      const response = await axios.post(`${url}/api/signup`, user);
+      let url = 'http://localhost:5000' ;
+      const response = await axios.post(`${url}/api/auth/signup`, user);
+      console.log(response.data);
+      toast.success("Signup successful!");
       setSuccess("Signup successful!");
       navigate("/");
     } catch (err) {
+      console.error(err);
       setError("Signup failed. Please try again.");
     } finally {
       setLoading(false);
@@ -70,7 +66,7 @@ export default function SignUp() {
           <input
             type="text"
             id="name"
-            value={name}
+            value={user.name}
             onChange={handlechange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
@@ -83,7 +79,7 @@ export default function SignUp() {
           <input
             type="email"
             id="email"
-            value={email}
+            value={user.email}
             onChange={handlechange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
@@ -97,7 +93,7 @@ export default function SignUp() {
             <input
               type={passwordVisible ? "text" : "password"}
               id="password"
-              value={password}
+              value={user.password}
               onChange={handlechange}
               required
               className="block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 pr-10 transition ease-in-out duration-150"
@@ -121,7 +117,7 @@ export default function SignUp() {
               type={confirmPasswordVisible ? "text" : "password"}
               id="confirm-password"
               value={confirmPassword}
-              onChange={handlechange}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
               className="block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 pr-10 transition ease-in-out duration-150"
             />
@@ -136,40 +132,12 @@ export default function SignUp() {
           </div>
         </div>
         <div className="mb-6">
-          <label htmlFor="gender" className="block text-sm font-semibold text-gray-800">
-            Gender
-          </label>
-          <select
-            id="gender"
-            value={gender}
-            onChange={handlechange}
-            className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
-          >
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div className="mb-6">
-          <label htmlFor="age" className="block text-sm font-semibold text-gray-800">
-            Age
-          </label>
-          <input
-            type="number"
-            id="age"
-            value={age}
-            onChange={handlechange}
-            required
-            className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
-          />
-        </div>
-        <div className="mb-6">
           <label htmlFor="type" className="block text-sm font-semibold text-gray-800">
             Type
           </label>
           <select
             id="type"
-            value={type}
+            value={user.type}
             onChange={handlechange}
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           >
