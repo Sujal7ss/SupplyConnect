@@ -8,10 +8,15 @@ import AuthRoutes from "./routes/AuthRoutes.js";
 import OrderRoutes from "./routes/OrderRoutes.js"
 import Bidroutes from  "./routes/BidRoutes.js"
 import Driverroutes from "./routes/DriverRoutes.js"
+import cors from "cors"
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000
-
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
+    credentials: true
+}))
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());

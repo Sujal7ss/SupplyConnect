@@ -15,7 +15,7 @@ export default function SignUp() {
     email : "",
     password : "",
     name : "",
-    type : "Supplier",
+    type : "supplier",
   });
 
   const handlechange = (e) => {
@@ -41,8 +41,7 @@ export default function SignUp() {
     }
     try {
       // Replace the URL with your API endpoint
-      let url = 'http://localhost:5000' ;
-      const response = await axios.post(`${url}/api/auth/signup`, user);
+      const response = await axios.post(`/api/auth/signup`, user);
       console.log(response.data);
       toast.success("Signup successful!");
       setSuccess("Signup successful!");
@@ -141,8 +140,8 @@ export default function SignUp() {
             onChange={handlechange}
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           >
-            <option value="Supplier">Supplier</option>
-            <option value="Driver">Driver</option>
+            <option value="supplier">Supplier</option>
+            <option value="driver">Driver</option>
           </select>
         </div>
         {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}

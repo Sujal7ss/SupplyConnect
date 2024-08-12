@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BidsPage from "../components/BidsPage.jsx"; // Updated import for the new B
+import BidsPage from "../components/BidsPage.jsx";
+import ReactModal from "react-modal";
 
 const OrderDetails = () => {
   const { id } = useParams(); // Get the ID from the URL
@@ -12,8 +13,8 @@ const OrderDetails = () => {
   const [bids, setBids] = useState([]);
   const navigate = useNavigate(); // Hook for navigation
 
-   // Dummy data
-   useEffect(() => {
+  // Dummy data
+  useEffect(() => {
     setOrder({
       pickUpLocation: "New York",
       deliveryLocation: "Los Angeles",
@@ -82,6 +83,34 @@ const OrderDetails = () => {
 
   return (
     <>
+      <ReactModal
+        isOpen={showBidsModal}
+        onRequestClose={() => setShowBidsModal(false)}
+        className="modal-content"
+        overlayClassName="modal-overlay"
+        contentLabel="Bids Modal"
+      >
+        <button
+          onClick={() => setShowBidsModal(false)}
+          className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <BidsPage />
+      </ReactModal>
       <div className="p-4 space-y-4">
         {/* Buttons Container */}
         <div className="flex justify-between items-center mb-4">
@@ -240,8 +269,6 @@ const OrderDetails = () => {
           </div>
         </div>
       </div>
-
-      
     </>
   );
 };
