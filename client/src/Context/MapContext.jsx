@@ -1,8 +1,12 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "react-toastify";
   // Import the OlaMapsClient SDK
-  import OlaMapsClient from 'ola-map-sdk';
-import MapLibreMap, { Marker, NavigationControl } from "maplibre-gl";  // Import necessary classes from MapLibre
+import OlaMapsClient from 'ola-map-sdk';
+import { Map as MapLibreMap, NavigationControl, Marker } from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+// import DistanceDuration from "./components/DistanceDuration";
+// import RecenterButton from "./components/RecenterButton";
+import mapboxgl from "mapbox-gl";
 
 export const MapContext = createContext({});
 
@@ -20,6 +24,7 @@ export const MapPr = ({ children }) => {
   const suggestionsRef = useRef(null);
   const [usermarker, setusermarker] = useState(null);
   const API_KEY = "Bkd1aAL6DtnBj1HCOLNaoHew2KQw4QNfJlRZFrKb"
+  const STYLE_NAME = "default-light-standard";
   const transformRequest = useCallback((url, resourceType) => {
     url = url.replace("app.olamaps.io", "api.olamaps.io");
     const separator = url.includes("?") ? "&" : "?";
@@ -232,6 +237,6 @@ export const MapPr = ({ children }) => {
   );
 };
 
-export const useMap = () => {
+export const useMapp = () => {
   return useContext(MapContext);
 };

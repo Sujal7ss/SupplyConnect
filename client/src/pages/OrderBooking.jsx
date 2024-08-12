@@ -6,11 +6,10 @@ import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
 
-import DeckGL from "@deck.gl/react";
-import StaticMap from "react-map-gl";
-import maplibregl from "maplibre-gl";
+
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useMapp } from "../Context/MapContext";
 
 export default function OrderBooking() {
   const [pickupLocation, setPickupLocation] = useState("");
@@ -22,13 +21,8 @@ export default function OrderBooking() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const [viewState, setViewState] = useState({
-    longitude: 0,
-    latitude: 0,
-    zoom: 1,
-  });
-
+  const { mapContainer } = useMapp();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -86,7 +80,7 @@ export default function OrderBooking() {
               htmlFor="dropoffLocation"
               className="block text-sm font-medium text-gray-800"
             >
-              Dropoff Location
+              Dropoff Location` 1`
             </label>
             <input
               type="text"
@@ -104,23 +98,8 @@ export default function OrderBooking() {
           <label className="block text-sm font-medium text-gray-800">
             Map for Location Selection
           </label>
-          <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-600">
-            <DeckGL
-              style={{ width: "100vw", height: "100vh", overflow: "hidden" }}
-              viewState={viewState}
-              onViewStateChange={({ viewState }) => setViewState(viewState)}
-              controller={true}
-              layers={[]}
-            >
-              <StaticMap
-                mapLib={maplibregl}
-                mapStyle="https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json"
-                transformRequest={(url, resourceType) => {
-                  url = url + "?api_key={your_api_key}";
-                  return { url, resourceType };
-                }}
-              />
-            </DeckGL>
+          <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-600" ref={mapContainer}>
+            {/* Write Here */}
           </div>
         </div>
 
