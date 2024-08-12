@@ -1,34 +1,22 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Bids({ order, bids }) {
+export default function BidsPage({ order, bids }) {
   const navigate = useNavigate(); // Hook for navigation
 
-  function setIsOpen() {
+  function handleBack() {
     navigate(-1); // Navigate back to the previous page
   }
 
-  function handleMouseDown(event) {
-    const startY = event.clientY;
-    const handleMouseMove = (moveEvent) => {
-      const distance = moveEvent.clientY - startY;
-      if (distance > 100) { // Drag down distance threshold
-        setIsOpen();
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-      }
-    };
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  }
-
   return (
-    <div className="absolute w-full h-screen flex flex-col bg-white shadow-lg rounded-lg">
+    <div className="w-full h-screen flex flex-col bg-white shadow-lg rounded-lg">
+      {/* Header */}
+      <header className="flex-none w-full h-1/5 bg-gray-100 p-4 border-b border-gray-300 flex items-center justify-between">
+        <button onClick={handleBack} className="text-blue-500 hover:underline">
+          Back
+        </button>
+        <h1 className="text-xl font-bold">Bids</h1>
+      </header>
 
       <div className="flex flex-col h-full">
         {/* Order Info Section */}
@@ -43,7 +31,6 @@ export default function Bids({ order, bids }) {
 
         {/* Bids Section */}
         <div className="flex-1 overflow-y-auto p-4">
-          <h2 className="text-xl font-bold mb-2">Bids</h2>
           <ul className="space-y-4">
             {bids
               .sort((a, b) => b.amount - a.amount)

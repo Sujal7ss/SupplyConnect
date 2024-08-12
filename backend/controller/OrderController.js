@@ -60,6 +60,8 @@ export const CreateOrder = asyncHandler(async (req, res) => {
 // Get Order Details
 export const orderDetails = asyncHandler(async (req, res) => {
   let { orderId } = req.params;
+
+  
   const orderdetails = await Order.findById(orderId);
   if (!orderdetails) {
     return res
@@ -104,27 +106,21 @@ export const updateorderdetails = asyncHandler(async (req, res) => {
 });
 
 // Get All Orders
-export const allorders = asyncHandler(async (req, res) => {
+// Get All Orders
+export const getAllOrders = asyncHandler(async (req, res) => {
   try {
-    let userdetails = req.user;
-    // console.log("HII", userdetails);
-
-    if (userdetails.type === "supplier") {
-      return res.status(403).json(new ApiError(403, "Supplier cannot access the All Orders section."));
-    }
-
-    let allo = await Order.find({ orderStatus: "waiting" });
-
-    if (!allo || allo.length === 0) {
+    const orders = await Order.find();
+    if (!orders || orders.length === 0) {
       return res.status(404).json(new ApiError(404, "No orders found."));
     }
-
-    return res.status(200).json(new ApiResponse(200, allo, "All Orders Fetched Successfully!"));
+    res.status(200).json(new ApiResponse(200, orders, "All Orders Fetched Successfully"));
   } catch (error) {
-    console.log('Error occurred:', error);
+    console.log(error);
     return res.status(500).json(new ApiError(500, error.message));
   }
 });
+
+
 
 // Get Orders for Logged-in User
 export const MyOrders = asyncHandler(async (req, res) => {

@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Bids from "../components/Bids.jsx";
+import BidsPage from "../components/BidsPage.jsx"; // Updated import for the new B
 
 const OrderDetails = () => {
   const { id } = useParams(); // Get the ID from the URL
   const [order, setOrder] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editableOrder, setEditableOrder] = useState(null);
-  const [showBids, setShowBids] = useState(false);
+  const [showBidsModal, setShowBidsModal] = useState(false); // State to manage modal visibility
   const [bids, setBids] = useState([]);
   const navigate = useNavigate(); // Hook for navigation
 
-  // Dummy data
-  useEffect(() => {
+   // Dummy data
+   useEffect(() => {
     setOrder({
       pickUpLocation: "New York",
       deliveryLocation: "Los Angeles",
@@ -32,25 +32,27 @@ const OrderDetails = () => {
       orderStatus: "Pending",
     });
   }, []);
-
-  // Uncomment the following useEffect to fetch real data
+  //Uncomment to fetch from backend
+  // Fetch order details and bids
   // useEffect(() => {
-  //   const fetchOrder = async () => {
+  //   const fetchOrderAndBids = async () => {
   //     try {
-  //       const response = await axios.get(
+  //       const orderResponse = await axios.get(
   //         `${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}`
   //       );
-  // const bidsResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/orders/1/bids`);
+  //       const bidsResponse = await axios.get(
+  //         `${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}/bids`
+  //       );
 
-  // setBids(bidsResponse.data);
-  //       setOrder(response.data);
-  //       setEditableOrder(response.data); // Initialize editableOrder with fetched data
+  //       setOrder(orderResponse.data);
+  //       setEditableOrder(orderResponse.data); // Initialize editableOrder with fetched data
+  //       setBids(bidsResponse.data);
   //     } catch (error) {
-  //       console.error("Error fetching order details:", error);
+  //       console.error("Error fetching order details or bids:", error);
   //     }
   //   };
 
-  //   fetchOrder();
+  //   fetchOrderAndBids();
   // }, [id]);
 
   if (!order) return <p>Loading...</p>;
@@ -66,7 +68,7 @@ const OrderDetails = () => {
   const handleUpdateOrder = async () => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BACKEND_URL}/api/Updateorders/${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}`,
         editableOrder
       );
       console.log("Order updated successfully:", response.data);
@@ -74,6 +76,7 @@ const OrderDetails = () => {
       setIsEditing(false); // Switch back to view mode
     } catch (error) {
       console.error("Error updating order:", error);
+      setIsEditing(false);
     }
   };
 
@@ -105,8 +108,8 @@ const OrderDetails = () => {
           </button>
           {/* Bids Button */}
           <button
-            onClick={() => setShowBids(!showBids)} // Toggle edit mode
-            className="bg-green-500 text-white  font-semibold py-2 px-4 rounded-md"
+            onClick={() => setShowBidsModal(true)} // Open modal
+            className="bg-green-500 text-white font-semibold py-2 px-4 rounded-md"
           >
             Bids
           </button>
@@ -238,7 +241,7 @@ const OrderDetails = () => {
         </div>
       </div>
 
-      {/* {showBids && <Bids order={order} bids={bids}/>} */}
+      
     </>
   );
 };
