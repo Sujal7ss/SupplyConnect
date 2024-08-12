@@ -5,9 +5,9 @@ import Supplier from '../models/supplier.js';  // Capitalize the model name as i
 // Supplier Controller Functions
 
 // Create or Update Supplier Profile
-export const createOrUpdateSupplierProfile = async (req, res) => {
+export const updateSupplierProfile = async (req, res) => {
     try {
-        const { companyName, address, phoneNo, email } = req.body;
+        const { companyName, address, phoneNo } = req.body;
         const supplierId = req.user._id;
 
         // Validate required fields
@@ -17,14 +17,14 @@ export const createOrUpdateSupplierProfile = async (req, res) => {
 
         // Find and update supplier, or create new if it doesn't exist
         let supplier = await Supplier.findOneAndUpdate(
-            { email },
-            { supplierId, companyName, address, phoneNo },
+            { supplierId },
+            { companyName, address, phoneNo },
             { new: true, upsert: true, runValidators: true }
         );
 
         // If the supplier was created anew
         if (!supplier) {
-            supplier = new Supplier({ supplierId, companyName, address, phoneNo, email });
+            supplier = new Supplier({ supplierId, companyName, address, phoneNo});
             await supplier.save();
         }
 
