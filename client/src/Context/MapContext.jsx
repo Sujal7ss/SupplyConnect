@@ -135,7 +135,7 @@ export const MapPr = ({ children }) => {
         m.on("dragend", () => {
           const lngLat = m.getLngLat();
           setStartMarker({ latitude: lngLat.lat, longitude: lngLat.lng });
-          newMap.flyTo({ center: [startMarker.longitude, startMarker.latitude], zoom: 14 });
+          newMap.flyTo({ center: [ lngLat.lng , lngLat.lat], zoom: 14 });
       reverseGeo();
         });
       });
