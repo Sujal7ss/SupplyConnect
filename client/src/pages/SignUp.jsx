@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext";
 
 export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -9,8 +10,8 @@ export default function SignUp() {
   const [success, setSuccess] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-
-  const [user,setuser] = useState({
+  const { storeTokenInLS} = useAuth();
+  const [datauser,setuser] = useState({
     email : "",
     password : "",
     name : "",
@@ -22,7 +23,7 @@ export default function SignUp() {
     let value = e.target.value;
 
     setuser({
-      ...user,
+      ...datauser,
       [id] : value,
     });
   }
@@ -33,22 +34,22 @@ export default function SignUp() {
     setError("");
     setSuccess("");
 
-    if (user.password !== confirmPassword) {
+    if (datauser.password !== confirmPassword) {
       setError("Passwords do not match.");
       setLoading(false);
       return;
     }
     try {
       // Replace the URL with your API endpoint
-      const {data} = await axios.post(`/api/auth/signup`, user);
-      setSuccess("Signup successful!");
-      setInterval(() => {
-        if(data.data.type == 'supplier'){
+      const response = await axios.post(`/api/auth/signup`, datauser);
+      console.log(response);
+      setSuccess("Sign In successful!");
+      storeTokenInLS(response.data.data.token);
+        if(response.data.data.user.type === 'supplier'){
           navigate("/supplierform");
         }else{
           navigate("/driverform");
         }
-      }, 1000);
     } catch (err) {
       console.log(err);
       setError("Signup failed. Please try again.");
@@ -68,7 +69,7 @@ export default function SignUp() {
           <input
             type="text"
             id="name"
-            value={user.name}
+            value={datauser.name}
             onChange={handlechange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
@@ -81,7 +82,7 @@ export default function SignUp() {
           <input
             type="email"
             id="email"
-            value={user.email}
+            value={datauser.email}
             onChange={handlechange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
@@ -95,7 +96,7 @@ export default function SignUp() {
             <input
               type={passwordVisible ? "text" : "password"}
               id="password"
-              value={user.password}
+              value={datauser.password}
               onChange={handlechange}
               required
               className="block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 pr-10 transition ease-in-out duration-150"
@@ -139,7 +140,7 @@ export default function SignUp() {
           </label>
           <select
             id="type"
-            value={user.type}
+            value={datauser.type}
             onChange={handlechange}
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           >

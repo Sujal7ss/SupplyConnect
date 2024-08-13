@@ -9,7 +9,7 @@ import {
 import { toast } from "react-toastify";
 // Import the OlaMapsClient SDK
 import OlaMapsClient from "ola-map-sdk";
-import { Map as MapLibreMap, NavigationControl, Marker } from "maplibre-gl";
+import { Map as MapLibreMap, NavigationControl, Marker, GeolocateControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import axios from "axios";
 // import DistanceDuration from "./components/DistanceDuration";
@@ -20,12 +20,17 @@ export const MapContext = createContext({});
 
 export const MapPr = ({ children }) => {
   const [map, setMap] = useState(null);
+  const [firstMarker, setFirstMarker] = useState(null);
+  const [secondMarker, setSecondMarker] = useState(null);
   const [styleURL, setStyleURL] = useState(null);
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
   const [startMarker, setStartMarker] = useState(null);
   const [endMarker, setEndMarker] = useState(null);
+  const [cityName, setCityName] = useState(null);
+  const [startAddress , setstartaddress] = useState(null);
+  const [endAddress , setendAddress] = useState(null);
   const [userLocation, setUserLocation] = useState({
     latitude: null,
     longitude: null,
@@ -35,10 +40,11 @@ export const MapPr = ({ children }) => {
     longitude: null,
   });
   const mapContainer = useRef(null);
-  const searchBoxRef = useRef(null);
+  const startboxref = useRef(null);
+  const endboxref = useRef(null);
   const suggestionsRef = useRef(null);
-  const [usermarker, setusermarker] = useState(null);
-  const [reversegeovalue, setreversegeovalue] = useState(null);
+  const [userMarker, setUserMarker] = useState(null);
+  const [reverseGeoValue, setReverseGeoValue] = useState(null);
   const API_KEY = "Bkd1aAL6DtnBj1HCOLNaoHew2KQw4QNfJlRZFrKb";
   const STYLE_NAME = "default-light-standard";
   const transformRequest = useCallback((url, resourceType) => {
@@ -61,49 +67,22 @@ export const MapPr = ({ children }) => {
 
     fetchStyleURL();
   }, []);
-
-  const getuserlocation = (newMap) => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation({ latitude: latitude, longitude: longitude });
-          const m = new Marker({ color: "#F30000", draggable: true })
-            .setLngLat([longitude, latitude])
-            .addTo(newMap);
-          setusermarker(m);
-          newMap.flyTo({ center: [longitude, latitude], zoom: 14 });
-          m.on("dragend", () => {
-            const lngLat = m.getLngLat();
-            setUserLocation({ latitude: lngLat.lat, longitude: lngLat.lng });
-          });
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-        }
-      );
-    } else {
-      console.log("Device does not contain live location service");
-    }
-  };
-  const reversegeo = useCallback(async () => {
+  const reverseGeo = useCallback(async () => {
     try {
-      const { latitude, longitude } = userLocation;
-      console.log(latitude, longitude);
+      const { latitude, longitude } = startMarker;
+      console.log("hi", latitude, longitude);
       const lat = latitude;
       const lng = longitude;
 
       const url = `https://api.olamaps.io/places/v1/reverse-geocode?latlng=${lat},${lng}&api_key=${API_KEY}`;
 
-      axios
+      await axios
         .get(url)
         .then((response) => {
-          // console.log('Reverse Geocode result:', response.data);
-          console.log(
-            "Reverse Geocode result:",
-            response.data.results[0].formatted_address
-          );
-          setreversegeovalue(response.data.results[0].formatted_address);
+          console.log(response.data.results[0].address_components[2].long_name);
+          console.log(response.data.results[0].formatted_address);
+          setCityName(response.data.results[0].address_components[2].long_name);
+          setReverseGeoValue(response.data.results[0].formatted_address);
         })
         .catch((error) => {
           console.error("Error during reverse geocoding:", error);
@@ -111,11 +90,13 @@ export const MapPr = ({ children }) => {
     } catch (error) {
       console.error("Error during reverse geocoding:", error);
     }
-  }, []);
+  }, [startMarker]);
+
 
   useEffect(() => {
     if (!styleURL) return;
 
+    // Create the map instance first
     const newMap = new MapLibreMap({
       container: mapContainer.current,
       style: styleURL,
@@ -124,26 +105,46 @@ export const MapPr = ({ children }) => {
       transformRequest,
     });
 
+    // Add the GeolocateControl after the map is created
+    const geolocate = new GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      trackUserLocation: true,
+      showAccuracyCircle: false,
+    });
+    newMap.addControl(geolocate);
+
+    // Add the NavigationControl
     newMap.addControl(
       new NavigationControl({ visualizePitch: false, showCompass: true }),
       "bottom-left"
     );
 
+    // Use the map's 'load' event to trigger other actions
     newMap.on("load", () => {
-      getuserlocation(newMap);
+      geolocate.trigger();
+      const m = new Marker({ color: "#F30000", draggable: true });
+      geolocate.on("geolocate", (event) => {
+        const userLocation = { latitude: event.coords.latitude, longitude: event.coords.longitude };
+        setUserLocation(userLocation);
+        setStartMarker(userLocation);
+        m.setLngLat([event.coords.longitude, event.coords.latitude]).addTo(newMap);
+        setUserMarker(m);
+        newMap.flyTo({ center: [event.coords.longitude, event.coords.latitude], zoom: 14 });
+        m.on("dragend", () => {
+          const lngLat = m.getLngLat();
+          setStartMarker({ latitude: lngLat.lat, longitude: lngLat.lng });
+          newMap.flyTo({ center: [startMarker.longitude, startMarker.latitude], zoom: 14 });
+      reverseGeo();
+        });
+      });
     });
     setMap(newMap);
-
-    // return () => {
-    //   newMap.remove();
-    // };
+    return () => {
+      newMap.remove();
+    };
   }, [styleURL, transformRequest]);
-
-  useEffect(() => {
-    if (userLocation.longitude !== null && userLocation.latitude !== null) {
-      reversegeo();
-    }
-  }, [userLocation, reversegeo]);
 
   const debounce = (func, wait) => {
     let timeout;
@@ -165,33 +166,48 @@ export const MapPr = ({ children }) => {
     }, 300),
     [map]
   );
-
   const handleSearchInputChange = (e) => {
+    e.preventDefault();
     const query = e.target.value.trim();
     if (query.length > 0) {
       handleAutocomplete(query);
     } else {
       setAutocompleteResults([]);
+      if (userMarker){
+        userMarker.remove();
+      } 
+      const newMarker = new Marker({ color: "#F30000", draggable: true })
+        .setLngLat([userLocation.longitude, userLocation.latitude])
+        .addTo(map);
+      setUserMarker(newMarker);
     }
   };
 
-  const handleSuggestionClick = (place, type) => {
-    searchBoxRef.current.value = place.description;
-    if (type === "start") {
-      if (startMarker) startMarker.remove();
+  const handlesuggestionstart = (place) => {
+    startboxref.current.value = place.description;
+      if (userMarker){
+        // console.log(startMarker);
+        // setStartMarker(null);
+        userMarker.remove();
+      } 
       const { lat, lng } = place.geometry.location;
-      const newMarker = new Marker({ color: "#00F" })
+      const newMarker = new Marker({ color: "#00F", draggable: true })
         .setLngLat([lng, lat])
         .addTo(map);
-      setStartMarker(newMarker);
-    } else {
-      if (endMarker) endMarker.remove();
+      setUserMarker(newMarker);
+      console.log(place.description);
+      setstartaddress(place.description);
+    setAutocompleteResults([]);
+  };
+  const handlesuggestionend = (place) => {
+    endboxref.current.value = place.description;
+    if(endMarker) endMarker.remove();
       const { lat, lng } = place.geometry.location;
-      const newMarker = new Marker({ color: "#F00" })
+      const newMarker = new Marker({ color: "#F00", draggable: true })
         .setLngLat([lng, lat])
         .addTo(map);
       setEndMarker(newMarker);
-    }
+      setendAddress(place);
     setAutocompleteResults([]);
   };
 
@@ -267,7 +283,7 @@ export const MapPr = ({ children }) => {
 
   const handleRecenter = () => {
     if (map && userLocation) {
-      map.flyTo({ center: [userLocation.lng, userLocation.lat], zoom: 14 });
+      map.flyTo({ center: [userLocation.longitude, userLocation.latitude], zoom: 14 });
     }
   };
 
@@ -283,15 +299,18 @@ export const MapPr = ({ children }) => {
         endMarker,
         userLocation,
         mapContainer,
-        searchBoxRef,
+        startboxref,
+        endboxref,
         suggestionsRef,
-        usermarker,
-        reversegeovalue,
+        userMarker,
+        reverseGeoValue,
+        startAddress,
+        endAddress,
         handleSearchInputChange,
-        handleSuggestionClick,
+        handlesuggestionstart,
+        handlesuggestionend,
         handleFormSubmit,
         handleRecenter,
-        getuserlocation,
       }}
     >
       {children}
@@ -302,3 +321,5 @@ export const MapPr = ({ children }) => {
 export const useMapp = () => {
   return useContext(MapContext);
 };
+
+

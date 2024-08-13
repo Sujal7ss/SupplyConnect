@@ -8,7 +8,7 @@ export default function() {
       console.log(response);
     }
 
-    return <header class="bg-white shadow-md px-4 py-2 flex items-center justify-between">
+    return <header className="bg-white shadow-md px-4 py-2 flex items-center justify-between">
     <div class="flex items-center space-x-2">
       <img
         src="https://via.placeholder.com/40"

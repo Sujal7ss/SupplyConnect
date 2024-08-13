@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate} from "react-router-dom"; // Import Link from React Router
+import { useAuth } from "../Context/AuthContext";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -9,7 +10,7 @@ export default function SignIn() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-
+  const { storeTokenInLS} = useAuth();
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,17 +19,17 @@ export default function SignIn() {
     setSuccess("");
 
     try {
-      // Replace the URL with your API endpoint
-      const {data} = await axios.post("/api/auth/login", {
+      const response = await axios.post("/api/auth/login", {
         email,
         password,
       });
       setSuccess("Sign In successful!");
-      console.log(data);
-      if(data.data.type == 'supplier'){
+      storeTokenInLS(response.data.data.token);
+      console.log("hi", response);
+      if (response.data.data.user.type === 'supplier') {
         navigate("/");
-      } 
-    }catch (err) {
+      }
+    } catch (err) {
       setError("Sign In failed. Please try again.");
     } finally {
       setLoading(false);

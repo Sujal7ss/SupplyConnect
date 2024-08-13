@@ -9,4 +9,6 @@ export const generateTokenAndSetCookie = (email, res) => {
         secure: process.env.NODE_ENV === 'production' ? true : false,
     };
     res.cookie('jwt', token, cookieOptions);
+
+    return token;
 }
