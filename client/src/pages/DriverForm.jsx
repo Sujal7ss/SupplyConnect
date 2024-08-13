@@ -3,15 +3,36 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 export default function DriverDetails() {
-  const [licensePlateNumber, setLicensePlateNumber] = useState("");
-  const [aadharNumber, setAadharNumber] = useState("");
-  const [vehicleType, setVehicleType] = useState("");
-  const [privacyConcern, setPrivacyConcern] = useState(false);
-  const [termsAndPolicies, setTermsAndPolicies] = useState(false);
-  const [healthConcern, setHealthConcern] = useState(false);
+  const [driver, setDriver] =useState({
+    name: "",
+    dob: "",
+    gender: "",
+    address: "",
+    registrationNumber: "",
+    vehicleType: "",
+    drivingLicense: "",
+    adhaarCard: "",
+    tnc: false,
+    health: false,
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const handleChange = (e) => {
+    let id = e.target.id;
+    let value = e.target.value
+    if(e.target.type === "checkbox") {
+      value = e.target.checked;
+    }
+    else{
+    }
+    setDriver({
+      ...driver,
+      [id] : value,
+    });
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,11 +48,7 @@ export default function DriverDetails() {
 
     try {
       // Replace the URL with your API endpoint
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/driver-details`, {
-        licensePlateNumber,
-        aadharNumber,
-        vehicleType,
-      });
+      const response = await axios.post('/api/driver-details',driver );
       setSuccess("Details submitted successfully!");
     } catch (err) {
       setError("Failed to submit details. Please try again.");
@@ -45,40 +62,105 @@ export default function DriverDetails() {
       <h1 className="text-3xl font-extrabold mb-6 text-gray-900">Driver Details</h1>
       <form onSubmit={handleSubmit} className="w-full bg-white p-6 rounded-lg shadow-lg space-y-6">
         <div className="mb-6">
-          <label htmlFor="licensePlateNumber" className="block text-sm font-semibold text-gray-800">
-            License Plate Number
+          <label htmlFor="name" className="block text-sm font-semibold text-gray-800">
+            Name
           </label>
           <input
             type="text"
-            id="licensePlateNumber"
-            value={licensePlateNumber}
-            onChange={(e) => setLicensePlateNumber(e.target.value)}
+            id="name"
+            value={driver.name}
+            onChange={handleChange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           />
         </div>
         <div className="mb-6">
-          <label htmlFor="aadharNumber" className="block text-sm font-semibold text-gray-800">
-            Aadhar Number
+          <label htmlFor="dob" className="block text-sm font-semibold text-gray-800">
+            Date of Birth
           </label>
           <input
             type="text"
-            id="aadharNumber"
-            value={aadharNumber}
-            onChange={(e) => setAadharNumber(e.target.value)}
+            id="dob"
+            value={driver.dob}
+            onChange={handleChange}
+            required
+            className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
+          />
+        </div>
+        <div className="mb-6">
+          <label htmlFor="gender" className="block text-sm font-semibold text-gray-800">
+            Gender
+          </label>
+          <input
+            type="text"
+            id="gender"
+            value={driver.gender}
+            onChange={handleChange}
+            required
+            className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
+          />
+        </div>
+        <div className="mb-6">
+          <label htmlFor="address" className="block text-sm font-semibold text-gray-800">
+            Address
+          </label>
+          <input
+            type="text"
+            id="address"
+            value={driver.address}
+            onChange={handleChange}
+            required
+            className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
+          />
+        </div>
+        <div className="mb-6">
+          <label htmlFor="drivingLicense" className="block text-sm font-semibold text-gray-800">
+            Driving License No
+          </label>
+          <input
+            type="text"
+            id="drivingLicense"
+            value={driver.drivingLicense}
+            onChange={handleChange}
+            required
+            className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
+          />
+        </div>
+        <div className="mb-6">
+          <label htmlFor="adhaarCard" className="block text-sm font-semibold text-gray-800">
+            Driving License No
+          </label>
+          <input
+            type="text"
+            id="adhaarCard"
+            value={driver.adhaarCard}
+            onChange={handleChange}
+            required
+            className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
+          />
+        </div>
+        <div className="mb-6">
+          <label htmlFor="registrationNumber" className="block text-sm font-semibold text-gray-800">
+            Registration No
+          </label>
+          <input
+            type="text"
+            id="registrationNumber"
+            value={driver.registrationNumber}
+            onChange={handleChange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           />
         </div>
         <div className="mb-6">
           <label htmlFor="vehicleType" className="block text-sm font-semibold text-gray-800">
-            Vehicle Type
+            Aadhar Number
           </label>
           <input
             type="text"
             id="vehicleType"
-            value={vehicleType}
-            onChange={(e) => setVehicleType(e.target.value)}
+            value={driver.vehicleType}
+            onChange={handleChange}
             required
             className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
           />
@@ -87,36 +169,24 @@ export default function DriverDetails() {
           <div className="flex items-center">
             <input
               type="checkbox"
-              id="privacyConcern"
-              checked={privacyConcern}
-              onChange={(e) => setPrivacyConcern(e.target.checked)}
+              id="tnc"
+              checked={driver.tnc}
+              onChange={handleChange}
               className="form-checkbox h-5 w-5 text-yellow-600"
             />
-            <label htmlFor="privacyConcern" className="ml-2 text-sm font-semibold text-gray-800">
-              Privacy Concern
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="termsAndPolicies"
-              checked={termsAndPolicies}
-              onChange={(e) => setTermsAndPolicies(e.target.checked)}
-              className="form-checkbox h-5 w-5 text-yellow-600"
-            />
-            <label htmlFor="termsAndPolicies" className="ml-2 text-sm font-semibold text-gray-800">
+            <label htmlFor="tnc" className="ml-2 text-sm font-semibold text-gray-800">
               Terms and Policies
             </label>
           </div>
           <div className="flex items-center">
             <input
               type="checkbox"
-              id="healthConcern"
-              checked={healthConcern}
-              onChange={(e) => setHealthConcern(e.target.checked)}
+              id="health"
+              checked={driver.health}
+              onChange={handleChange}
               className="form-checkbox h-5 w-5 text-yellow-600"
             />
-            <label htmlFor="healthConcern" className="ml-2 text-sm font-semibold text-gray-800">
+            <label htmlFor="health" className="ml-2 text-sm font-semibold text-gray-800">
               Health Concern
             </label>
           </div>

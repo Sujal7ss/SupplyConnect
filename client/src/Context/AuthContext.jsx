@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     const userAuthentication = async () => {
         try {
             const url = import.meta.env.BACKEND_URL;
-            const response = await axios.get(`${url}/api/auth/user`, {
+            const response = await axios.get(`${url}/api/auth/getuser`, {
                 headers: {
                     'Authorization': `${token}`
                 }                
@@ -41,6 +41,9 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);  
         }
     };
+    useEffect(() => {
+        userAuthentication();
+    },[token])
     return (
         <AuthContext.Provider value={{ storeTokenInLS, isLoggedIn, logout, user, loading, token}}>
             {children}

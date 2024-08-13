@@ -40,6 +40,10 @@ const orderSchema = new mongoose.Schema(
     AssignedAmount: {
       type: Number,
       required : true, 
+    },
+    city : {
+      type : String,
+      required : true,
     }
   },
   { timestamps: true }

@@ -176,7 +176,6 @@ export const MapPr = ({ children }) => {
       if (userMarker){
         userMarker.remove();
       } 
-      // console.log(userMarker);
       const newMarker = new Marker({ color: "#F30000", draggable: true })
         .setLngLat([userLocation.longitude, userLocation.latitude])
         .addTo(map);

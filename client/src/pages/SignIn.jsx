@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Import Link from React Router
+import { Link, useNavigate} from "react-router-dom"; // Import Link from React Router
+import { useAuth } from "../Context/AuthContext";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -9,7 +10,8 @@ export default function SignIn() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-
+  const { storeTokenInLS} = useAuth();
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -17,12 +19,16 @@ export default function SignIn() {
     setSuccess("");
 
     try {
-      // Replace the URL with your API endpoint
-      const response = await axios.post("/api/signin", {
+      const response = await axios.post("/api/auth/login", {
         email,
         password,
       });
       setSuccess("Sign In successful!");
+      storeTokenInLS(response.data.data.token);
+      console.log("hi", response);
+      if (response.data.data.user.type === 'supplier') {
+        navigate("/");
+      }
     } catch (err) {
       setError("Sign In failed. Please try again.");
     } finally {
@@ -31,7 +37,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-md p-8 bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-xl mx-auto">
+    <div className="flex flex-col items-center justify-center w-full max-w-md p-8 bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-xl mx-auto min-h-screen">
       <h1 className="text-3xl font-extrabold mb-6 text-gray-900">Sign In</h1>
       <form onSubmit={handleSubmit} className="w-full bg-white p-6 rounded-lg shadow-lg space-y-6">
         <div className="mb-6">

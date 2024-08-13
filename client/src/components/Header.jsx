@@ -1,6 +1,14 @@
-
+import axios from "axios";
+import { useNavigate } from "react-router";
 export default function() {
-    return <header class="bg-white shadow-md px-4 py-2 flex items-center justify-between">
+    const navigate = useNavigate();
+    const logout = async () => {
+      const response  = await axios.post("/api/auth/logout");
+      navigate("/signin");
+      console.log(response);
+    }
+
+    return <header className="bg-white shadow-md px-4 py-2 flex items-center justify-between">
     <div class="flex items-center space-x-2">
       <img
         src="https://via.placeholder.com/40"
@@ -24,5 +32,11 @@ export default function() {
         />
       </svg>
     </button>
+    <button class="bg-gray-200 rounded-full p-2 flex items-center justify-center" onClick={logout}>
+      <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17 16L21 12M21 12L17 8M21 12L7 12M13 16V17C13 18.6569 11.6569 20 10 20H6C4.34315 20 3 18.6569 3 17V7C3 5.34315 4.34315 4 6 4H10C11.6569 4 13 5.34315 13 7V8" stroke="#374151" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </svg>
+    </button>
+    
   </header>
 }

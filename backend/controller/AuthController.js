@@ -33,10 +33,10 @@ export const signup = async (req, res) => {
         const user = new User({ name, email, password: hashedPassword, type });
 
         if (user) {
-            generateTokenAndSetCookie(user.email, res);
+            let token = generateTokenAndSetCookie(user.email, res);
             await user.save();
             user.password = undefined;
-            return res.status(201).json(new ApiResponse(201, user, "User created successfully."));
+            return res.status(200).json(new ApiResponse(200, {user,token : token}, "Login successful."));
         } else {
             return res.status(400).json(new ApiError(400, "Invalid user data."));
         }
@@ -61,8 +61,8 @@ export const login = async (req, res) => {
         }
 
         user.password = undefined;
-        generateTokenAndSetCookie(user.email, res);
-        return res.status(200).json(new ApiResponse(200, user, "Login successful."));
+        let token = generateTokenAndSetCookie(user.email, res);
+        return res.status(200).json(new ApiResponse(200, {user,token : token}, "Login successful."));
     } catch (error) {
         console.log("Error in login route:", error.message);
         return res.status(500).json(new ApiError(500, "Internal server error."));

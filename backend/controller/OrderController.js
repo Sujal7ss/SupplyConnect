@@ -61,18 +61,17 @@ export const CreateOrder = asyncHandler(async (req, res) => {
 export const orderDetails = asyncHandler(async (req, res) => {
   let { orderId } = req.params;
 
-  
   const orderdetails = await Order.findById(orderId);
   if (!orderdetails) {
     return res
       .status(404)
       .json(new ApiError(404, `Order with ID ${orderId} not found. Please contact us.`));
   }
-  if (req.user.type === "supplier") {
-    if (req.user._id.toString() !== orderdetails.supplierId.toString()) {
-      return res.status(403).json(new ApiError(403, "You cannot access other users' data"));
-    }
-  }
+  // if (req.user.type === "supplier") {
+  //   if (req.user._id.toString() !== orderdetails.supplierId.toString()) {
+  //     return res.status(403).json(new ApiError(403, "You cannot access other users' data"));
+  //   }
+  // }
   res.status(200).json(new ApiResponse(200, orderdetails, "Your Order Details"));
 });
 
@@ -127,13 +126,13 @@ export const MyOrders = asyncHandler(async (req, res) => {
   try {
     let curruser = req.user;
     if (curruser.type === "driver") {
-      return res.status(403).json(new ApiError(403, "Driver Can't Access to Supplier Access"));
+      return res.status(203).json(new ApiError(203, "Driver Can't Access to Supplier Access"));
     }
 
     let data = await Order.find({ supplierId: curruser._id });
 
     if (!data || data.length === 0) {
-      return res.status(404).json(new ApiError(404, "No orders found."));
+      return res.status(200).json(new ApiError(200, "No orders found."));
     }
 
     res.status(200).json(new ApiResponse(200, data, "Your Order Details Fetched Successfully!"));
