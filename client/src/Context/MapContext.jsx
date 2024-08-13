@@ -29,6 +29,8 @@ export const MapPr = ({ children }) => {
   const [startMarker, setStartMarker] = useState(null);
   const [endMarker, setEndMarker] = useState(null);
   const [cityName, setCityName] = useState(null);
+  const [startAddress , setstartaddress] = useState(null);
+  const [endAddress , setendAddress] = useState(null);
   const [userLocation, setUserLocation] = useState({
     latitude: null,
     longitude: null,
@@ -38,7 +40,8 @@ export const MapPr = ({ children }) => {
     longitude: null,
   });
   const mapContainer = useRef(null);
-  const searchBoxRef = useRef(null);
+  const startboxref = useRef(null);
+  const endboxref = useRef(null);
   const suggestionsRef = useRef(null);
   const [userMarker, setUserMarker] = useState(null);
   const [reverseGeoValue, setReverseGeoValue] = useState(null);
@@ -73,7 +76,7 @@ export const MapPr = ({ children }) => {
 
       const url = `https://api.olamaps.io/places/v1/reverse-geocode?latlng=${lat},${lng}&api_key=${API_KEY}`;
 
-      axios
+      await axios
         .get(url)
         .then((response) => {
           console.log(response.data.results[0].address_components[2].long_name);
@@ -88,6 +91,7 @@ export const MapPr = ({ children }) => {
       console.error("Error during reverse geocoding:", error);
     }
   }, [startMarker]);
+
 
   useEffect(() => {
     if (!styleURL) return;
@@ -120,8 +124,6 @@ export const MapPr = ({ children }) => {
     // Use the map's 'load' event to trigger other actions
     newMap.on("load", () => {
       geolocate.trigger();
-
-      // Wait for the geolocate event to get the accurate user location
       const m = new Marker({ color: "#F30000", draggable: true });
       geolocate.on("geolocate", (event) => {
         const userLocation = { latitude: event.coords.latitude, longitude: event.coords.longitude };
@@ -133,6 +135,8 @@ export const MapPr = ({ children }) => {
         m.on("dragend", () => {
           const lngLat = m.getLngLat();
           setStartMarker({ latitude: lngLat.lat, longitude: lngLat.lng });
+          newMap.flyTo({ center: [startMarker.longitude, startMarker.latitude], zoom: 14 });
+      reverseGeo();
         });
       });
     });
@@ -141,13 +145,6 @@ export const MapPr = ({ children }) => {
       newMap.remove();
     };
   }, [styleURL, transformRequest]);
-
-  useEffect(() => {
-    if (startMarker && startMarker.longitude !== null && startMarker.latitude !== null) {
-      map.flyTo({ center: [startMarker.longitude, startMarker.latitude], zoom: 14 });
-      reverseGeo();
-    }
-  }, [startMarker, reverseGeo, map]);
 
   const debounce = (func, wait) => {
     let timeout;
@@ -170,32 +167,48 @@ export const MapPr = ({ children }) => {
     [map]
   );
   const handleSearchInputChange = (e) => {
+    e.preventDefault();
     const query = e.target.value.trim();
     if (query.length > 0) {
       handleAutocomplete(query);
     } else {
       setAutocompleteResults([]);
+      if (userMarker){
+        userMarker.remove();
+      } 
+      // console.log(userMarker);
+      const newMarker = new Marker({ color: "#F30000", draggable: true })
+        .setLngLat([userLocation.longitude, userLocation.latitude])
+        .addTo(map);
+      setUserMarker(newMarker);
     }
   };
 
-  const handleSuggestionClick = (place, type) => {
-    searchBoxRef.current.value = place.description;
-    if (type === "start") {
-      if (startMarker) startMarker.remove();
+  const handlesuggestionstart = (place) => {
+    startboxref.current.value = place.description;
+      if (userMarker){
+        // console.log(startMarker);
+        // setStartMarker(null);
+        userMarker.remove();
+      } 
       const { lat, lng } = place.geometry.location;
       const newMarker = new Marker({ color: "#00F", draggable: true })
         .setLngLat([lng, lat])
         .addTo(map);
-      setStartMarker(newMarker);
-    }
-    if (type === "end") {
-      if (endMarker) endMarker.remove();
+      setUserMarker(newMarker);
+      console.log(place.description);
+      setstartaddress(place.description);
+    setAutocompleteResults([]);
+  };
+  const handlesuggestionend = (place) => {
+    endboxref.current.value = place.description;
+    if(endMarker) endMarker.remove();
       const { lat, lng } = place.geometry.location;
       const newMarker = new Marker({ color: "#F00", draggable: true })
         .setLngLat([lng, lat])
         .addTo(map);
       setEndMarker(newMarker);
-    }
+      setendAddress(place);
     setAutocompleteResults([]);
   };
 
@@ -287,12 +300,16 @@ export const MapPr = ({ children }) => {
         endMarker,
         userLocation,
         mapContainer,
-        searchBoxRef,
+        startboxref,
+        endboxref,
         suggestionsRef,
         userMarker,
         reverseGeoValue,
+        startAddress,
+        endAddress,
         handleSearchInputChange,
-        handleSuggestionClick,
+        handlesuggestionstart,
+        handlesuggestionend,
         handleFormSubmit,
         handleRecenter,
       }}
@@ -305,3 +322,5 @@ export const MapPr = ({ children }) => {
 export const useMapp = () => {
   return useContext(MapContext);
 };
+
+

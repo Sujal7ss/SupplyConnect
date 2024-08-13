@@ -17,7 +17,7 @@ function App() {
   return (
     <>
       <AuthProvider>
-        <MapPr>
+        
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<AppLayout />}>
@@ -29,10 +29,9 @@ function App() {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/sypplierform" element={<SypplierForm />} />
             <Route path="/driverform" element={<DriverForm />} />
-            <Route path="/book-order" element={<OrderBooking />} />
+            <Route path="/book-order" element={<MapPr><OrderBooking /></MapPr>} />
           </Routes>
         </BrowserRouter>
-        </MapPr>
       </AuthProvider>
     </>
   );
