@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import {toast} from 'react-toastify';
 
 export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -41,13 +40,17 @@ export default function SignUp() {
     }
     try {
       // Replace the URL with your API endpoint
-      const response = await axios.post(`/api/auth/signup`, user);
-      console.log(response.data);
-      toast.success("Signup successful!");
+      const {data} = await axios.post(`/api/auth/signup`, user);
       setSuccess("Signup successful!");
-      navigate("/");
+      setInterval(() => {
+        if(data.data.type == 'supplier'){
+          navigate("/supplierform");
+        }else{
+          navigate("/driverform");
+        }
+      }, 1000);
     } catch (err) {
-      console.error(err);
+      console.log(err);
       setError("Signup failed. Please try again.");
     } finally {
       setLoading(false);

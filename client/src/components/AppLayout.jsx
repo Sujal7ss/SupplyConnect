@@ -7,7 +7,7 @@ export default function AppLayout() {
     <div class="bg-gray-100 flex items-center justify-center min-h-screen">
       <div class="flex flex-col min-h-screen w-full max-w-md">
         <Header />
-        <main class="flex-grow flex items-center justify-center overflow-y-auto">
+        <main class="flex-grow flex items-center justify-center overflow-y-auto max-w-md">
         <Outlet />
         </main>
         <Footer />
