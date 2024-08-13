@@ -17,31 +17,36 @@ import { MapPr } from "./Context/MapContext.jsx";
 import BidsPage from "./pages/BidsPage.jsx";
 // import AllOrders from "./pages/AllOrders.jsx";
 
-
 function App() {
   return (
     <>
       <AuthProvider>
-        <MapPr>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
               <Route path="orders" element={<Orders />} />
               <Route path="order-details/:id" element={<OrderDetails />} />
-              <Route path="bids/:id" element={<BidsPage />}/>
+              <Route path="bids/:id" element={<BidsPage />} />
             </Route>
             <Route path="/driver" element={<AppLayout />}>
-              <Route index element={<Orders />}/> 
+              <Route index element={<Orders />} />
             </Route>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/supplierform" element={<SupplierForm />} />
             <Route path="/driverform" element={<DriverForm />} />
-            <Route path="/book-order" element={<OrderBooking />} />
+            {/* Routes that require map context */}
+            <Route
+              path="/book-order"
+              element={
+                <MapPr>
+                  <OrderBooking />
+                </MapPr>
+              }
+            />
           </Routes>
         </BrowserRouter>
-        </MapPr>
       </AuthProvider>
     </>
   );

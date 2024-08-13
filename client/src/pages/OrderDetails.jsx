@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BidsPage from "./BidsPage.jsx";
-import ReactModal from "react-modal";
 
 const OrderDetails = () => {
   const { id } = useParams(); // Get the ID from the URL
   const [order, setOrder] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editableOrder, setEditableOrder] = useState(null);
-  // const [showBidsModal, setShowBidsModal] = useState(false); // State to manage modal visibility
-  const [bids, setBids] = useState([]);
   const navigate = useNavigate(); // Hook for navigation
 
   // Dummy data
@@ -18,7 +14,6 @@ const OrderDetails = () => {
     setOrder({
       pickUpLocation: "New York",
       deliveryLocation: "Los Angeles",
-      weight: 100,
       vehicleType: "Truck",
       orderAmount: 1000,
       orderStatus: "Pending",
@@ -27,34 +22,28 @@ const OrderDetails = () => {
     setEditableOrder({
       pickUpLocation: "New York",
       deliveryLocation: "Los Angeles",
-      weight: 100,
       vehicleType: "Truck",
       orderAmount: 1000,
       orderStatus: "Pending",
     });
   }, []);
-  //Uncomment to fetch from backend
+  // Uncomment to fetch from backend
   // Fetch order details and bids
-  // useEffect(() => {
-  //   const fetchOrderAndBids = async () => {
-  //     try {
-  //       const orderResponse = await axios.get(
-  //         `${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}`
-  //       );
-  //       const bidsResponse = await axios.get(
-  //         `${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}/bids`
-  //       );
+  useEffect(() => {
+    const fetchOrderAndBids = async () => {
+      try {
+        const orderResponse = await axios.get(`/api/orders/${id}`);
+        console.log(orderResponse)
 
-  //       setOrder(orderResponse.data);
-  //       setEditableOrder(orderResponse.data); // Initialize editableOrder with fetched data
-  //       setBids(bidsResponse.data);
-  //     } catch (error) {
-  //       console.error("Error fetching order details or bids:", error);
-  //     }
-  //   };
+        setOrder(orderResponse.data.data);
+        setEditableOrder(orderResponse.data); // Initialize editableOrder with fetched data
+      } catch (error) {
+        console.error("Error fetching order details or bids:", error);
+      }
+    };
 
-  //   fetchOrderAndBids();
-  // }, [id]);
+    fetchOrderAndBids();
+  }, [id]);
 
   if (!order) return <p>Loading...</p>;
 
@@ -83,7 +72,7 @@ const OrderDetails = () => {
 
   return (
     <>
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-4 w-full">
         {/* Buttons Container */}
         <div className="flex justify-between items-center mb-4">
           {/* Back Button */}
@@ -174,24 +163,6 @@ const OrderDetails = () => {
             </div>
             <div className="flex flex-row justify-between gap-3">
               <div className="flex-1">
-                <label className="block text-gray-700">Weight</label>
-                {isEditing ? (
-                  <input
-                    type="number"
-                    name="weight"
-                    value={editableOrder.weight}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                ) : (
-                  <div className="p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-                    <span className="text-gray-800 text-sm font-semibold">
-                      {order.weight} kg
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="flex-1">
                 <label className="block text-gray-700">Vehicle Type</label>
                 {isEditing ? (
                   <input
@@ -222,7 +193,7 @@ const OrderDetails = () => {
                 ) : (
                   <div className="p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
                     <span className="text-gray-800 text-sm font-semibold">
-                      ${order.orderAmount.toFixed(2)}
+                      ${order.orderAmount}
                     </span>
                   </div>
                 )}

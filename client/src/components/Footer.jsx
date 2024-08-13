@@ -16,7 +16,7 @@ export default function Footer() {
           d="M4 6h16M4 12h16M4 18h16"
         />
       </svg>
-      <span class="text-sm">Menu</span>
+      <span class="text-sm">Home</span>
     </Link>
 
     <Link to="/orders" class="flex flex-col items-center text-gray-600">
