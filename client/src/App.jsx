@@ -11,13 +11,18 @@ import OrderBooking from "./pages/OrderBooking.jsx";
 import Orders from "./pages/Orders.jsx";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
+
+import { MapPr } from "./Context/MapContext.jsx";
+
 import BidsPage from "./pages/BidsPage.jsx";
 // import AllOrders from "./pages/AllOrders.jsx";
+
 
 function App() {
   return (
     <>
       <AuthProvider>
+        <MapPr>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<AppLayout />}>
@@ -36,6 +41,7 @@ function App() {
             <Route path="/book-order" element={<OrderBooking />} />
           </Routes>
         </BrowserRouter>
+        </MapPr>
       </AuthProvider>
     </>
   );
