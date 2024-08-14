@@ -24,9 +24,9 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", AuthRoutes)
 app.use("/api/", ProtectRoutes, Bidroutes)
-app.use("/api/", ProtectRoutes, Driverroutes)
-app.use("/api/", ProtectRoutes , OrderRoutes) 
-app.use("/api/", ProtectRoutes, supplierRoutes) 
+app.use("/api/driver", ProtectRoutes, Driverroutes)
+app.use("/api/", ProtectRoutes , OrderRoutes)
+app.use("/api/", ProtectRoutes, supplierRoutes)
 
 app.listen(PORT, ()=>{
     console.log(`Server is runnning on port ${PORT}`)

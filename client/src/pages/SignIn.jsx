@@ -29,6 +29,10 @@ export default function SignIn() {
       if (response.data.data.user.type === 'supplier') {
         navigate("/");
       }
+      else
+      {
+        navigate("/driver")
+      }
     } catch (err) {
       setError("Sign In failed. Please try again.");
     } finally {

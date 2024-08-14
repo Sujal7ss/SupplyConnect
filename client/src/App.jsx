@@ -11,7 +11,7 @@ import OrderBooking from "./pages/OrderBooking.jsx";
 import Orders from "./pages/Orders.jsx";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
-
+import SupplierProfile from "./pages/SupplierProfile.jsx";
 import { MapPr } from "./Context/MapContext.jsx";
 
 import BidsPage from "./pages/BidsPage.jsx";
@@ -28,7 +28,9 @@ function App() {
               <Route path="orders" element={<Orders />} />
               <Route path="order-details/:id" element={<OrderDetails />} />
               <Route path="bids/:id" element={<BidsPage />} />
+              <Route path="/suppliers" element={<SupplierProfile />} />
             </Route>
+            {/* Driver Routes */}
             <Route path="/driver" element={<AppLayout />}>
               <Route index element={<Orders />} />
             </Route>

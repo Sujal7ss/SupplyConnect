@@ -35,7 +35,7 @@ export default function Footer() {
       </svg>
       <span class="text-sm">Orders</span>
     </Link>
-    <Link class="flex flex-col items-center text-gray-600">
+    <Link to="/suppliers/" class="flex flex-col items-center text-gray-600">
       <svg
         class="w-6 h-6"
         fill="none"
