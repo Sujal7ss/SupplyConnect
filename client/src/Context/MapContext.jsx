@@ -12,8 +12,6 @@ import OlaMapsClient from "ola-map-sdk";
 import { Map as MapLibreMap, NavigationControl, Marker, GeolocateControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import axios from "axios";
-// import DistanceDuration from "./components/DistanceDuration";
-// import RecenterButton from "./components/RecenterButton";
 import mapboxgl from "mapbox-gl";
 
 export const MapContext = createContext({});
@@ -26,19 +24,9 @@ export const MapPr = ({ children }) => {
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
-  const [startMarker, setStartMarker] = useState(null);
-  const [endMarker, setEndMarker] = useState(null);
-  const [cityName, setCityName] = useState(null);
-  const [startAddress , setstartaddress] = useState(null);
-  const [endAddress , setendAddress] = useState(null);
-  const [userLocation, setUserLocation] = useState({
-    latitude: null,
-    longitude: null,
-  });
-  const [DropLocation, setDropLocation] = useState({
-    latitude: null,
-    longitude: null,
-  });
+  const [startAddress, setstartaddress] = useState(null);
+  const [endAddress, setendAddress] = useState(null);
+  const [userLocation, setuserLocation] = useState(null);
   const mapContainer = useRef(null);
   const startboxref = useRef(null);
   const endboxref = useRef(null);
@@ -56,6 +44,10 @@ export const MapPr = ({ children }) => {
     };
   }, []);
   useEffect(() => {
+    const m = new Marker({ color: "#F30000"});
+    setUserMarker(m);
+  },[])
+  useEffect(() => {
     const fetchStyleURL = async () => {
       try {
         const styleURL = `https://api.olamaps.io/tiles/vector/v1/styles/${STYLE_NAME}/style.json`;
@@ -67,31 +59,6 @@ export const MapPr = ({ children }) => {
 
     fetchStyleURL();
   }, []);
-  const reverseGeo = useCallback(async () => {
-    try {
-      const { latitude, longitude } = startMarker;
-      console.log("hi", latitude, longitude);
-      const lat = latitude;
-      const lng = longitude;
-
-      const url = `https://api.olamaps.io/places/v1/reverse-geocode?latlng=${lat},${lng}&api_key=${API_KEY}`;
-
-      await axios
-        .get(url)
-        .then((response) => {
-          console.log(response.data.results[0].address_components[2].long_name);
-          console.log(response.data.results[0].formatted_address);
-          setCityName(response.data.results[0].address_components[2].long_name);
-          setReverseGeoValue(response.data.results[0].formatted_address);
-        })
-        .catch((error) => {
-          console.error("Error during reverse geocoding:", error);
-        });
-    } catch (error) {
-      console.error("Error during reverse geocoding:", error);
-    }
-  }, [startMarker]);
-
 
   useEffect(() => {
     if (!styleURL) return;
@@ -124,20 +91,12 @@ export const MapPr = ({ children }) => {
     // Use the map's 'load' event to trigger other actions
     newMap.on("load", () => {
       geolocate.trigger();
-      const m = new Marker({ color: "#F30000", draggable: true });
       geolocate.on("geolocate", (event) => {
         const userLocation = { latitude: event.coords.latitude, longitude: event.coords.longitude };
-        setUserLocation(userLocation);
-        setStartMarker(userLocation);
-        m.setLngLat([event.coords.longitude, event.coords.latitude]).addTo(newMap);
-        setUserMarker(m);
+        setuserLocation(userLocation);
+        userMarker.setLngLat([event.coords.longitude, event.coords.latitude]).addTo(newMap);
+        setUserMarker(userMarker);
         newMap.flyTo({ center: [event.coords.longitude, event.coords.latitude], zoom: 14 });
-        m.on("dragend", () => {
-          const lngLat = m.getLngLat();
-          setStartMarker({ latitude: lngLat.lat, longitude: lngLat.lng });
-          newMap.flyTo({ center: [startMarker.longitude, startMarker.latitude], zoom: 14 });
-      reverseGeo();
-        });
       });
     });
     setMap(newMap);
@@ -166,58 +125,68 @@ export const MapPr = ({ children }) => {
     }, 300),
     [map]
   );
-  const handleSearchInputChange = (e) => {
-    e.preventDefault();
-    const query = e.target.value.trim();
-    if (query.length > 0) {
-      handleAutocomplete(query);
-    } else {
-      setAutocompleteResults([]);
-      if (userMarker){
-        userMarker.remove();
-      } 
-      const newMarker = new Marker({ color: "#F30000", draggable: true })
-        .setLngLat([userLocation.longitude, userLocation.latitude])
-        .addTo(map);
-      setUserMarker(newMarker);
-    }
-  };
+
+  const handleSearchInputChange = useCallback((e)=>{
+      e.preventDefault();
+      const query = e.target.value.trim();
+      if (query.length > 0) {
+        handleAutocomplete(query);
+      } else {
+        setAutocompleteResults([]);
+        if (e.target.id === "start_location") {
+          setstartaddress(null);
+          if (firstMarker) firstMarker.remove();
+          setFirstMarker(null);
+        }
+        if (e.target.id === "endlocation") {
+          setendAddress(null);
+          if (secondMarker) secondMarker.remove();
+          setSecondMarker(null);
+        }
+        if(!(firstMarker || secondMarker)){
+          const newMarker = new Marker({ color: "#F30000"})
+          .setLngLat([userLocation.longitude, userLocation.latitude])
+          .addTo(map);
+        setUserMarker(newMarker);
+        }
+      }
+  },[firstMarker,secondMarker,userMarker,startAddress,endAddress]);
 
   const handlesuggestionstart = (place) => {
     startboxref.current.value = place.description;
-      if (userMarker){
-        // console.log(startMarker);
-        // setStartMarker(null);
-        userMarker.remove();
-      } 
-      const { lat, lng } = place.geometry.location;
-      const newMarker = new Marker({ color: "#00F", draggable: true })
-        .setLngLat([lng, lat])
-        .addTo(map);
-      setUserMarker(newMarker);
-      console.log(place.description);
-      setstartaddress(place.description);
+    if (userMarker) {
+      userMarker.remove();
+    }
+    const { lat, lng } = place.geometry.location;
+    const newMarker = new Marker({ color: "#00F" })
+      .setLngLat([lng, lat])
+      .addTo(map);
+      map.flyTo({ center: [lng, lat], zoom: 14 });
+    setFirstMarker(newMarker);
+    console.log(place.description);
+    setstartaddress(place.description);
     setAutocompleteResults([]);
   };
+
   const handlesuggestionend = (place) => {
     endboxref.current.value = place.description;
-    if(endMarker) endMarker.remove();
-      const { lat, lng } = place.geometry.location;
-      const newMarker = new Marker({ color: "#F00", draggable: true })
-        .setLngLat([lng, lat])
-        .addTo(map);
-      setEndMarker(newMarker);
-      setendAddress(place);
+    if (secondMarker) secondMarker.remove();
+    const { lat, lng } = place.geometry.location;
+    const newMarker = new Marker({ color: "#F00"})
+      .setLngLat([lng, lat])
+      .addTo(map);
+      map.flyTo({ center: [lng, lat], zoom: 14 });
+    setSecondMarker(newMarker);
+    setendAddress(place.description);
     setAutocompleteResults([]);
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    if (startMarker && endMarker) {
-      const startLngLat = startMarker.getLngLat();
-      const endLngLat = endMarker.getLngLat();
-
+    if (firstMarker && secondMarker) {
+      const startLngLat = firstMarker.getLngLat();
+      const endLngLat = secondMarker.getLngLat();
       try {
         const client = new OlaMapsClient(API_KEY);
         const result = await client.routing.getDirections(
@@ -236,6 +205,7 @@ export const MapPr = ({ children }) => {
         setDuration(`${result.routes[0].legs[0].readable_duration}`);
 
         const stepsArray = result.routes[0].legs[0].steps;
+        console.log(stepsArray);
         let routeCoordinates = stepsArray.map((step) => [
           step.end_location.lng,
           step.end_location.lat,
@@ -281,36 +251,25 @@ export const MapPr = ({ children }) => {
     }
   };
 
-  const handleRecenter = () => {
-    if (map && userLocation) {
-      map.flyTo({ center: [userLocation.longitude, userLocation.latitude], zoom: 14 });
-    }
-  };
-
   return (
     <MapContext.Provider
       value={{
-        map,
-        styleURL,
-        autocompleteResults,
-        distance,
-        duration,
-        startMarker,
-        endMarker,
-        userLocation,
-        mapContainer,
-        startboxref,
-        endboxref,
-        suggestionsRef,
-        userMarker,
-        reverseGeoValue,
-        startAddress,
-        endAddress,
+        handleFormSubmit,
         handleSearchInputChange,
         handlesuggestionstart,
         handlesuggestionend,
-        handleFormSubmit,
-        handleRecenter,
+        suggestionsRef,
+        startboxref,
+        endboxref,
+        distance,
+        duration,
+        reverseGeoValue,
+        mapContainer,
+        userLocation,
+        setuserLocation,
+        startAddress,
+        endAddress,
+        autocompleteResults
       }}
     >
       {children}
@@ -318,8 +277,4 @@ export const MapPr = ({ children }) => {
   );
 };
 
-export const useMapp = () => {
-  return useContext(MapContext);
-};
-
-
+export const useMapp = () => useContext(MapContext);
