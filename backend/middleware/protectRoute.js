@@ -1,4 +1,3 @@
-import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 
 const protectRoute = async (req, res, next) => {
@@ -8,16 +7,24 @@ const protectRoute = async (req, res, next) => {
             return res.status(401).json({ error : "Unauthorized : No token found"})
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET).email;
-        // console.log(decoded);
+        console.log(decoded);
         if(!decoded){
             return res.status(401).json({ error : "Unauthorized : Invalid token"})
         }
-        const user = await User.findOne({email:decoded}).select("-password");
-
-		if (!user) {
-			return res.status(404).json({ error: "User not found" });
-		}
-        req.user = user
+        console.log(decoded);
+        // if(type === 'supplier'){
+        //     const user = await Supplier.findOne({email:decoded.email}).select("-password");
+        //     if (!user) {
+        //         return res.status(404).json({ error: "User not found" });
+        //     }
+        // }
+        // else if(type === 'driver'){
+        //     const user = await Driver.findOne({email:decoded.email}).select("-password");
+        //     if (!user) {
+        //         return res.status(404).json({ error: "User not found" });
+        //     }
+        // }
+        // req.user = user
         next();
     }
     catch(error){

@@ -20,40 +20,22 @@ export default function DriverSignUp() {
     dob: "",
     gender: "M",
     address: "",
-    documents: {
-      drivingLicense: "",
-      adhaarCard: "",
-    },
-    vehicle: {
-      registrationNumber: "",
-      type: "",
-    },
-    agreements: {
-      tnc: false,
-      health: false,
-    },
+    drivingLicense: "",
+    adhaarCard: "",
+    registrationNumber: "",
+    vehicleType: "",
+    tnc: false,
+    health: false,
   });
 
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
 
     if (type === "checkbox") {
-      setUser((prev) => ({
-        ...prev,
-        agreements: {
-          ...prev.agreements,
-          [id]: checked,
-        },
-      }));
-    } else if (id.startsWith("documents") || id.startsWith("vehicle")) {
-      const [category, field] = id.split("-");
-      setUser((prev) => ({
-        ...prev,
-        [category]: {
-          ...prev[category],
-          [field]: value,
-        },
-      }));
+      setUser({
+        ...datauser,
+        [id]: checked,
+      });
     } else {
       setUser({
         ...datauser,
@@ -77,11 +59,14 @@ export default function DriverSignUp() {
     }
 
     try {
-      const response = await axios.post(`/api/auth/signup`, datauser);
+      const response = await axios.post(`/api/auth/signup/driver`, datauser);
       setSuccess("Sign Up successful!");
       storeTokenInLS(response.data.data.token);
-      navigate("/driverform");
+      setTimeout(() => {
+        navigate("/signin");
+      }, 1000);
     } catch (err) {
+      console.log(err);
       setError("Signup failed. Please try again.");
     } finally {
       setLoading(false);
@@ -246,8 +231,8 @@ export default function DriverSignUp() {
               </label>
               <input
                 type="text"
-                id="documents-drivingLicense"
-                value={datauser.documents.drivingLicense}
+                id="drivingLicense"
+                value={datauser.drivingLicense}
                 onChange={handleChange}
                 required
                 className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
@@ -259,8 +244,8 @@ export default function DriverSignUp() {
               </label>
               <input
                 type="text"
-                id="documents-adhaarCard"
-                value={datauser.documents.adhaarCard}
+                id="adhaarCard"
+                value={datauser.adhaarCard}
                 onChange={handleChange}
                 required
                 className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
@@ -272,8 +257,8 @@ export default function DriverSignUp() {
               </label>
               <input
                 type="text"
-                id="vehicle-registrationNumber"
-                value={datauser.vehicle.registrationNumber}
+                id="registrationNumber"
+                value={datauser.registrationNumber}
                 onChange={handleChange}
                 required
                 className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
@@ -285,8 +270,8 @@ export default function DriverSignUp() {
               </label>
               <input
                 type="text"
-                id="vehicle-type"
-                value={datauser.vehicle.type}
+                id="vehicleType"
+                value={datauser.vehicleType}
                 onChange={handleChange}
                 required
                 className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"

@@ -2,12 +2,10 @@ import express from "express";
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import connectDB from "./db/connectDB.js"
-import ProtectRoutes from "./middleware/protectRoute.js";
 import supplierRoutes from "./routes/supplierRoutes.js";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import OrderRoutes from "./routes/OrderRoutes.js"
 import Bidroutes from  "./routes/BidRoutes.js"
-import Driverroutes from "./routes/DriverRoutes.js"
 import cors from "cors"
 dotenv.config();
 const app = express();
@@ -23,10 +21,9 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", AuthRoutes)
-app.use("/api/", ProtectRoutes, Bidroutes)
-app.use("/api/", ProtectRoutes, Driverroutes)
-app.use("/api/", ProtectRoutes , OrderRoutes) 
-app.use("/api/", ProtectRoutes, supplierRoutes) 
+app.use("/api/", Bidroutes)
+app.use("/api/" , OrderRoutes) 
+app.use("/api/", supplierRoutes) 
 
 app.listen(PORT, ()=>{
     console.log(`Server is runnning on port ${PORT}`)

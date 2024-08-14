@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
-export const generateTokenAndSetCookie = (email, res) => {
-    const token = jwt.sign({email}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME});
+export const generateTokenAndSetCookie = (userId, res) => {
+    const token = jwt.sign({userId}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME});
 
     const cookieOptions = {
         maxAge: parseInt(process.env.JWT_COOKIE_EXPIRES) * 24 * 60 * 60 * 1000, // convert days to milliseconds
