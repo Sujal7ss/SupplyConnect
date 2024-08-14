@@ -1,7 +1,7 @@
 import Supplier from '../models/supplier.js'
 import Driver from '../models/Driver.js';
 import bcrypt from 'bcryptjs';
-import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
+import { generateTokenAndSetCookie } from '../lib/utils/generateTokenAndSetCookies.js';
 import { ApiError } from '../lib/utils/error.js';
 import { asyncHandler } from '../lib/utils/asyncHandler.js';
 import { ApiResponse } from '../lib/utils/ApiResponse.js';
@@ -32,7 +32,7 @@ export const supplierSignup = async (req, res) => {
         const supplier = new Supplier({ name, email, password: hashedPassword, type, companyName, address, phoneNo });
 
         if (supplier) {
-            let token = generateTokenAndSetCookie(supplier._id, res);
+            let token = generateTokenAndSetCookie(supplier._id, supplier.type, res);
             await supplier.save();
             supplier.password = undefined;
             return res.status(200).json(new ApiResponse(200, {supplier,token : token}, "Login successful."));
@@ -93,7 +93,7 @@ export const driverSignup = async (req, res) => {
         });
 
         if (driver) {
-            let token = generateTokenAndSetCookie(driver._id, res);
+            let token = generateTokenAndSetCookie(driver._id, driver.type, res);
             await driver.save();
             driver.password = undefined;
             return res.status(200).json(new ApiResponse(200, { driver, token }, "Login successful."));
@@ -126,8 +126,8 @@ export const login = async (req, res) => {
             }
 
             supplier.password = undefined;
-            let token = generateTokenAndSetCookie(supplier.email, res);
-            return res.status(200).json(new ApiResponse(200, {supplier,token : token}, "Login successful."));
+            let token = generateTokenAndSetCookie(supplier._id, supplier.type, res);
+            return res.status(200).json(new ApiResponse(200, {supplier,token }, "Login successful."));
         }
         else if(type === 'driver'){
             const driver = await Driver.findOne({ email });
@@ -139,8 +139,8 @@ export const login = async (req, res) => {
                 return res.status(400).json(new ApiError(400, "Invalid credentials."));
             }
             driver.password = undefined;
-            let token = generateTokenAndSetCookie(driver.email, res);
-            return res.status(200).json(new ApiResponse(200, {driver,token : token}, "Login successful."));
+            let token = generateTokenAndSetCookie(driver._id, driver.type, res);
+            return res.status(200).json(new ApiResponse(200, {driver,token}, "Login successful."));
         }
     } catch (error) {
         console.log("Error in login route:", error.message);
@@ -151,6 +151,7 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
     try {
         res.cookie('jwt', '', { maxAge: 0 });
+        res.cookie('typeofUser', '', { maxAge: 0 });
         return res.status(200).json(new ApiResponse(200, null, "Logged out successfully."));
     } catch (error) {
         console.log("Error in logout route:", error.message);
