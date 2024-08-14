@@ -1,12 +1,13 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./components/AppLayout.jsx";
-import SignUp from "./pages/SignUp.jsx";
+import SignUp from "./pages/SignUp/SignUp.jsx";
+import SupplierSignUp from "./pages/SignUp/SupplierSignUp.jsx";
+import DriverSignUp from "./pages/SignUp/DriverSignUp.jsx";
+
 import SignIn from "./pages/SignIn.jsx";
 import Home from "./pages/Home.jsx";
 import Layout from "./components/Layout.jsx";
-import SupplierForm from "./pages/SupplierForm.jsx";
-import DriverForm from "./pages/DriverForm.jsx";
 import OrderBooking from "./pages/OrderBooking.jsx";
 import Orders from "./pages/Orders.jsx";
 import { AuthProvider } from "./Context/AuthContext.jsx";
@@ -35,9 +36,10 @@ function App() {
               <Route index element={<Orders />} />
             </Route>
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/signup/supplier" element={<SupplierSignUp />} />
+            <Route path="/signup/driver" element={<DriverSignUp />} />
+
             <Route path="/signin" element={<SignIn />} />
-            <Route path="/supplierform" element={<SupplierForm />} />
-            <Route path="/driverform" element={<DriverForm />} />
             {/* Routes that require map context */}
             <Route
               path="/book-order"
