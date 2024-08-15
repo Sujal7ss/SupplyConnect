@@ -44,7 +44,12 @@ const orderSchema = new mongoose.Schema(
     city : {
       type : String,
       required : true,
-    }
+    },
+    vehicleType: {
+      type: String,
+      enum: ["mini", "medium", "big"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

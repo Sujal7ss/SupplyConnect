@@ -1,29 +1,45 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import OrderCard from "../components/OrderCard.jsx";
-
+import { useAuth } from "../Context/AuthContext.jsx";
 
 const OrderList = () => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
+  // const { user } = useAuth(); // Get user info from Auth context
+  const user = {
+    type : 'driver'
+  }
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.post('/api/orders/myOrder');
+        // Determine API endpoint based on user type
+        const endpoint = user.type === "driver" ? '/api/driver/getAllOrders' : '/api/myOrder';
+        const response = await axios.get(endpoint);
+
+        console.log(`response ${response}`)
         
+        // Check if API response indicates success
+        if (response.data.success === false) {
+          console.error("Failed to fetch orders:", response.data.message);
+          setError(response.data.message);
+          return;
+        }
+  
         setOrders(response.data.data);
         setFilteredOrders(response.data.data);
       } catch (error) {
         console.error("Error getting orders:", error.response ? error.response.data : error.message);
-        setError(error.response ? error.response.data : error.message);
+        setError(error.response ? error.response.data.message : error.message);
       }
     };
-
+  
     fetchOrders();
   }, []);
+  
 
   // Filter orders based on selected filter
   useEffect(() => {

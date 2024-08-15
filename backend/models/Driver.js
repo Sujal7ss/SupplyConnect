@@ -1,14 +1,26 @@
 import mongoose from "mongoose";
 
 const DriverSchema = new mongoose.Schema({
-  driverId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Driver",
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ['supplier', 'driver'],
     required: true,
   },
   dob: {
     type: Date,
-    required: true,
   },
   gender: {
     type: String,
@@ -34,7 +46,7 @@ const DriverSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    type: {
+    vehicleType: {
       type: String,
       required: true,
     },

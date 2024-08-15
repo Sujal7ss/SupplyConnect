@@ -1,15 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CiDeliveryTruck } from "react-icons/ci";
+import eicher14ft from "../assets/trucks/eicher14ft.png"
+import tataace from "../assets/trucks/tataace.png";
+import truck from "../assets/trucks/truck.png"
+
 import { PiTruck } from "react-icons/pi";
 {/* <PiTruck /> */}
 import { LiaTruckMovingSolid } from "react-icons/lia";
 {/* <LiaTruckMovingSolid /> */}
 
 const statusColors = {
-  waiting: "bg-red-400", // Slightly darker red
-  picked: "bg-yellow-400", // Slightly darker yellow
-  delivered: "bg-green-400", // Slightly darker green
+  waiting: "bg-red-200", // Slightly darker red
+  picked: "bg-yellow-200", // Slightly darker yellow
+  delivered: "bg-green-200", // Slightly darker green
 };
 
 const statusTexts = {
@@ -18,6 +22,7 @@ const statusTexts = {
   delivered: "Delivered",
 };
 
+// const truck = <CiDeliveryTruck size={40} />
 const OrderCard = ({ order }) => {
   const {
     _id,
@@ -30,10 +35,12 @@ const OrderCard = ({ order }) => {
   const statusColor = statusColors[orderStatus] || "bg-gray-500"; // Default to gray if status is unknown
   const statusText = statusTexts[orderStatus] || "Unknown Status";
 
+
+
   return (
     <Link
       to={`/order-details/${_id}`}
-      className="relative bg-gray-50 shadow-lg rounded-lg p-4 mb-4 border border-gray-200 w-full"
+      className={`relative ${statusColor}  shadow-lg rounded-lg p-4 mb-4 border border-gray-200 w-full`}
     >
       <div className="absolute top-2 right-2">
         <div
@@ -46,7 +53,7 @@ const OrderCard = ({ order }) => {
         </div>
       </div>
       <div className="flex flex-col">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-evenly mb-4">
           <span className="text-gray-900 font-medium text-lg">
             {pickUpLocation}
           </span>
@@ -69,11 +76,12 @@ const OrderCard = ({ order }) => {
           </span>
         </div>
         <div className="flex flex-row justify-between gap-3">
-          <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 flex items-center justify-center">
-            <CiDeliveryTruck size={50} />
+          <div className="flex-1  bg-gray-200 rounded-md border border-gray-300 flex items-center justify-center"
+          title="Eicher 14ft">
+            <img src={eicher14ft} />
           </div> 
           <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 flex items-center justify-center">
-            <span className="text-gray-800 text-sm font-semibold">
+            <span className="text-gray-800 text-lg font-semibold">
               ${orderAmount.toFixed(2)}
             </span>
           </div>

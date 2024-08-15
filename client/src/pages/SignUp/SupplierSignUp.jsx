@@ -47,7 +47,7 @@ export default function SupplierSignUp() {
     }
 
     try {
-      const response = await axios.post(`/api/auth/signup`, datauser);
+      const response = await axios.post('/api/auth/signup/supplier', datauser);
       setSuccess("Sign Up successful!");
       storeTokenInLS(response.data.data.token);
       setTimeout(() => {

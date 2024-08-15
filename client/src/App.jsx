@@ -12,7 +12,7 @@ import OrderBooking from "./pages/OrderBooking.jsx";
 import Orders from "./pages/Orders.jsx";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
-
+import SupplierProfile from "./pages/SupplierProfile.jsx";
 import { MapPr } from "./Context/MapContext.jsx";
 
 import BidsPage from "./pages/BidsPage.jsx";
@@ -21,7 +21,7 @@ import BidsPage from "./pages/BidsPage.jsx";
 function App() {
   return (
     <>
-      <AuthProvider>
+      {/* <AuthProvider> */}
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<AppLayout />}>
@@ -31,8 +31,9 @@ function App() {
               {/* Wrap OrderDetails with MapPr */}
               <Route path="order-details/:id" element={<MapPr><OrderDetails /></MapPr>} />
               <Route path="bids/:id" element={<BidsPage />} />
+              <Route path="/suppliers" element={<SupplierProfile />} />
             </Route>
-            {/* Separate Route for Driver Layout */}
+            {/* Driver Routes */}
             <Route path="/driver" element={<AppLayout />}>
               <Route index element={<Orders />} />
             </Route>
@@ -51,7 +52,7 @@ function App() {
             />
           </Routes>
         </BrowserRouter>
-      </AuthProvider>
+      {/* </AuthProvider> */}
     </>
   );
 }
