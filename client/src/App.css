@@ -56,3 +56,9 @@ html, body {
   width: 80%;
   max-width: 500px;
 }
+
+
+.preview{
+  top: -17px;
+  left: 170px;
+}

@@ -5,6 +5,7 @@ import { PiTruckLight } from "react-icons/pi";
 import { LuClock7 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { CgProfile } from "react-icons/cg";
+import Avatar, { genConfig } from "react-nice-avatar";
 
 const DriverDetails = () => {
   const navigate = useNavigate();
@@ -24,7 +25,10 @@ const DriverDetails = () => {
           <div>
             <div className="bg-transparent w-20 h-20 rounded-lg shadow-sm flex align-middle justify-center items-center">
               {" "}
-              <CgProfile size={50} />
+              <Avatar
+                style={{ width: "70px", height: "70px" }}
+                
+              />
             </div>
             <div className="font-bold">Joe Smith</div>
           </div>

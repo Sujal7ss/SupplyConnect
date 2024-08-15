@@ -3,6 +3,16 @@ import TruckLoading from "../components/TruckLoader";
 import { Link } from "react-router-dom";
 import Background from "../assets/bgimg.jpg";
 const Home = () => {
+  const [click, setClick] = useState(false);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    setClick(true);
+
+    setTimeout(() => {
+      navigate("/book-order");
+    }, 1000);
+  };
   return (
     <>
       <div
