@@ -217,11 +217,13 @@ export const MapPr = ({ children }) => {
   };
 
   const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
+    // e.preventDefault();
+    
     if (firstMarker && secondMarker) {
       const startLngLat = firstMarker.getLngLat();
       const endLngLat = secondMarker.getLngLat();
+      console.log(startLngLat);
+      console.log(endLngLat);
       try {
         const client = new OlaMapsClient(API_KEY);
         const result = await client.routing.getDirections(
@@ -288,7 +290,11 @@ export const MapPr = ({ children }) => {
         console.error("Error fetching directions:", error);
       }
     }
+    else{
+      console.log("not set");
+    }
   };
+  
 
   return (
     <MapContext.Provider
@@ -309,6 +315,10 @@ export const MapPr = ({ children }) => {
         startAddress,
         endAddress,
         autocompleteResults,
+        firstMarker,
+        secondMarker,
+        setFirstMarker,
+        setSecondMarker
       }}
     >
       {children}
