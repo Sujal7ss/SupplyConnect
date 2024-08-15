@@ -25,18 +25,20 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<AppLayout />}>
-              <Route index element={<Home />} />
+              {/* Wrap Home with MapPr */}
+              <Route index element={<MapPr><Home /></MapPr>} />
               <Route path="orders" element={<Orders />} />
-              <Route path="order-details/:id" element={<OrderDetails />} />
+              {/* Wrap OrderDetails with MapPr */}
+              <Route path="order-details/:id" element={<MapPr><OrderDetails /></MapPr>} />
               <Route path="bids/:id" element={<BidsPage />} />
             </Route>
+            {/* Separate Route for Driver Layout */}
             <Route path="/driver" element={<AppLayout />}>
               <Route index element={<Orders />} />
             </Route>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signup/supplier" element={<SupplierSignUp />} />
             <Route path="/signup/driver" element={<DriverSignUp />} />
-
             <Route path="/signin" element={<SignIn />} />
             {/* Routes that require map context */}
             <Route

@@ -50,6 +50,7 @@ export default function OrderBooking() {
   useEffect(()=>{
     setPickupLocation(startAddress);
     setDropoffLocation(endAddress);
+    
   },[firstMarker,secondMarker,startAddress,endAddress]);
   
   const handleSubmit = async (e) => {

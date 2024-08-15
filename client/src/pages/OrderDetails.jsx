@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useMapp } from "../Context/MapContext";
 
 const OrderDetails = () => {
   const { id } = useParams(); // Get the ID from the URL
   const [order, setOrder] = useState(null);
   const navigate = useNavigate(); // Hook for navigation
-
+  const {
+    mapContainer,
+    startboxref,
+    startAddress,
+    handleSearchInputChange,
+    autocompleteResults,
+    handlesuggestionstart,
+    suggestionsRef,
+    reversegeovalue,
+    handleFormSubmit,
+    endboxref,
+    handlesuggestionend,
+    firstMarker,secondMarker,endAddress,
+  } = useMapp();
   // Fetch order details
   useEffect(() => {
     const fetchOrder = async () => {
@@ -61,15 +75,7 @@ const OrderDetails = () => {
 
         <div className="flex flex-col space-y-4 mt-4">
           {/* Map Div */}
-          <div className="w-full h-80 bg-gray-200 rounded-lg shadow-md">
-            {/* Replace the following placeholder with an actual map component */}
-            <div className="flex items-center justify-center h-full text-gray-600">
-              <span>
-                Map showing route between {order.pickUpLocation} and{" "}
-                {order.deliveryLocation}
-              </span>
-              {/* Ideally, you would integrate a map component here */}
-            </div>
+          <div className="w-full h-80 rounded-lg" ref={mapContainer} >
           </div>
 
           {/* Basic Info Div */}

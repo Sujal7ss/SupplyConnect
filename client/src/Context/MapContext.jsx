@@ -64,6 +64,7 @@ export const MapPr = ({ children }) => {
     if (!styleURL) return;
 
     // Create the map instance first
+    if(mapContainer.current){
     const newMap = new MapLibreMap({
       container: mapContainer.current,
       style: styleURL,
@@ -103,7 +104,7 @@ export const MapPr = ({ children }) => {
     return () => {
       newMap.remove();
     };
-  }, [styleURL, transformRequest]);
+  }}, [styleURL, transformRequest]);
 
   const debounce = (func, wait) => {
     let timeout;
