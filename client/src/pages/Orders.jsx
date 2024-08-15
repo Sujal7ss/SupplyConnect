@@ -17,21 +17,29 @@ const OrderList = () => {
     const fetchOrders = async () => {
       try {
         // Determine API endpoint based on user type
-        const endpoint = user.type === "driver" ? '/api/driver/getAllOrders' : '/api/orders/myOrder';
+        const endpoint = user.type === "driver" ? '/api/driver/getAllOrders' : '/api/myOrder';
         const response = await axios.get(endpoint);
 
-
-        console.log(response)
+        console.log(`response ${response}`)
+        
+        // Check if API response indicates success
+        if (response.data.success === false) {
+          console.error("Failed to fetch orders:", response.data.message);
+          setError(response.data.message);
+          return;
+        }
+  
         setOrders(response.data.data);
         setFilteredOrders(response.data.data);
       } catch (error) {
         console.error("Error getting orders:", error.response ? error.response.data : error.message);
-        setError(error.response ? error.response.data : error.message);
+        setError(error.response ? error.response.data.message : error.message);
       }
     };
-
+  
     fetchOrders();
   }, []);
+  
 
   // Filter orders based on selected filter
   useEffect(() => {

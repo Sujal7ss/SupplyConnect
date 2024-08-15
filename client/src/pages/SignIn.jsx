@@ -6,6 +6,7 @@ import { useAuth } from "../Context/AuthContext";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [type, setType] = useState("supplier");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -22,17 +23,14 @@ export default function SignIn() {
       const response = await axios.post("/api/auth/login", {
         email,
         password,
+        type,
       });
       setSuccess("Sign In successful!");
       storeTokenInLS(response.data.data.token);
-      console.log("hi", response);
-      if (response.data.data.user.type === 'supplier') {
+      setTimeout(() => {
         navigate("/");
-      }
-      else
-      {
-        navigate("/driver")
-      }
+      }, 1000);
+
     } catch (err) {
       setError("Sign In failed. Please try again.");
     } finally {
@@ -79,6 +77,21 @@ export default function SignIn() {
               <i className={`fas ${passwordVisible ? 'fa-eye-slash' : 'fa-eye'}`}></i>
             </button>
           </div>
+        </div>
+        <div className="mb-6">
+          <label htmlFor="type" className="block text-sm font-semibold text-gray-800">
+            Select Type
+          </label>
+          <select
+            id="type"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            required
+            className="mt-2 block w-full border-2 border-gray-300 rounded-lg shadow-md focus:border-green-600 focus:ring-2 focus:ring-green-600 focus:ring-opacity-50 px-4 py-2 transition ease-in-out duration-150"
+          >
+            <option value="driver">Driver</option>
+            <option value="supplier">Supplier</option>
+          </select>
         </div>
         {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
         {success && <p className="text-green-500 text-sm font-semibold">{success}</p>}

@@ -1,23 +1,36 @@
-import User from "../models/user.js";
 import jwt from "jsonwebtoken";
+import Supplier from "../models/supplier.js";
+import Driver from "../models/Driver.js";
+
 
 const protectRoute = async (req, res, next) => {
     try {
         const token = req.cookies.jwt;
+        const typeOfUser = req.cookies.typeofUser
+        let user = null;
         if(!token){
             return res.status(401).json({ error : "Unauthorized : No token found"})
         }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET).email;
-        // console.log(decoded);
-        if(!decoded){
+        const userId = jwt.verify(token, process.env.JWT_SECRET).userId;
+        if(!userId){
             return res.status(401).json({ error : "Unauthorized : Invalid token"})
         }
-        const user = await User.findOne({email:decoded}).select("-password");
-
-		if (!user) {
-			return res.status(404).json({ error: "User not found" });
-		}
+        console.log(userId);
+        console.log(typeOfUser);
+        if(typeOfUser === 'supplier'){
+            user = await Supplier.findOne({_id: userId}).select("-password");
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+        }
+        else if(typeOfUser === 'driver'){
+            user = await Driver.findOne({_id: userId}).select("-password");
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+        }
         req.user = user
+        req.typeOfUser = typeOfUser
         next();
     }
     catch(error){
