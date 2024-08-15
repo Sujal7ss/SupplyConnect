@@ -1,54 +1,61 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-const statusColors = {
-    waiting: 'bg-red-400', // Slightly darker red
-    picked: 'bg-yellow-400', // Slightly darker yellow
-    delivered: 'bg-green-400' // Slightly darker green
-};
-
-const statusTexts = {
-    waiting: 'Waiting',
-    picked: 'Picked',
-    delivered: 'Delivered'
-};
+import React from "react";
+import { Link } from "react-router-dom";
+import { HiOutlineLocationMarker } from "react-icons/hi";
+import { HiLocationMarker } from "react-icons/hi";
+import { RiRoadMapLine } from "react-icons/ri";
+import { FaRupeeSign } from "react-icons/fa";
+import { PiTruck } from "react-icons/pi";
 
 const OrderCard = ({ order }) => {
-    const {_id,pickUpLocation, deliveryLocation, weight, vehicleType, orderAmount, orderStatus } = order;
-    const statusColor = statusColors[orderStatus] || 'bg-gray-500'; // Default to gray if status is unknown
-    const statusText = statusTexts[orderStatus] || 'Unknown Status';
-
-    return (
-        <Link to={`/order-details/${_id}`} className="relative bg-gray-50 shadow-lg rounded-lg p-4 mb-4 border border-gray-200">
-            <div className="absolute top-2 right-2">
-                <div
-                    className={`w-5 h-5 rounded-full ${statusColor} flex items-center justify-center border-2 border-white`}
-                    title={statusText} // Show status on hover
-                >
-                    <span className="text-white text-xs font-semibold">{statusText.charAt(0)}</span>
-                </div>
+  const {
+    _id,
+    pickUpLocation,
+    deliveryLocation,
+    vehicleType,
+    orderAmount,
+    orderStatus,
+  } = order;
+ 
+  return (
+    <>
+      <Link
+        to={`/order-details/${_id}`}
+        className="bg-white rounded-2xl w-11/12 h-52 p-4 flex flex-col justify-between shadow-md"
+      >
+        <div className=" w-full h-32 flex flex-row justify-between">
+          <div className="w-10 flex flex-col justify-around align-middle items-center">
+            <HiLocationMarker size={20}/>
+            <HiOutlineLocationMarker size={20} />
+          </div>
+          <div className=" bg-white w-full flex flex-col align-middle justify-around">
+            <div>
+              <div className="font-thin">Pickup Point</div>
+              <div>{pickUpLocation}</div>
             </div>
-            <div className="flex flex-col">
-                <div className="flex items-center justify-between mb-4">
-                    <span className="text-gray-900 font-medium text-lg">{pickUpLocation}</span>
-                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                    <span className="text-gray-900 font-medium text-lg">{deliveryLocation}</span>
-                </div>
-                <div className="flex flex-row justify-between gap-3">
-                    <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-                        <span className="text-gray-800 text-sm font-semibold">{weight} kg</span>
-                    </div>
-                    <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-                        <span className="text-gray-800 text-sm font-semibold">{vehicleType}</span>
-                    </div>
-                    <div className="flex-1 p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-                        <span className="text-gray-800 text-sm font-semibold">${orderAmount.toFixed(2)}</span>
-                    </div>
-                </div>
+            <div>
+              <div className="font-thin">Drop Point</div>
+              <div>{deliveryLocation}</div>
             </div>
-        </Link>
-    );
+          </div>
+        </div>
+        <div className=" w-full h-12 flex flex-row align-middle items-center justify-around">
+          <div className="flex flex-row ">
+            <RiRoadMapLine size={20} className="mr-1" />
+            <div className="font-semibold">3.9km</div>
+          </div>
+          <div className="flex flex-row ">
+            <PiTruck size={23} className="mr-1" />
+            <div className="font-semibold">{vehicleType}</div>
+          </div>
+          <div className="flex flex-row ">
+            <FaRupeeSign size={15} className="mr-1 mt-1" />
+            <div className="font-semibold"> {orderAmount}</div>
+          </div>
+        </div>
+      </Link>
+    </>
+   
+  );
 };
 
 export default OrderCard;

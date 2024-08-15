@@ -1,89 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import BidsPage from "./BidsPage.jsx";
-import ReactModal from "react-modal";
+import axios from "axios"
+import OrderCard from "../components/OrderCard.jsx";
 
 const OrderDetails = () => {
   const { id } = useParams(); // Get the ID from the URL
   const [order, setOrder] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editableOrder, setEditableOrder] = useState(null);
-  // const [showBidsModal, setShowBidsModal] = useState(false); // State to manage modal visibility
-  const [bids, setBids] = useState([]);
   const navigate = useNavigate(); // Hook for navigation
 
-  // Dummy data
+  // Dummy data for order details
+  const dummyOrder = {
+    _id: "1",
+    pickUpLocation: "Nagpur, Maharashtra",
+    deliveryLocation: "Raipur, Chhattisgarh",
+    vehicleType: "Truck",
+    orderAmount: 250.0,
+    orderStatus: "waiting",
+  };
+
+  // Fetch order details
   useEffect(() => {
-    setOrder({
-      pickUpLocation: "New York",
-      deliveryLocation: "Los Angeles",
-      weight: 100,
-      vehicleType: "Truck",
-      orderAmount: 1000,
-      orderStatus: "Pending",
-    });
+    const fetchOrder = async () => {
+      try {
+        // Simulate a successful API response
+        setOrder(dummyOrder);
+        // const orderResponse = await axios.get(`/api/orders/${id}`);
+        // console.log(orderResponse);
+        // setOrder(orderResponse.data.data);
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+      }
+    };
 
-    setEditableOrder({
-      pickUpLocation: "New York",
-      deliveryLocation: "Los Angeles",
-      weight: 100,
-      vehicleType: "Truck",
-      orderAmount: 1000,
-      orderStatus: "Pending",
-    });
-  }, []);
-  //Uncomment to fetch from backend
-  // Fetch order details and bids
-  // useEffect(() => {
-  //   const fetchOrderAndBids = async () => {
-  //     try {
-  //       const orderResponse = await axios.get(
-  //         `${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}`
-  //       );
-  //       const bidsResponse = await axios.get(
-  //         `${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}/bids`
-  //       );
-
-  //       setOrder(orderResponse.data);
-  //       setEditableOrder(orderResponse.data); // Initialize editableOrder with fetched data
-  //       setBids(bidsResponse.data);
-  //     } catch (error) {
-  //       console.error("Error fetching order details or bids:", error);
-  //     }
-  //   };
-
-  //   fetchOrderAndBids();
-  // }, [id]);
+    fetchOrder();
+  }, [id]);
 
   if (!order) return <p>Loading...</p>;
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditableOrder((prevOrder) => ({
-      ...prevOrder,
-      [name]: value,
-    }));
-  };
-
-  const handleUpdateOrder = async () => {
-    try {
-      const response = await axios.put(
-        `${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}`,
-        editableOrder
-      );
-      console.log("Order updated successfully:", response.data);
-      setOrder(editableOrder);
-      setIsEditing(false); // Switch back to view mode
-    } catch (error) {
-      console.error("Error updating order:", error);
-      setIsEditing(false);
-    }
-  };
-
   return (
     <>
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-4 w-full">
         {/* Buttons Container */}
         <div className="flex justify-between items-center mb-4">
           {/* Back Button */}
@@ -109,23 +65,16 @@ const OrderDetails = () => {
           </button>
           {/* Bids Button */}
           <button
-            onClick={() => navigate(`/bids/${id}`)} // Open modal
+            onClick={() => navigate(`/bids/${id}`)} // Navigate to Bids page
             className="bg-green-500 text-white font-semibold py-2 px-4 rounded-md"
           >
             Bids
           </button>
-          {/* Update Button */}
-          <button
-            onClick={() => setIsEditing(!isEditing)} // Toggle edit mode
-            className="bg-yellow-500 text-white hover:bg-yellow-600 font-semibold py-2 px-4 rounded-md"
-          >
-            {isEditing ? "Cancel" : "Edit"}
-          </button>
         </div>
 
-        <div className="flex flex-col space-y-4 mt-4">
+        <div className="flex flex-col space-y-4 mt-4 align-middle items-center h-screen">
           {/* Map Div */}
-          <div className="w-full h-80 bg-gray-200 rounded-lg shadow-md">
+          <div className="w-11/12 h-80 bg-gray-200 rounded-lg shadow-md">
             {/* Replace the following placeholder with an actual map component */}
             <div className="flex items-center justify-center h-full text-gray-600">
               <span>
@@ -137,108 +86,7 @@ const OrderDetails = () => {
           </div>
 
           {/* Basic Info Div */}
-          <div className="bg-white shadow-lg rounded-lg p-4 border border-gray-300">
-            <div className="flex flex-row justify-between align-middle items-center p-3">
-              <div className="flex-1">
-                <label className="block text-gray-700">Pick-Up Location</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="pickUpLocation"
-                    value={editableOrder.pickUpLocation}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                ) : (
-                  <div className="text-gray-800 p-2 bg-gray-200 rounded-md">
-                    {order.pickUpLocation}
-                  </div>
-                )}
-              </div>
-              <div className="flex-1">
-                <label className="block text-gray-700">Delivery Location</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="deliveryLocation"
-                    value={editableOrder.deliveryLocation}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                ) : (
-                  <div className="text-gray-800 p-2 bg-gray-200 rounded-md">
-                    {order.deliveryLocation}
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="flex flex-row justify-between gap-3">
-              <div className="flex-1">
-                <label className="block text-gray-700">Weight</label>
-                {isEditing ? (
-                  <input
-                    type="number"
-                    name="weight"
-                    value={editableOrder.weight}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                ) : (
-                  <div className="p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-                    <span className="text-gray-800 text-sm font-semibold">
-                      {order.weight} kg
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="flex-1">
-                <label className="block text-gray-700">Vehicle Type</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="vehicleType"
-                    value={editableOrder.vehicleType}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                ) : (
-                  <div className="p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-                    <span className="text-gray-800 text-sm font-semibold">
-                      {order.vehicleType}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="flex-1">
-                <label className="block text-gray-700">Order Amount</label>
-                {isEditing ? (
-                  <input
-                    type="number"
-                    name="orderAmount"
-                    value={editableOrder.orderAmount}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                ) : (
-                  <div className="p-2 bg-gray-200 rounded-md border border-gray-300 text-center">
-                    <span className="text-gray-800 text-sm font-semibold">
-                      ${order.orderAmount.toFixed(2)}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-            {isEditing && (
-              <div className="flex justify-end mt-4">
-                <button
-                  onClick={handleUpdateOrder}
-                  className="bg-blue-500 text-white hover:bg-blue-600 font-semibold py-2 px-4 rounded-md"
-                >
-                  Save Changes
-                </button>
-              </div>
-            )}
-          </div>
+          <OrderCard order={dummyOrder}/>
         </div>
       </div>
     </>

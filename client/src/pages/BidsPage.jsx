@@ -7,6 +7,7 @@ import Driver from "../../../backend/models/Driver";
 import { TbLivePhoto } from "react-icons/tb";
 
 Modal.setAppElement("#root"); // For accessibility reasons
+Modal.setAppElement("#root"); // For accessibility reasons
 
 const BidsPage = () => {
   const { order_id } = useParams(); // Access route parameter
@@ -27,12 +28,14 @@ const BidsPage = () => {
       amount: 150.0,
       comments: "Available for pickup immediately.",
       creationTime: dayjs().subtract(5, "minutes").toISOString(),
+      creationTime: dayjs().subtract(5, "minutes").toISOString(),
     },
     {
       id: 2,
       driverName: "Jane Smith",
       amount: 175.5,
       comments: "Can deliver by tomorrow.",
+      creationTime: dayjs().subtract(2, "hours").toISOString(),
       creationTime: dayjs().subtract(2, "hours").toISOString(),
     },
     {
@@ -41,12 +44,14 @@ const BidsPage = () => {
       amount: 160.0,
       comments: "Flexible with pickup time.",
       creationTime: dayjs().subtract(30, "minutes").toISOString(),
+      creationTime: dayjs().subtract(30, "minutes").toISOString(),
     },
     {
       id: 4,
       driverName: "Alice Davis",
       amount: 180.0,
       comments: "Has a large truck available.",
+      creationTime: dayjs().subtract(1, "day").toISOString(),
       creationTime: dayjs().subtract(1, "day").toISOString(),
     },
   ];
@@ -74,24 +79,7 @@ const BidsPage = () => {
     };
 
     fetchBids();
-  }, []);
-
-  // Function to calculate the time difference in seconds/minutes
-  const timeAgo = (createdAt) => {
-    const now = dayjs();
-    const createdAtTime = dayjs(createdAt);
-    const diffInSeconds = now.diff(createdAtTime, "second");
-
-    if (diffInSeconds < 60) {
-      return `${diffInSeconds} seconds ago`;
-    } else if (diffInSeconds < 3600) {
-      return `${Math.floor(diffInSeconds / 60)} minutes ago`;
-    } else if (diffInSeconds < 86400) {
-      return `${Math.floor(diffInSeconds / 3600)} hours ago`;
-    } else {
-      return `${Math.floor(diffInSeconds / 86400)} days ago`;
-    }
-  };
+  }, [order_id]);
 
   const handlePlaceBidClick = () => {
     setIsModalOpen(true);
@@ -118,6 +106,8 @@ const BidsPage = () => {
       setAmountToConfirm(bidAmount);
       alert(`Bid placed with amount: $${amountToConfirm}`);
     } catch (error) {
+      console.error("Error placing bid:", error);
+      alert("Failed to place the bid. Please try again.");
       console.error("Error placing bid:", error);
       alert("Failed to place the bid. Please try again.");
     }
@@ -208,6 +198,7 @@ const BidsPage = () => {
           className="border p-2 rounded mb-4 w-full"
           onBlur={() => {
             if (parseFloat(bidAmount) <= 0 || isNaN(bidAmount)) {
+              setBidAmount("");
               setBidAmount("");
             }
           }}

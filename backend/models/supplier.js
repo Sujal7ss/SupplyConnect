@@ -1,10 +1,23 @@
 import mongoose from 'mongoose';
 
 const supplierSchema = new mongoose.Schema({
-    supplierId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+    name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    type: {
+        type: String,
+        enum: ['supplier', 'driver'],
+        required: true,
     },
     companyName: {
         type: String,

@@ -20,6 +20,8 @@ export const CreateOrder = asyncHandler(async (req, res) => {
     pickUpTime,
     deliveryTime,
     orderAmount,
+    vehicleType,
+    city
   } = req.body;
 
   if (
@@ -27,9 +29,16 @@ export const CreateOrder = asyncHandler(async (req, res) => {
     !deliveryLocation ||
     !pickUpTime ||
     !deliveryTime ||
-    !orderAmount
+    !orderAmount ||
+    !vehicleType ||
+    !city
   ) {
     return res.status(400).json(new ApiError(400, "Please provide all the fields"));
+  }
+
+  // Validate field formats (if needed, e.g., dates)
+  if (isNaN(new Date(pickUpTime)) || isNaN(new Date(deliveryTime))) {
+    return res.status(400).json(new ApiError(400, "Invalid date format"));
   }
 
   let supplierId = userdetails._id;
@@ -44,7 +53,9 @@ export const CreateOrder = asyncHandler(async (req, res) => {
     pickUpTime,
     deliveryTime,
     orderAmount,
+    vehicleType,
     AssignedAmount: 0,
+    city
   });
 
   let createdorder = await order.save();
@@ -53,26 +64,25 @@ export const CreateOrder = asyncHandler(async (req, res) => {
     return res.status(400).json(new ApiError(400, "Error adding order data to the database"));
   }
   return res
-    .status(200)
-    .json(new ApiResponse(200, createdorder, "New Order Created Successfully!"));
+    .status(201)
+    .json(new ApiResponse(201, createdorder, "New Order Created Successfully!"));
 });
 
 // Get Order Details
 export const orderDetails = asyncHandler(async (req, res) => {
   let { orderId } = req.params;
 
-  
   const orderdetails = await Order.findById(orderId);
   if (!orderdetails) {
     return res
       .status(404)
       .json(new ApiError(404, `Order with ID ${orderId} not found. Please contact us.`));
   }
-  if (req.user.type === "supplier") {
-    if (req.user._id.toString() !== orderdetails.supplierId.toString()) {
-      return res.status(403).json(new ApiError(403, "You cannot access other users' data"));
-    }
-  }
+  // if (req.user.type === "supplier") {
+  //   if (req.user._id.toString() !== orderdetails.supplierId.toString()) {
+  //     return res.status(403).json(new ApiError(403, "You cannot access other users' data"));
+  //   }
+  // }
   res.status(200).json(new ApiResponse(200, orderdetails, "Your Order Details"));
 });
 
@@ -125,24 +135,28 @@ export const getAllOrders = asyncHandler(async (req, res) => {
 // Get Orders for Logged-in User
 export const MyOrders = asyncHandler(async (req, res) => {
   try {
-    let curruser = req.user;
-    if (curruser.type === "driver") {
-      return res.status(403).json(new ApiError(403, "Driver Can't Access to Supplier Access"));
+    const curruser = req.user;
+
+    // Check user type and return appropriate error if access is denied
+    if (curruser.type === 'driver') {
+      return res.status(403).json(new ApiError(403, "Driver can't access supplier orders."));
     }
 
-    let data = await Order.find({ supplierId: curruser._id });
+    // Fetch orders for the supplier
+    const data = await Order.find({ supplierId: curruser._id });
 
+    // Handle case where no orders are found
     if (!data || data.length === 0) {
       return res.status(404).json(new ApiError(404, "No orders found."));
     }
 
-    res.status(200).json(new ApiResponse(200, data, "Your Order Details Fetched Successfully!"));
+    // Return successful response with orders
+    res.status(200).json(new ApiResponse(200, data, "Your order details fetched successfully!"));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json(new ApiError(500, error.message));
   }
 });
-
 // Get Bids for a Specific Order
 export const getBidsForOrder = asyncHandler(async (req, res) => {
   try {
