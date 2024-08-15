@@ -17,7 +17,7 @@ const OrderDetails = () => {
     orderAmount: 250.0,
     orderStatus: "waiting",
   };
-
+  
   // Fetch order details
   useEffect(() => {
     const fetchOrder = async () => {

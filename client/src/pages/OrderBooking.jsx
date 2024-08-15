@@ -1,4 +1,4 @@
-  import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { DateTimePicker } from "react-datetime-picker";
@@ -23,7 +23,9 @@ export default function OrderBooking() {
     handleFormSubmit,
     endboxref,
     handlesuggestionend,
-    firstMarker,secondMarker,endAddress,
+    firstMarker,
+    secondMarker,
+    endAddress,
   } = useMapp();
 
   const [pickupLocation, setPickupLocation] = useState(reversegeovalue);
@@ -37,8 +39,7 @@ export default function OrderBooking() {
   const [success, setSuccess] = useState("");
   const [flag, setflag] = useState(1);
   const changepickupvalue = useRef();
-
-
+  const [placeorderbutton,setplaceorderbutton] = useState(false);
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
 
@@ -46,12 +47,11 @@ export default function OrderBooking() {
     navigate("/signin");
   }
 
-
-  useEffect(()=>{
+  useEffect(() => {
     setPickupLocation(startAddress);
     setDropoffLocation(endAddress);
-  },[firstMarker,secondMarker,startAddress,endAddress]);
-  
+  }, [firstMarker, secondMarker, startAddress, endAddress]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -80,150 +80,79 @@ export default function OrderBooking() {
 
   return (
     <>
-      <div className="w-screen h-screen overflow-hidden relative">
-        <div ref={mapContainer} className="w-full h-full" />
-        <div className="absolute top-0 left-0 right-0 z-10">
-          <section>
-            <div className="py-4 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
-              <form
-                id="search-form"
-                className="max-w-xl mx-auto"
-                onSubmit={handleFormSubmit}
-              >
-                <div className="relative">
-                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 z-10 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-900"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    type="search"
-                    id="start_location"
-                    ref={startboxref}
-                    // value={  }
-                    className="w-full p-4 ps-10 pe-16 text-sm text-gray-800 rounded-lg bg-white/10 backdrop-blur-md focus:outline-none placeholder-gray-800"
-                    placeholder="Search for places"
-                    required
-                    onChange={handleSearchInputChange}
-                  />
+      <div className="w-screen h-auto flex justify-center items-center bg-slate-200">
+        <div className="w-full max-w-md h-full overflow-hidden relative flex flex-col">
+          <div ref={mapContainer} className={!placeorderbutton ? `w-full h-screen` : `w-full h-[55vh]`}/>
+          <div className="absolute top-4 left-14 z-10">
+            <form id="search-form" onSubmit={handleFormSubmit}>
+              <div className="flex flex-col space-y-2">
+                <input
+                  type="search"
+                  id="start_location"
+                  ref={startboxref}
+                  // value={  }
+                  className="p-4 ps-3 pe-16 text-sm text-gray-800 rounded-lg bg-white/10 backdrop-blur-md focus:outline-none placeholder-gray-800"
+                  placeholder="Pickup Location"
+                  required
+                  onChange={handleSearchInputChange}
+                />
+                <div className="flex">
                   <input
                     type="search"
                     id="endlocation"
                     ref={endboxref}
-                    className="w-full p-4 ps-10 pe-16 text-sm text-gray-800 rounded-lg bg-white/10 backdrop-blur-md focus:outline-none placeholder-gray-800"
-                    placeholder="Search for places"
+                    className="p-4 ps-3 pe-16 text-sm text-gray-800 rounded-lg bg-white/10 backdrop-blur-md focus:outline-none placeholder-gray-800"
+                    placeholder="Dropoff Location"
                     required
                     onChange={handleSearchInputChange}
                   />
                   <button
                     type="submit"
-                    className="text-gray-800 absolute end-2.5 bottom-2.5 bg-gray-700/5 backdrop-blur-md hover:bg-white/20 focus:outline-none font-medium rounded-md text-sm px-4 py-2"
+                    className="text-gray-800 end-2.5 bottom-2.5 bg-gray-700/5 backdrop-blur-md hover:bg-white/20 focus:outline-none font-medium rounded-md text-sm px-4 py-2"
                   >
                     Go
                   </button>
                 </div>
-                <ul
-                  className={`mt-4 w-full space-y-1 list-none list-inside ${
-                    autocompleteResults.length === 0 ? "hidden" : ""
-                  }`}
-                  id="suggestions"
-                  ref={ suggestionsRef }
-                >
-                  {startAddress === null
-                    ? autocompleteResults.map((place, index) => (
-                        <li
-                          key={index}
-                          className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/50 rounded-md cursor-pointer text-gray-800 text-start break-word"
-                          onClick={() => handlesuggestionstart(place)}
-                        >
-                          {place.description}
-                        </li>
-                      ))
-                    : autocompleteResults.map((place, index) => (
-                        <li
-                          key={index}
-                          className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/50 rounded-md cursor-pointer text-gray-800 text-start break-word"
-                          onClick={() => handlesuggestionend(place)}
-                        >
-                          {place.description}
-                        </li>
-                      ))}
-                </ul>
-              </form>
-              {/* <form
-              id="search-form"
-              className="max-w-xl mx-auto"
-              onSubmit={ handleFormSubmit }
-            >
-              <div className="relative">
-                <div className="absolute inset-y-0 start-0 flex items-center ps-3 z-10 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-900"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="search"
-                  id="search-box"
-                  ref={searchBoxRef}
-                  className="w-full p-4 ps-10 pe-16 text-sm text-gray-800 rounded-lg bg-white/10 backdrop-blur-md focus:outline-none placeholder-gray-800"
-                  placeholder="Search for places"
-                  required
-                  onChange={handleSearchInputChange}
-                />
-                <button
-                  type="submit"
-                  className="text-gray-800 absolute end-2.5 bottom-2.5 bg-gray-700/5 backdrop-blur-md hover:bg-white/20 focus:outline-none font-medium rounded-md text-sm px-4 py-2"
-                >
-                  Go
-                </button>
               </div>
+            </form>
+            <div
+              className={` ${
+                autocompleteResults.length === 0
+                  ? "hidden"
+                  : "h-[50vh] overflow-x-scroll no-scrollbar"
+              }`}
+            >
               <ul
-                className={`mt-4 w-full space-y-1 list-none list-inside ${
+                className={`mt-4 space-y-1 list-none list-inside w-52${
                   autocompleteResults.length === 0 ? "hidden" : ""
                 }`}
                 id="suggestions"
                 ref={suggestionsRef}
               >
-                {autocompleteResults.map((place, index) => (
-                  <li
-                    key={index}
-                    className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/50 rounded-md cursor-pointer text-gray-800 text-start break-word"
-                    onClick={() => handleSuggestionClick(place)}
-                  >
-                    {place.description}
-                  </li>
-                ))}
+                {startAddress === null
+                  ? autocompleteResults.map((place, index) => (
+                      <li
+                        key={index}
+                        className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/50 rounded-md cursor-pointer text-gray-800 text-start break-word"
+                        onClick={() => handlesuggestionstart(place)}
+                      >
+                        {place.description}
+                      </li>
+                    ))
+                  : autocompleteResults.map((place, index) => (
+                      <li
+                        key={index}
+                        className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/50 rounded-md cursor-pointer text-gray-800 text-start break-word"
+                        onClick={() => handlesuggestionend(place)}
+                      >
+                        {place.description}
+                      </li>
+                    ))}
               </ul>
-            </form> */}
             </div>
-          </section>
+          </div>
+          <div className={!placeorderbutton ? `absolute bottom-0 left-0 w-full max-w-md h-[5vh] bg-red-400 rounded-xl z-40` : `absolute bottom-0 w-full h-[45vh] bg-red-400 rounded-xl z-40`}></div>
         </div>
-        {/* <DistanceDuration distance={distance} duration={duration} />
-      <RecenterButton handleRecenter={handleRecenter} /> */}
       </div>
     </>
   );
