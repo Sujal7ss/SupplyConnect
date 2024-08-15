@@ -23,7 +23,7 @@ function App() {
               <Route index element={<Home />} />
               <Route path="orders" element={<Orders />} />
               <Route path="order-details/:id" element={<OrderDetails />} />
-              <Route path="bids/:id" element={<BidsPage />}/>
+              <Route path="bids/:order_id" element={<BidsPage />} />
             </Route>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
