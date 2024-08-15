@@ -1,6 +1,6 @@
 import { ApiError } from '../lib/utils/error.js';
 import { ApiResponse } from '../lib/utils/ApiResponse.js';
-import User from '../models/user.js';
+// import User from '../models/user.js';
 import Supplier from '../models/supplier.js';  // Capitalize the model name as it represents a class
 
 // Supplier Controller Functions
