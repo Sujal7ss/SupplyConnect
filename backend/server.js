@@ -22,7 +22,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", AuthRoutes)
 app.use("/api/", Bidroutes)
-app.use("/api/driver", ProtectRoutes, Driverroutes)
+// app.use("/api/driver", ProtectRoutes, Driverroutes)
 app.use("/api/driver" , OrderRoutes)
 app.use("/api/", supplierRoutes)
 
