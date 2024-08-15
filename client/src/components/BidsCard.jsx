@@ -40,7 +40,7 @@ const BidsCard = ({ bid }) => {
         </div>
 
         {/* Right side */}
-        <span className="font-semibold text-lg">${bid.amount.toFixed(2)}</span>
+        <span className="font-semibold text-lg mt-3">${bid.amount.toFixed(2)}</span>
       </div>
     
   );
