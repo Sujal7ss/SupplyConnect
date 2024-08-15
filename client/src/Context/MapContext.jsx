@@ -11,8 +11,6 @@ import { toast } from "react-toastify";
 import OlaMapsClient from "ola-map-sdk";
 import { Map as MapLibreMap, NavigationControl, Marker, GeolocateControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import axios from "axios";
-import mapboxgl from "mapbox-gl";
 
 export const MapContext = createContext({});
 
@@ -82,11 +80,10 @@ export const MapPr = ({ children }) => {
       showAccuracyCircle: false,
     });
     newMap.addControl(geolocate);
-
     // Add the NavigationControl
     newMap.addControl(
       new NavigationControl({ visualizePitch: false, showCompass: true }),
-      "bottom-left"
+      "bottom-right"
     );
 
     // Use the map's 'load' event to trigger other actions
@@ -133,25 +130,31 @@ export const MapPr = ({ children }) => {
       if (query.length > 0) {
         handleAutocomplete(query);
       } else {
+        
         setAutocompleteResults([]);
+        console.log(map);
+        map.removeLayer("route");
         if (e.target.id === "start_location") {
+          e.value = null;
           setstartaddress(null);
           if (firstMarker) firstMarker.remove();
           setFirstMarker(null);
         }
         if (e.target.id === "endlocation") {
+          e.value = null;
           setendAddress(null);
           if (secondMarker) secondMarker.remove();
           setSecondMarker(null);
         }
         if(!(firstMarker || secondMarker)){
+          map.flyTo({center : [userLocation.longitude, userLocation.latitude] })
           const newMarker = new Marker({ color: "#F30000"})
           .setLngLat([userLocation.longitude, userLocation.latitude])
           .addTo(map);
         setUserMarker(newMarker);
         }
       }
-  },[firstMarker,secondMarker,userMarker,startAddress,endAddress]);
+  },[firstMarker,secondMarker]);
 
   const handlesuggestionstart = (place) => {
     startboxref.current.value = place.description;
@@ -181,7 +184,6 @@ export const MapPr = ({ children }) => {
     setendAddress(place.description);
     setAutocompleteResults([]);
   };
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -207,10 +209,12 @@ export const MapPr = ({ children }) => {
 
         const stepsArray = result.routes[0].legs[0].steps;
         console.log(stepsArray);
+        
         let routeCoordinates = stepsArray.map((step) => [
           step.end_location.lng,
           step.end_location.lat,
         ]);
+        routeCoordinates.unshift([startLngLat.lng, startLngLat.lat]);
         routeCoordinates.push([endLngLat.lng, endLngLat.lat]);
 
         if (map.isStyleLoaded()) {
@@ -241,11 +245,9 @@ export const MapPr = ({ children }) => {
               "line-width": 4,
             },
           });
-
-          const bounds = new mapboxgl.LngLatBounds();
-          routeCoordinates.forEach((coord) => bounds.extend(coord));
-          map.fitBounds(bounds, { padding: 50 });
         }
+
+        setMap(map);
       } catch (error) {
         console.error("Error fetching directions:", error);
       }

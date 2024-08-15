@@ -9,17 +9,6 @@ const OrderDetails = () => {
   const navigate = useNavigate(); // Hook for navigation
   const {
     mapContainer,
-    startboxref,
-    startAddress,
-    handleSearchInputChange,
-    autocompleteResults,
-    handlesuggestionstart,
-    suggestionsRef,
-    reversegeovalue,
-    handleFormSubmit,
-    endboxref,
-    handlesuggestionend,
-    firstMarker,secondMarker,endAddress,
   } = useMapp();
   // Fetch order details
   useEffect(() => {
@@ -74,7 +63,6 @@ const OrderDetails = () => {
         </div>
 
         <div className="flex flex-col space-y-4 mt-4">
-          {/* Map Div */}
           <div className="w-full h-80 rounded-lg" ref={mapContainer} >
           </div>
 

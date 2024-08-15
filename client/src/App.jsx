@@ -25,23 +25,12 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<AppLayout />}>
-              {/* Wrap Home with MapPr */}
               <Route index element={<MapPr><Home /></MapPr>} />
               <Route path="orders" element={<Orders />} />
-              {/* Wrap OrderDetails with MapPr */}
               <Route path="order-details/:id" element={<MapPr><OrderDetails /></MapPr>} />
               <Route path="bids/:id" element={<BidsPage />} />
               <Route path="/suppliers" element={<SupplierProfile />} />
             </Route>
-            {/* Driver Routes */}
-            <Route path="/driver" element={<AppLayout />}>
-              <Route index element={<Orders />} />
-            </Route>
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/signup/supplier" element={<SupplierSignUp />} />
-            <Route path="/signup/driver" element={<DriverSignUp />} />
-            <Route path="/signin" element={<SignIn />} />
-            {/* Routes that require map context */}
             <Route
               path="/book-order"
               element={
@@ -50,6 +39,13 @@ function App() {
                 </MapPr>
               }
             />
+            <Route path="/driver" element={<AppLayout />}>
+              <Route index element={<Orders />} />
+            </Route>
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signup/supplier" element={<SupplierSignUp />} />
+            <Route path="/signup/driver" element={<DriverSignUp />} />
+            <Route path="/signin" element={<SignIn />} />
           </Routes>
         </BrowserRouter>
       {/* </AuthProvider> */}
