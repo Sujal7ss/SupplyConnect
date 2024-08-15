@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs"; // For time manipulation
 import Modal from "react-modal";
-import Driver from "../../../backend/models/Driver";
 import { TbLivePhoto } from "react-icons/tb";
-
-Modal.setAppElement("#root"); // For accessibility reasons
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+import Avatar, { genConfig } from "react-nice-avatar";
+import { PiCursorClick } from "react-icons/pi";
+import { ToastContainer, toast } from 'react-toastify';
 Modal.setAppElement("#root"); // For accessibility reasons
 
 const BidsPage = () => {
+  const navigate = useNavigate();
   const { order_id } = useParams(); // Access route parameter
   const [bids, setBids] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,54 +22,68 @@ const BidsPage = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [bidAmount, setBidAmount] = useState("");
   const [amountToConfirm, setAmountToConfirm] = useState("");
+  const [driverSelection, setDriverSelection] = useState(false)
 
   // Dummy bids
   const dummyBids = [
     {
-      id: 1,
-      driverName: "John Doe",
-      amount: 150.0,
-      comments: "Available for pickup immediately.",
-      creationTime: dayjs().subtract(5, "minutes").toISOString(),
-      creationTime: dayjs().subtract(5, "minutes").toISOString(),
+      bidder: {
+        DriverId: "64d42812f8d9b915c9dc7ef9",
+        Name: "John Doe",
+      },
+      amount: 1500.0,
+      timestamp: dayjs().subtract(5, "minutes").toISOString(), // 5 minutes ago
+      config: genConfig({
+        sex: "man",
+        hairStyle: "mohawk",
+      }),
     },
     {
-      id: 2,
-      driverName: "Jane Smith",
-      amount: 175.5,
-      comments: "Can deliver by tomorrow.",
-      creationTime: dayjs().subtract(2, "hours").toISOString(),
-      creationTime: dayjs().subtract(2, "hours").toISOString(),
+      bidder: {
+        DriverId: "64d42812f8d9b915c9dc7ef8",
+        Name: "Jane Smith",
+      },
+      amount: 1750,
+      timestamp: dayjs().subtract(2, "hours").toISOString(), // 2 hours ago
+      config: genConfig({
+        sex: "woman",
+        hairStyle: "straight",
+      }),
     },
     {
-      id: 3,
-      driverName: "Bob Johnson",
-      amount: 160.0,
-      comments: "Flexible with pickup time.",
-      creationTime: dayjs().subtract(30, "minutes").toISOString(),
-      creationTime: dayjs().subtract(30, "minutes").toISOString(),
+      bidder: {
+        DriverId: "64d42812f8d9b915c9dc7ef7",
+        Name: "Bob Johnson",
+      },
+      amount: 1600.0,
+      timestamp: dayjs().subtract(30, "minutes").toISOString(), // 30 minutes ago
+      config: genConfig({
+        sex: "man",
+        hairStyle: "buzzcut",
+      }),
     },
     {
-      id: 4,
-      driverName: "Alice Davis",
-      amount: 180.0,
-      comments: "Has a large truck available.",
-      creationTime: dayjs().subtract(1, "day").toISOString(),
-      creationTime: dayjs().subtract(1, "day").toISOString(),
+      bidder: {
+        DriverId: "64d42812f8d9b915c9dc7ef7",
+        Name: "Bob Johnson",
+      },
+      amount: 1600.0,
+      timestamp: dayjs().subtract(30, "minutes").toISOString(), // 30 minutes ago
+      config: genConfig({
+        sex: "man",
+        hairStyle: "buzzcut",
+      }),
     },
   ];
 
   useEffect(() => {
     const fetchBids = async () => {
       try {
-        console.log(order_id);
-        const response = await axios.post("/api/Order/getBids", {
-          order_id: order_id,
-        });
-        const bidData = response.data;
-        console.log(bidData);
+        // const response = await axios.post("/api/Order/getBids", { order_id });
+        // const bidData = response.data;
+        // Uncomment the lines above when connecting to the actual API
         setBids(
-          bidData.bids.sort(
+          dummyBids.sort(
             (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
           )
         );
@@ -97,21 +114,27 @@ const BidsPage = () => {
 
   const handleFinalPlaceBid = async () => {
     try {
-      console.log(order_id);
       await axios.post(`/api/Order/addBid/${order_id}`, {
         DriverId: "64d42812f8d9b915c9dc7ef9",
         Name: "Alice Smith",
         amount: bidAmount,
       });
       setAmountToConfirm(bidAmount);
-      alert(`Bid placed with amount: $${amountToConfirm}`);
+      alert(`Bid placed with amount: Rs ${amountToConfirm}`);
     } catch (error) {
-      console.error("Error placing bid:", error);
-      alert("Failed to place the bid. Please try again.");
       console.error("Error placing bid:", error);
       alert("Failed to place the bid. Please try again.");
     }
     setIsConfirmModalOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setDriverSelection(false)
+
+    toast.info("Driver Selected");
+    setTimeout(() => {
+      navigate("/")
+    }, 2000)
   };
 
   if (loading) return <p>Loading...</p>;
@@ -119,68 +142,82 @@ const BidsPage = () => {
 
   return (
     <div className="bg-white p-4 space-y-4 w-full">
-      <div className="flex justify-between w-full items-center">
-        <div className="text-center items-center px-6">
-          <h1 className="font-bold text-xl">Starting Bid :</h1>
-          <h1 className="font-bold">Rs 20000</h1>
-        </div>
-        <div className="font-bold text-center items-center px-6">
-          <h1 className="text-xl">Current Bid :</h1>
-          <h1 className="font-bold">Rs 15000</h1>
+      <div className="bg-white w-full h-20 rounded-badge min-w-m flex p-3 shadow-md justify-between">
+        <div className="w-full flex  items-center rounded-badge justify-center cursor-pointer shadow-lg bg-yellow-300 animate-glow">
+          Lowest Bid: <span className="font-semibold ml-2">Rs 1500</span>
         </div>
       </div>
+
       <div>
-        <h2 className="text-xl font-bold mb-2">
-          <span style={{ display: "flex", alignItems: "center" }}>
-            {" "}
+        <h2 className="text-xl font-semibold mb-2">
+          <span className="flex items-center text-red-600">
             <TbLivePhoto />
             Live Bids
           </span>
         </h2>
       </div>
 
-      <ul className="space-y-4">
-        {bids.map((bid) => (
-          <li key={bid.id} className="bg-white p-4  rounded-lg shadow-sm">
+      <ul className="space-y-4 min-w-screen-2xl">
+        {bids.map((bid, index) => (
+          <li key={index} className="bg-white p-2 rounded-lg shadow-md mb-6">
             <div className="flex justify-between items-start">
-              {/* Left side */}
               <div className="flex items-start space-x-3 mr-10">
-                <img
-                  src="https://via.placeholder.com/40"
-                  alt={bid.bidder.Name}
-                  width="50"
-                  height="50"
-                  className="rounded-full"
-                />
+                <Link to="/driver/details">
+                  <Avatar
+                    style={{ width: "50px", height: "50px" }}
+                    {...bid.config}
+                  />
+                </Link>
                 <div>
                   <span className="text-lg font-semibold">
                     {bid.bidder.Name}
                   </span>
                   <div className="text-gray-500 text-sm">
-                    {timeAgo(bid.timestamp)}
+                    {dayjs(bid.timestamp).fromNow()} {/* Display time ago */}
                   </div>
                 </div>
               </div>
-
-              {/* Right side */}
-              <div className="">
+              <div className="flex self-center">
                 <span className="font-semibold text-lg">Rs {bid.amount}</span>
               </div>
+              {isDriver && (
+                <button onClick={() => setDriverSelection(true)} className="btn bg-yellow-300">
+                  <PiCursorClick size={20} />
+                </button>
+              )}
             </div>
           </li>
         ))}
       </ul>
 
       {isDriver && (
-        <div className="mt-4 w-full flex justify-end">
+        <div className="fixed w-full left-0 bottom-10 flex justify-end">
           <button
             onClick={handlePlaceBidClick}
-            className="w-full font-bold text-black bg-yellow-500  m-4 py-4 px-4 rounded-2xl"
+            className="w-full font-semibold text-black bg-yellow-300 m-4 py-4 px-4 rounded-2xl"
           >
-            Place a Bid Rs10000
+            Place a Bid
           </button>
         </div>
       )}
+
+      {/* Modal for Driver Selection */}
+      <Modal
+        isOpen={driverSelection}
+        onRequestClose={() => setDriverSelection(false)}
+        contentLabel="Do you want to Select this Driver"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <h2 className="text-lg font-bold mb-4">Do you want to Select this Driver ?</h2>
+        
+        <button
+          onClick={handleConfirm}
+          className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md "
+        >
+          Confirm Driver
+        </button>
+      </Modal>
 
       {/* Modal for bid amount input */}
       <Modal
@@ -196,12 +233,6 @@ const BidsPage = () => {
           value={bidAmount}
           onChange={(e) => setBidAmount(e.target.value)}
           className="border p-2 rounded mb-4 w-full"
-          onBlur={() => {
-            if (parseFloat(bidAmount) <= 0 || isNaN(bidAmount)) {
-              setBidAmount("");
-              setBidAmount("");
-            }
-          }}
         />
         <button
           onClick={handleConfirmBidClick}
@@ -220,7 +251,7 @@ const BidsPage = () => {
         overlayClassName="Overlay"
       >
         <h2 className="text-lg font-bold mb-4">Confirm Bid</h2>
-        <p>Are you sure you want to place a bid of ${bidAmount}?</p>
+        <p>Are you sure you want to place a bid of Rs {bidAmount}?</p>
         <div className="mt-4 flex justify-end space-x-4">
           <button
             onClick={handleFinalPlaceBid}
