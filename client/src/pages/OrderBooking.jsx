@@ -39,7 +39,7 @@ export default function OrderBooking() {
   const [success, setSuccess] = useState("");
   const [flag, setflag] = useState(1);
   const changepickupvalue = useRef();
-  const [placeorderbutton,setplaceorderbutton] = useState();
+  const [placeorderbutton,setplaceorderbutton] = useState(false);
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
 
@@ -80,10 +80,10 @@ export default function OrderBooking() {
 
   return (
     <>
-      <div className="w-screen h-screen flex justify-center items-center bg-slate-200">
-        <div className="w-full max-w-md h-screen overflow-hidden relative flex flex-col">
-          <div ref={mapContainer} className="w-full h-full" />
-          <div className="absolute top-8 left-20 z-10">
+      <div className="w-screen h-auto flex justify-center items-center bg-slate-200">
+        <div className="w-full max-w-md h-full overflow-hidden relative flex flex-col">
+          <div ref={mapContainer} className={!placeorderbutton ? `w-full h-screen` : `w-full h-[55vh]`}/>
+          <div className="absolute top-4 left-14 z-10">
             <form id="search-form" onSubmit={handleFormSubmit}>
               <div className="flex flex-col space-y-2">
                 <input
@@ -119,7 +119,7 @@ export default function OrderBooking() {
               className={` ${
                 autocompleteResults.length === 0
                   ? "hidden"
-                  : "h-[50vh] overflow-scroll"
+                  : "h-[50vh] overflow-x-scroll no-scrollbar"
               }`}
             >
               <ul
@@ -151,9 +151,7 @@ export default function OrderBooking() {
               </ul>
             </div>
           </div>
-        </div>
-        <div className=" max-w-md bg-black">
-
+          <div className={!placeorderbutton ? `absolute bottom-0 left-0 w-full max-w-md h-[5vh] bg-red-400 rounded-xl z-40` : `absolute bottom-0 w-full h-[45vh] bg-red-400 rounded-xl z-40`}></div>
         </div>
       </div>
     </>
