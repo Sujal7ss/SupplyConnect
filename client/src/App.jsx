@@ -21,7 +21,7 @@ import BidsPage from "./pages/BidsPage.jsx";
 function App() {
   return (
     <>
-      <AuthProvider>
+      {/* <AuthProvider> */}
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<AppLayout />}>
@@ -51,7 +51,7 @@ function App() {
             />
           </Routes>
         </BrowserRouter>
-      </AuthProvider>
+      {/* </AuthProvider> */}
     </>
   );
 }
