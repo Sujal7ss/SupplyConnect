@@ -29,11 +29,11 @@ function App() {
             <Route index element={<Home />} />
             <Route path="orders" element={<Orders />} />
             <Route path="order-details/:id" element={<OrderDetails />} />
-            <Route path="bids/:id" element={<BidsPage />} />
+            <Route path="bids/:order_id" element={<BidsPage />} />
             <Route path="/suppliers" element={<SupplierProfile />} />
           </Route>
 
-            <Route path="driver/details" element={<DriverDetails />} />
+          <Route path="driver/details" element={<DriverDetails />} />
           {/* Driver Routes */}
           <Route path="/driver" element={<AppLayout />}>
             <Route index element={<Orders />} />
