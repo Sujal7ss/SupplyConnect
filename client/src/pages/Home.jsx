@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
 import TruckLoading from "../components/TruckLoader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Background from "../assets/bgimg.jpg";
 const Home = () => {
   const [click, setClick] = useState(false);

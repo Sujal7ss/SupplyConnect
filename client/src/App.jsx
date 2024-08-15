@@ -15,7 +15,6 @@ import OrderDetails from "./pages/OrderDetails.jsx";
 import SupplierProfile from "./pages/SupplierProfile.jsx";
 import { MapPr } from "./Context/MapContext.jsx";
 import DriverDetails from "./pages/DriverDetails.jsx";
-
 import BidsPage from "./pages/BidsPage.jsx";
 // import AllOrders from "./pages/AllOrders.jsx";
 
@@ -28,11 +27,20 @@ function App() {
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Home />} />
             <Route path="orders" element={<Orders />} />
-            <Route path="order-details/:id" element={<OrderDetails />} />
+            <Route path="order-details/:id" element={<MapPr><OrderDetails /></MapPr>} />
             <Route path="bids/:order_id" element={<BidsPage />} />
             <Route path="/suppliers" element={<SupplierProfile />} />
+            <Route
+            path="/book-order"
+            element={
+              <MapPr>
+                <OrderBooking />
+              </MapPr>
+            }
+          />
+          
           </Route>
-
+          
           <Route path="driver/details" element={<DriverDetails />} />
           {/* Driver Routes */}
           <Route path="/driver" element={<AppLayout />}>
@@ -45,14 +53,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
 
           {/* Routes that require map context */}
-          <Route
-            path="/book-order"
-            element={
-              <MapPr>
-                <OrderBooking />
-              </MapPr>
-            }
-          />
+          
         </Routes>
       </BrowserRouter>
       {/* </AuthProvider> */}

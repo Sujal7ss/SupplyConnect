@@ -9,7 +9,14 @@ import {
 import { toast } from "react-toastify";
 // Import the OlaMapsClient SDK
 import OlaMapsClient from "ola-map-sdk";
-import { Map as MapLibreMap, NavigationControl, Marker, GeolocateControl } from "maplibre-gl";
+import {
+  Map as MapLibreMap,
+  NavigationControl,
+  Marker,
+  GeolocateControl,
+  LngLat,
+  LngLatBounds,
+} from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 export const MapContext = createContext({});
@@ -27,12 +34,14 @@ export const MapPr = ({ children }) => {
   const [userLocation, setuserLocation] = useState(null);
   const mapContainer = useRef(null);
   const startboxref = useRef(null);
+  const [initialZoomDone, setInitialZoomDone] = useState(false);
   const endboxref = useRef(null);
   const suggestionsRef = useRef(null);
   const [userMarker, setUserMarker] = useState(null);
   const [reverseGeoValue, setReverseGeoValue] = useState(null);
   const API_KEY = "Bkd1aAL6DtnBj1HCOLNaoHew2KQw4QNfJlRZFrKb";
   const STYLE_NAME = "default-light-standard";
+
   const transformRequest = useCallback((url, resourceType) => {
     url = url.replace("app.olamaps.io", "api.olamaps.io");
     const separator = url.includes("?") ? "&" : "?";
@@ -41,10 +50,12 @@ export const MapPr = ({ children }) => {
       resourceType,
     };
   }, []);
+
   useEffect(() => {
-    const m = new Marker({ color: "#F30000"});
+    const m = new Marker({ color: "#F30000" });
     setUserMarker(m);
-  },[])
+  }, []);
+
   useEffect(() => {
     const fetchStyleURL = async () => {
       try {
@@ -61,47 +72,57 @@ export const MapPr = ({ children }) => {
   useEffect(() => {
     if (!styleURL) return;
 
-    // Create the map instance first
-    if(mapContainer.current){
-    const newMap = new MapLibreMap({
-      container: mapContainer.current,
-      style: styleURL,
-      center: [0, 0],
-      zoom: 2,
-      transformRequest,
-    });
-
-    // Add the GeolocateControl after the map is created
-    const geolocate = new GeolocateControl({
-      positionOptions: {
-        enableHighAccuracy: true,
-      },
-      trackUserLocation: true,
-      showAccuracyCircle: false,
-    });
-    newMap.addControl(geolocate);
-    // Add the NavigationControl
-    newMap.addControl(
-      new NavigationControl({ visualizePitch: false, showCompass: true }),
-      "bottom-right"
-    );
-
-    // Use the map's 'load' event to trigger other actions
-    newMap.on("load", () => {
-      geolocate.trigger();
-      geolocate.on("geolocate", (event) => {
-        const userLocation = { latitude: event.coords.latitude, longitude: event.coords.longitude };
-        setuserLocation(userLocation);
-        userMarker.setLngLat([event.coords.longitude, event.coords.latitude]).addTo(newMap);
-        setUserMarker(userMarker);
-        newMap.flyTo({ center: [event.coords.longitude, event.coords.latitude], zoom: 14 });
+    if (mapContainer.current) {
+      const newMap = new MapLibreMap({
+        container: mapContainer.current,
+        style: styleURL,
+        center: [0, 0],
+        zoom: 14,
+        transformRequest,
       });
-    });
-    setMap(newMap);
-    return () => {
-      newMap.remove();
-    };
-  }}, [styleURL, transformRequest]);
+
+      const geolocate = new GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+        showAccuracyCircle: false,
+      });
+      newMap.addControl(geolocate);
+
+      newMap.addControl(
+        new NavigationControl({ visualizePitch: false, showCompass: true }),
+        "bottom-right"
+      );
+
+      newMap.on("load", () => {
+        geolocate.trigger();
+        geolocate.on("geolocate", (event) => {
+          const userLocation = {
+            latitude: event.coords.latitude,
+            longitude: event.coords.longitude,
+          };
+          setuserLocation(userLocation);
+          userMarker
+            .setLngLat([event.coords.longitude, event.coords.latitude])
+            .addTo(newMap);
+          setUserMarker(userMarker);
+          // Check if initial zoom has been done
+          if (!initialZoomDone) {
+            newMap.flyTo({
+              center: [event.coords.longitude, event.coords.latitude],
+              zoom: 14,
+            });
+            setInitialZoomDone(true); // Set the flag to true after initial zoom
+          }
+        });
+      });
+      setMap(newMap);
+      return () => {
+        newMap.remove();
+      };
+    }
+  }, [styleURL, transformRequest, initialZoomDone]);
 
   const debounce = (func, wait) => {
     let timeout;
@@ -124,15 +145,14 @@ export const MapPr = ({ children }) => {
     [map]
   );
 
-  const handleSearchInputChange = useCallback((e)=>{
+  const handleSearchInputChange = useCallback(
+    (e) => {
       e.preventDefault();
       const query = e.target.value.trim();
       if (query.length > 0) {
         handleAutocomplete(query);
       } else {
-        
         setAutocompleteResults([]);
-        console.log(map);
         map.removeLayer("route");
         if (e.target.id === "start_location") {
           e.value = null;
@@ -146,15 +166,19 @@ export const MapPr = ({ children }) => {
           if (secondMarker) secondMarker.remove();
           setSecondMarker(null);
         }
-        if(!(firstMarker || secondMarker)){
-          map.flyTo({center : [userLocation.longitude, userLocation.latitude] })
-          const newMarker = new Marker({ color: "#F30000"})
-          .setLngLat([userLocation.longitude, userLocation.latitude])
-          .addTo(map);
-        setUserMarker(newMarker);
+        if (!(firstMarker || secondMarker)) {
+          map.flyTo({
+            center: [userLocation.longitude, userLocation.latitude],
+          });
+          const newMarker = new Marker({ color: "#F30000" })
+            .setLngLat([userLocation.longitude, userLocation.latitude])
+            .addTo(map);
+          setUserMarker(newMarker);
         }
       }
-  },[firstMarker,secondMarker]);
+    },
+    [firstMarker, secondMarker]
+  );
 
   const handlesuggestionstart = (place) => {
     startboxref.current.value = place.description;
@@ -165,9 +189,8 @@ export const MapPr = ({ children }) => {
     const newMarker = new Marker({ color: "#00F" })
       .setLngLat([lng, lat])
       .addTo(map);
-      map.flyTo({ center: [lng, lat], zoom: 14 });
+    map.flyTo({ center: [lng, lat], zoom: 14 });
     setFirstMarker(newMarker);
-    console.log(place.description);
     setstartaddress(place.description);
     setAutocompleteResults([]);
   };
@@ -176,14 +199,23 @@ export const MapPr = ({ children }) => {
     endboxref.current.value = place.description;
     if (secondMarker) secondMarker.remove();
     const { lat, lng } = place.geometry.location;
-    const newMarker = new Marker({ color: "#F00"})
+    const newMarker = new Marker({ color: "#F00" })
       .setLngLat([lng, lat])
       .addTo(map);
-      map.flyTo({ center: [lng, lat], zoom: 14 });
+    map.flyTo({ center: [lng, lat], zoom: 14 });
     setSecondMarker(newMarker);
     setendAddress(place.description);
     setAutocompleteResults([]);
   };
+
+  const calculateBounds = (coordinates) => {
+    const bounds = coordinates.reduce(
+      (bounds, coord) => bounds.extend(coord),
+      new LngLatBounds(coordinates[0], coordinates[0])
+    );
+    return bounds;
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -204,12 +236,11 @@ export const MapPr = ({ children }) => {
           }
         );
 
-        setDistance(`${result.routes[0].legs[0].readable_distance} km`);
+        setDistance(`${result.routes[0].legs[0].readable_distance}`);
         setDuration(`${result.routes[0].legs[0].readable_duration}`);
+        console.log(distance);
 
         const stepsArray = result.routes[0].legs[0].steps;
-        console.log(stepsArray);
-        
         let routeCoordinates = stepsArray.map((step) => [
           step.end_location.lng,
           step.end_location.lat,
@@ -245,6 +276,11 @@ export const MapPr = ({ children }) => {
               "line-width": 4,
             },
           });
+
+          const bounds = calculateBounds(
+            routeCoordinates.map((coord) => new LngLat(coord[0], coord[1]))
+          );
+          map.fitBounds(bounds, { padding: 50 });
         }
 
         setMap(map);
@@ -272,7 +308,7 @@ export const MapPr = ({ children }) => {
         setuserLocation,
         startAddress,
         endAddress,
-        autocompleteResults
+        autocompleteResults,
       }}
     >
       {children}

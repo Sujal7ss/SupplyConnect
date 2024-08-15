@@ -19,6 +19,7 @@ export default function OrderBooking() {
     autocompleteResults,
     handlesuggestionstart,
     suggestionsRef,
+    distance,
     reversegeovalue,
     handleFormSubmit,
     endboxref,
@@ -34,12 +35,13 @@ export default function OrderBooking() {
   const [size, setSize] = useState("");
   const [type, setType] = useState("");
   const [orderTime, setOrderTime] = useState(new Date());
+  // const [distance, setDistance] = useState("")
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [flag, setflag] = useState(1);
   const changepickupvalue = useRef();
-  const [placeorderbutton,setplaceorderbutton] = useState(false);
+  const [placeorderbutton,setplaceorderbutton] = useState(true);
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
 
@@ -47,10 +49,17 @@ export default function OrderBooking() {
     navigate("/signin");
   }
 
+  // useEffect(() => {
+  //   setPickupLocation(startAddress);
+  //   setDropoffLocation(endAddress);
+  // }, [firstMarker, secondMarker, startAddress, endAddress]);
+
   useEffect(() => {
-    setPickupLocation(startAddress);
-    setDropoffLocation(endAddress);
-  }, [firstMarker, secondMarker, startAddress, endAddress]);
+    if (startAddress && endAddress) {
+      setPickupLocation(startAddress);
+      setDropoffLocation(endAddress);
+    }
+  }, [startAddress, endAddress]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -151,7 +160,7 @@ export default function OrderBooking() {
               </ul>
             </div>
           </div>
-          <div className={!placeorderbutton ? `absolute bottom-0 left-0 w-full max-w-md h-[5vh] bg-red-400 rounded-xl z-40` : `absolute bottom-0 w-full h-[45vh] bg-red-400 rounded-xl z-40`}></div>
+          {/* <div className={!placeorderbutton ? `absolute bottom-0 left-0 w-full max-w-md h-[5vh] bg-red-400 rounded-xl z-40` : `absolute bottom-0 w-full h-[45vh] bg-red-400 rounded-xl z-40`}></div> */}
         </div>
       </div>
     </>
