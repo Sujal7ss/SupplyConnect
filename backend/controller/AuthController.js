@@ -9,42 +9,57 @@ import { ApiResponse } from '../lib/utils/ApiResponse.js';
 export const supplierSignup = async (req, res) => {
     try {
         const { name, email, password, type, companyName, address, phoneNo } = req.body;
+
+        // Check for missing fields
         if (!name || !email || !password || !type || !companyName || !address || !phoneNo) {
-            return res.status(400).json(new ApiError(400, "Please provide all the fields."));
+            return res.status(400).json(new ApiError(400, "Please provide all the required fields."));
         }
+
+        // Validate email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json(new ApiError(400, "Email is not valid."));
         }
 
+        // Check for existing email
         const existingEmail = await Supplier.findOne({ email });
         if (existingEmail) {
             return res.status(400).json(new ApiError(400, "Email is already taken."));
         }
 
+        // Validate password length
         if (password.length < 6) {
             return res.status(400).json(new ApiError(400, "Password must be at least 6 characters."));
         }
 
+        // Hash the password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const supplier = new Supplier({ name, email, password: hashedPassword, type, companyName, address, phoneNo });
+        // Create a new supplier
+        const supplier = new Supplier({
+            name,
+            email,
+            password: hashedPassword,
+            type,
+            companyName,
+            address,
+            phoneNo,
+        });
 
-        if (supplier) {
-            let token = generateTokenAndSetCookie(supplier._id, supplier.type, res);
-            await supplier.save();
-            supplier.password = undefined;
-            return res.status(200).json(new ApiResponse(200, {supplier,token : token}, "Login successful."));
-        } else {
-            return res.status(400).json(new ApiError(400, "Invalid user data."));
-        }
+        // Save the supplier and generate a token
+        await supplier.save();
+        let token = generateTokenAndSetCookie(supplier._id, supplier.type, res);
+        supplier.password = undefined; // Remove password from response
+
+        // Respond with success
+        return res.status(201).json(new ApiResponse(201, { supplier, token }, "Supplier registration successful."));
+        
     } catch (error) {
-        console.log("Error in signup route:", error.message);
+        console.error("Error in signup route:", error.message);
         return res.status(500).json(new ApiError(500, "Internal server error."));
     }
 }
-
 // Driver Signup Controller
 export const driverSignup = async (req, res) => {
     try {

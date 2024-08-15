@@ -11,7 +11,7 @@ export default function () {
 
   return (
     <>
-      <div className="navbar bg-base-100 navbar-center z-10">
+      <div className="navbar bg-base-100 navbar-center z">
         <div className="flex-1">
           <a className="btn btn-ghost text-xl">SupplyConnect</a>
         </div>
