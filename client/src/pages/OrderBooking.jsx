@@ -142,7 +142,7 @@ export default function OrderBooking() {
           <FaChevronLeft className="text-black " />
         </button>
 
-        <div className="w-full max-w-md h-full overflow-hidden relative flex flex-col">
+        <div className="w-full max-w-md h-full overflow-hidden relative flex flex-col ">
           <div
             ref={mapContainer}
             className={

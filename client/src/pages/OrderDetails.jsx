@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import OrderCard from "../components/OrderCard.jsx";
 import OlaMapsClient from "ola-map-sdk";
-import { Map as MapLibreMap, NavigationControl, Marker } from "maplibre-gl";
+import { Map as MapLibreMap, NavigationControl, Marker,LngLat, LngLatBounds, } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const OrderDetails = () => {
@@ -29,7 +29,13 @@ const OrderDetails = () => {
     orderAmount: 250.0,
     orderStatus: "waiting",
   };
-
+  const calculateBounds = (coordinates) => {
+    const bounds = coordinates.reduce(
+      (bounds, coord) => bounds.extend(coord),
+      new LngLatBounds(coordinates[0], coordinates[0])
+    );
+    return bounds;
+  };
   // Fetch style URL
   useEffect(() => {
     const fetchStyleURL = async () => {
@@ -149,7 +155,9 @@ const OrderDetails = () => {
         },
       });
 
-      const bounds = mapInstance.getBounds();
+      const bounds = calculateBounds(
+        routeCoordinates.map((coord) => new LngLat(coord[0], coord[1]))
+      );
       mapInstance.fitBounds(bounds, { padding: 50 });
     }
   };
