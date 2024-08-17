@@ -20,13 +20,13 @@ export default function SignIn() {
     setSuccess("");
 
     try {
-      const response = await axios.post("/api/auth/login", {
-        email,
-        password,
-        type,
-      });
+      // const response = await axios.post("/api/auth/login", {
+      //   email,
+      //   password,
+      //   type,
+      // });
       setSuccess("Sign In successful!");
-      storeTokenInLS(response.data.data.token);
+      // storeTokenInLS(response.data.data.token);
       setTimeout(() => {
         navigate("/");
       }, 1000);

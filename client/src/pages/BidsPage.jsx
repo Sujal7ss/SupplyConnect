@@ -31,7 +31,7 @@ const BidsPage = () => {
         DriverId: "64d42812f8d9b915c9dc7ef9",
         Name: "John Doe",
       },
-      amount: 1500.0,
+      amount: 4500.0,
       timestamp: dayjs().subtract(5, "minutes").toISOString(), // 5 minutes ago
       config: genConfig({
         sex: "man",
@@ -43,7 +43,7 @@ const BidsPage = () => {
         DriverId: "64d42812f8d9b915c9dc7ef8",
         Name: "Jane Smith",
       },
-      amount: 1750,
+      amount: 4750,
       timestamp: dayjs().subtract(2, "hours").toISOString(), // 2 hours ago
       config: genConfig({
         sex: "woman",
@@ -55,7 +55,7 @@ const BidsPage = () => {
         DriverId: "64d42812f8d9b915c9dc7ef7",
         Name: "Bob Johnson",
       },
-      amount: 1600.0,
+      amount: 4600.0,
       timestamp: dayjs().subtract(30, "minutes").toISOString(), // 30 minutes ago
       config: genConfig({
         sex: "man",
@@ -67,7 +67,7 @@ const BidsPage = () => {
         DriverId: "64d42812f8d9b915c9dc7ef7",
         Name: "Bob Johnson",
       },
-      amount: 1600.0,
+      amount: 4600.0,
       timestamp: dayjs().subtract(30, "minutes").toISOString(), // 30 minutes ago
       config: genConfig({
         sex: "man",
@@ -114,13 +114,14 @@ const BidsPage = () => {
 
   const handleFinalPlaceBid = async () => {
     try {
-      await axios.post(`/api/Order/addBid/${order_id}`, {
-        DriverId: "64d42812f8d9b915c9dc7ef9",
-        Name: "Alice Smith",
-        amount: bidAmount,
-      });
+      // await axios.post(`/api/Order/addBid/${order_id}`, {
+      //   DriverId: "64d42812f8d9b915c9dc7ef9",
+      //   Name: "Alice Smith",
+      //   amount: bidAmount,
+      // });
       setAmountToConfirm(bidAmount);
-      alert(`Bid placed with amount: Rs ${amountToConfirm}`);
+      // alert(`Bid placed with amount: Rs ${amountToConfirm}`);
+      toast("Bid placed")
     } catch (error) {
       console.error("Error placing bid:", error);
       alert("Failed to place the bid. Please try again.");
@@ -144,7 +145,7 @@ const BidsPage = () => {
     <div className="bg-white p-4 space-y-4 w-full">
       <div className="bg-white w-full h-20 rounded-badge min-w-m flex p-3 shadow-md justify-between">
         <div className="w-full flex  items-center rounded-badge justify-center cursor-pointer shadow-lg bg-yellow-300 animate-glow">
-          Lowest Bid: <span className="font-semibold ml-2">Rs 1500</span>
+          Lowest Bid: <span className="font-semibold ml-2">Rs 4500</span>
         </div>
       </div>
 
@@ -180,7 +181,7 @@ const BidsPage = () => {
               <div className="flex self-center">
                 <span className="font-semibold text-lg">Rs {bid.amount}</span>
               </div>
-              {isDriver && (
+              {!isDriver && (
                 <button onClick={() => setDriverSelection(true)} className="btn bg-yellow-300">
                   <PiCursorClick size={20} />
                 </button>

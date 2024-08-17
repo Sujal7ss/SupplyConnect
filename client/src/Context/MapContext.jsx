@@ -217,7 +217,7 @@ export const MapPr = ({ children }) => {
   };
 
   const handleFormSubmit = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     
     if (firstMarker && secondMarker) {
       const startLngLat = firstMarker.getLngLat();

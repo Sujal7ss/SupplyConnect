@@ -9,7 +9,7 @@ const staticOrders = [
     pickUpLocation: "Nagpur, Maharashtra",
     deliveryLocation: "Raipur, Chhattisgarh",
     vehicleType: "Truck",
-    orderAmount: 250.0,
+    orderAmount: 4890.0,
     orderStatus: "waiting",
   },
   {
@@ -17,7 +17,7 @@ const staticOrders = [
     pickUpLocation: "Mumbai, Maharashtra",
     deliveryLocation: "Delhi, Delhi",
     vehicleType: "Mini Truck",
-    orderAmount: 500.0,
+    orderAmount: 5000.0,
     orderStatus: "picked",
   },
   {
@@ -25,7 +25,7 @@ const staticOrders = [
     pickUpLocation: "Pune, Maharashtra",
     deliveryLocation: "Bengaluru, Karnataka",
     vehicleType: "Big Truck",
-    orderAmount: 150.0,
+    orderAmount: 6500.0,
     orderStatus: "waiting",
   },
   {
@@ -33,7 +33,7 @@ const staticOrders = [
     pickUpLocation: "Chennai, Tamil Nadu",
     deliveryLocation: "Hyderabad, Telangana",
     vehicleType: "Truck",
-    orderAmount: 350.0,
+    orderAmount: 3500.0,
     orderStatus: "delivered",
   },
   {
@@ -41,7 +41,7 @@ const staticOrders = [
     pickUpLocation: "Kolkata, West Bengal",
     deliveryLocation: "Jaipur, Rajasthan",
     vehicleType: "Mini Truck",
-    orderAmount: 300.0,
+    orderAmount: 3800.0,
     orderStatus: "picked",
   },
 ];

@@ -52,16 +52,16 @@ export default function DriverSignUp() {
     setError("");
     setSuccess("");
 
-    if (datauser.password !== confirmPassword) {
-      setError("Passwords do not match.");
-      setLoading(false);
-      return;
-    }
+    // if (datauser.password !== confirmPassword) {
+    //   setError("Passwords do not match.");
+    //   setLoading(false);
+    //   return;
+    // }
 
     try {
-      const response = await axios.post(`/api/auth/signup/driver`, datauser);
+      // const response = await axios.post(`/api/auth/signup/driver`, datauser);
       setSuccess("Sign Up successful!");
-      storeTokenInLS(response.data.data.token);
+      // storeTokenInLS(response.data.data.token);
       setTimeout(() => {
         navigate("/signin");
       }, 1000);
@@ -319,7 +319,7 @@ export default function DriverSignUp() {
             </button>
           </>
         )}
-        {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
+        {/* {error && <p className="text-red-500 text-sm font-semibold">{error}</p>} */}
         {success && <p className="text-green-500 text-sm font-semibold">{success}</p>}
         <div className="mt-4 flex flex-col items-center space-y-2">
           <Link to="/forgot-password" className="text-blue-600 hover:underline text-sm">

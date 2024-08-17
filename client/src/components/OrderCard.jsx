@@ -6,7 +6,7 @@ import { RiRoadMapLine } from "react-icons/ri";
 import { FaRupeeSign } from "react-icons/fa";
 import { PiTruck } from "react-icons/pi";
 
-const OrderCard = ({ order }) => {
+const OrderCard = ({ order , distance}) => {
   const {
     _id,
     pickUpLocation,
@@ -41,7 +41,7 @@ const OrderCard = ({ order }) => {
         <div className=" w-full h-12 flex flex-row align-middle items-center justify-around">
           <div className="flex flex-row ">
             <RiRoadMapLine size={20} className="mr-1" />
-            <div className="font-semibold">3.9km</div>
+            <div className="font-semibold">287.1 km</div>
           </div>
           <div className="flex flex-row ">
             <PiTruck size={23} className="mr-1" />

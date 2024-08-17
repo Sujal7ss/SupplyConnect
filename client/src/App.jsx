@@ -30,7 +30,11 @@ function App() {
             <Route path="order-details/:id" element={<MapPr><OrderDetails /></MapPr>} />
             <Route path="bids/:order_id" element={<BidsPage />} />
             <Route path="/suppliers" element={<SupplierProfile />} />
-            <Route
+            
+          
+          </Route>
+
+          <Route
             path="/book-order"
             element={
               <MapPr>
@@ -38,8 +42,6 @@ function App() {
               </MapPr>
             }
           />
-          
-          </Route>
           
           <Route path="driver/details" element={<DriverDetails />} />
           {/* Driver Routes */}

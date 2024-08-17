@@ -8,6 +8,7 @@ import { CgProfile } from "react-icons/cg";
 import Avatar, { genConfig } from "react-nice-avatar";
 
 const DriverDetails = () => {
+  const config = genConfig({ sex: "man", hairStyle: "mohawk" }) 
   const navigate = useNavigate();
   return (
     <>
@@ -27,13 +28,13 @@ const DriverDetails = () => {
               {" "}
               <Avatar
                 style={{ width: "70px", height: "70px" }}
-                
+                {...config}
               />
             </div>
-            <div className="font-bold">Joe Smith</div>
+            <div className="font-bold">John Doe</div>
           </div>
           <div className="bg-white w-48 h-14 shadow-md rounded-2xl flex align-middle items-center justify-center font-semibold">
-            +93156 38678
+            +91 62156 38678
           </div>
           <div className="bg-white w-80  h-20 shadow-md rounded-badge flex flex-row align-middle items-center justify-around font-semibold">
             <div className="flex flex-col align-middle items-center">
@@ -60,16 +61,16 @@ const DriverDetails = () => {
         {/* <div className=" w-11/12 h-80 mb-10 relative top-10 flex flex-col justify-between align-middle items-center"></div> */}
         <div className="bg-white w-80 h-72 shadow-md rounded-badge relative top-10 flex flex-col justify-around align-start items-center px-10">
           <div className="flex flex-col align-start items-center border-black">
-            <h3 className="text-sm">License Number</h3>
-            <h3 className="text-lg">MH 49 AV 6125</h3>
+            <h3 className="text-sm">Registration Number</h3>
+            <h3 className="text-lg">CG 49 AV 6125</h3>
           </div>
           <div className="flex flex-col align-start items-center border-black">
             <h3 className="text-sm">Driving License</h3>
-            <h3 className="text-lg">XXXXXX</h3>
+            <h3 className="text-lg">CG71 73189853189</h3>
           </div>
           <div className="flex flex-col align-start items-center border-black">
             <h3 className="text-sm">Car Model</h3>
-            <h3 className="text-lg">XXXXXX</h3>
+            <h3 className="text-lg">P300</h3>
           </div>
         </div>
       </div>
