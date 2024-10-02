@@ -7,13 +7,21 @@ import { useNavigate } from "react-router";
 import { CgProfile } from "react-icons/cg";
 import Avatar, { genConfig } from "react-nice-avatar";
 
+const Driver = {
+    name: "John Doe",
+    phone : 6215638678,
+    registrationNumber : "CG 49 AV 6125",
+    drivingLicense : "CG71 73189853189",
+    carModel : "P300"
+
+}
 const DriverDetails = () => {
   const config = genConfig({ sex: "man", hairStyle: "mohawk" }) 
   const navigate = useNavigate();
   return (
     <>
-      <div className="bg-gray-100 w-full min-h-screen flex flex-col align-middle items-center">
-        <div className="bg-yellow-300 w-full h-32 fixed top-0 z-0 rounded-b-full shadow-sm"></div>
+      <div className="bg-gray-100 w-full min-h-screen flex flex-col align-middle  items-center ">
+        <div className="bg-yellow-300 w-96 h-32 fixed top-0 z-0 rounded-b-full shadow-sm"></div>
         <button
           onClick={() => navigate(-1)}
           className="bg-white shadow-md  w-10 h-10 z-20 flex items-center justify-center fixed left-8 top-5 rounded-lg"
@@ -31,10 +39,10 @@ const DriverDetails = () => {
                 {...config}
               />
             </div>
-            <div className="font-bold">John Doe</div>
+            <div className="font-bold">{Driver.name}</div>
           </div>
           <div className="bg-white w-48 h-14 shadow-md rounded-2xl flex align-middle items-center justify-center font-semibold">
-            +91 62156 38678
+            {Driver.phone}
           </div>
           <div className="bg-white w-80  h-20 shadow-md rounded-badge flex flex-row align-middle items-center justify-around font-semibold">
             <div className="flex flex-col align-middle items-center">
@@ -62,15 +70,15 @@ const DriverDetails = () => {
         <div className="bg-white w-80 h-72 shadow-md rounded-badge relative top-10 flex flex-col justify-around align-start items-center px-10">
           <div className="flex flex-col align-start items-center border-black">
             <h3 className="text-sm">Registration Number</h3>
-            <h3 className="text-lg">CG 49 AV 6125</h3>
+            <h3 className="text-lg">{Driver.registrationNumber}</h3>
           </div>
           <div className="flex flex-col align-start items-center border-black">
             <h3 className="text-sm">Driving License</h3>
-            <h3 className="text-lg">CG71 73189853189</h3>
+            <h3 className="text-lg">{Driver.drivingLicense}</h3>
           </div>
           <div className="flex flex-col align-start items-center border-black">
             <h3 className="text-sm">Car Model</h3>
-            <h3 className="text-lg">P300</h3>
+            <h3 className="text-lg">{Driver.carModel}</h3>
           </div>
         </div>
       </div>

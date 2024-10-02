@@ -44,6 +44,46 @@ const staticOrders = [
     orderAmount: 3800.0,
     orderStatus: "picked",
   },
+  {
+    _id: "6",
+    pickUpLocation: "Nagpur, Maharashtra",
+    deliveryLocation: "Raipur, Chhattisgarh",
+    vehicleType: "Truck",
+    orderAmount: 4890.0,
+    orderStatus: "waiting",
+  },
+  {
+    _id: "7",
+    pickUpLocation: "Mumbai, Maharashtra",
+    deliveryLocation: "Delhi, Delhi",
+    vehicleType: "Mini Truck",
+    orderAmount: 5000.0,
+    orderStatus: "picked",
+  },
+  {
+    _id: "8",
+    pickUpLocation: "Pune, Maharashtra",
+    deliveryLocation: "Bengaluru, Karnataka",
+    vehicleType: "Big Truck",
+    orderAmount: 6500.0,
+    orderStatus: "waiting",
+  },
+  {
+    _id: "9",
+    pickUpLocation: "Chennai, Tamil Nadu",
+    deliveryLocation: "Hyderabad, Telangana",
+    vehicleType: "Truck",
+    orderAmount: 3500.0,
+    orderStatus: "delivered",
+  },
+  {
+    _id: "10",
+    pickUpLocation: "Kolkata, West Bengal",
+    deliveryLocation: "Jaipur, Rajasthan",
+    vehicleType: "Mini Truck",
+    orderAmount: 3800.0,
+    orderStatus: "picked",
+  },
 ];
 
 const OrderList = () => {

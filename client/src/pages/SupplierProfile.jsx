@@ -17,7 +17,7 @@ const SupplierProfile = () => {
   useEffect(() => {
     const fetchSupplier = async () => {
       try {
-        const response = await axios.get(`/api/auth/getuser`);
+        const response = await axios.get(`/api/auth/supplierDetails`);
         console.log(response.data.data)
         setSupplier(response.data.data);
         setFormData({

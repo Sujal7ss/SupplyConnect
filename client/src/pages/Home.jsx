@@ -19,7 +19,7 @@ const Home = () => {
           display: "flex",
           alignItems: "center",
           width: "100%",
-          height: "80vh",
+          height: "86vh",
           justifyContent: "center",
           backgroundImage: `url(${Background})`,
           backgroundSize: "cover ",
@@ -30,7 +30,7 @@ const Home = () => {
           to="/book-order"
           class="bg-yellow-300  py-4 px-8 rounded-full shadow-lg flex items-center space-x-3"
         >
-          <span class="text-lg">Select Pickup Point</span>
+          <span class="text-lg font-semibold ">SELECT PICKUP POINT</span>
         </Link>
       </div>
     </>
