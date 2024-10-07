@@ -19,6 +19,7 @@
     "axios": "^1.7.3",
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.12",
+    "dotenv": "^16.4.5",
     "mapbox-gl": "^3.5.2",
     "maplibre-gl": "^4.5.1",
     "ola-map-sdk": "^1.1.5",
