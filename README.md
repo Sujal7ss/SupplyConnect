@@ -36,12 +36,14 @@ npm install
 
 <p>3. Run the development servers</p>
 <p>Frontend</p>
+
 ```
 cd client
 npm start
 ```
 
 <p>Backend</p>
+
 ```
 cd backend
 npm start
