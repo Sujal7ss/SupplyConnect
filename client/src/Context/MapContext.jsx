@@ -18,7 +18,6 @@ import {
   LngLatBounds,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-
 export const MapContext = createContext({});
 
 export const MapPr = ({ children }) => {
@@ -39,7 +38,7 @@ export const MapPr = ({ children }) => {
   const suggestionsRef = useRef(null);
   const [userMarker, setUserMarker] = useState(null);
   const [reverseGeoValue, setReverseGeoValue] = useState(null);
-  const API_KEY = "Bkd1aAL6DtnBj1HCOLNaoHew2KQw4QNfJlRZFrKb";
+  const API_KEY = import.meta.env.VITE_OLA_MAP_API;
   const STYLE_NAME = "default-light-standard";
 
   const transformRequest = useCallback((url, resourceType) => {
