@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import OrderCard from "../components/OrderCard.jsx";
 import { useAuth } from "../Context/AuthContext.jsx";
+import {OrderCard, ToggleButton} from "../components";
 
 const staticOrders = [
   {
@@ -91,7 +91,6 @@ const OrderList = () => {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("waiting");
-  const [active, setActive] = useState("waiting");
   // const { user } = useAuth(); // Get user info from Auth context
   const user = {
     type: "driver",
@@ -139,35 +138,15 @@ const OrderList = () => {
     setFilter(e.target.value);
   };
 
-  const handleActive = (status) => {
-    setActive(status);
-    setFilter(status); // Update the filter when an option is selected
-  };
+  
   return (
-    <div className="flex flex-col overflow-y-auto space-y-4 p-4 w-full min-h-screen">
-      <div className="bg-white w-full h-20 rounded-badge min-w-m flex p-3 shadow-md">
-        <div
-          onClick={() => handleActive("waiting")}
-          className={`w-full flex items-center rounded-badge justify-center cursor-pointer shadow-md ${
-            active === "waiting" ? "bg-yellow-300" : "bg-white"
-          }`}
-        >
-          Waiting
-        </div>
-        <div
-          onClick={() => handleActive("picked")}
-          className={`w-full flex items-center rounded-badge justify-center cursor-pointer shadow-md ${
-            active === "picked" ? "bg-yellow-300" : "bg-white"
-          }`}
-        >
-          Picked
-        </div>
-      </div>
+    <div className="p-3 w-full  max-h-[calc(100vh-7rem)]">
+      <ToggleButton />
       {error && <p className="text-red-500">Error fetching orders: {error}</p>}
       {filteredOrders.length === 0 ? (
         <p className="text-gray-500">No orders available.</p>
       ) : (
-        <div className="space-y-4 flex flex-col align-middle items-center">
+        <div className="mt-4  flex flex-col align-middle items-center max-h-[calc(100vh-14rem)] overflow-scroll">
           {filteredOrders.map((order) => (
             <OrderCard key={order._id} order={order} />
           ))}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import OrderCard from "../components/OrderCard.jsx";
+import OrderCardSmall from "../components/OrderCardSmall.jsx";
 import OlaMapsClient from "ola-map-sdk";
 import { Map as MapLibreMap, NavigationControl, Marker,LngLat, LngLatBounds, } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -182,7 +182,7 @@ const OrderDetails = () => {
 
   return (
     <>
-      <div className="p-4 space-y-4 w-full">
+      <div className="p-4 space-y-4 w-full max-h-[calc(100vh-7rem)]">
         {/* Buttons Container */}
         <div className="flex justify-between items-center mb-4">
           {/* Back Button */}
@@ -215,7 +215,7 @@ const OrderDetails = () => {
           </button>
         </div>
 
-        <div className="flex flex-col space-y-4 mt-4 align-middle items-center h-screen">
+        <div className="flex flex-col space-y-4 mt-4 align-middle items-center max-h-[calc(100vh-11rem)]">
           {/* Map Div */}
           <div className="w-11/12 h-80 bg-gray-200 rounded-lg shadow-md">
             <div
@@ -225,7 +225,7 @@ const OrderDetails = () => {
           </div>
 
           {/* Basic Info Div */}
-          <OrderCard order={dummyOrder} />
+          <OrderCardSmall order={dummyOrder} />
         </div>
       </div>
     </>

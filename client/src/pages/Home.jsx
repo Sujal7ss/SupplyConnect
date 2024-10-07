@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Background from "../assets/bgimg.jpg";
+
 const Home = () => {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
@@ -14,13 +15,9 @@ const Home = () => {
   };
   return (
     <>
-      <div
+      <div className="flex items-center w-full min-h-[calc(100vh-7rem)] justify-center "
         style={{
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-          height: "86vh",
-          justifyContent: "center",
+         
           backgroundImage: `url(${Background})`,
           backgroundSize: "cover ",
           backgroundPosition: "center",

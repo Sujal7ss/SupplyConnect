@@ -6,18 +6,7 @@ import AppLayout from "./components/AppLayout.jsx";
 import Layout from "./components/Layout.jsx";
 
 // Pages
-import Home from "./pages/Home.jsx";
-import SignUp from "./pages/SignUp/SignUp.jsx";
-import SupplierSignUp from "./pages/SignUp/SupplierSignUp.jsx";
-import DriverSignUp from "./pages/SignUp/DriverSignUp.jsx";
-import SignIn from "./pages/SignIn.jsx";
-import OrderBooking from "./pages/OrderBooking.jsx";
-import Orders from "./pages/Orders.jsx";
-import OrderDetails from "./pages/OrderDetails.jsx";
-import SupplierProfile from "./pages/SupplierProfile.jsx";
-import DriverDetails from "./pages/DriverDetails.jsx";
-import BidsPage from "./pages/BidsPage.jsx";
-// import AllOrders from "./pages/AllOrders.jsx";
+import { Home, OrderBooking, OrderDetails, Orders, SupplierProfile, BidsPage, DriverDetails, SignIn, DriverSignUp, SignUp, SupplierSignUp} from "./pages"
 
 // Context
 import { MapPr } from "./Context/MapContext.jsx";

@@ -1,17 +1,19 @@
 import axios from "axios";
 import { useNavigate } from "react-router";
-import {Link } from "react-router-dom"
+import { Link } from "react-router-dom"
+
 export default function () {
   const navigate = useNavigate();
+
   const logout = async () => {
     const response = await axios.post("/api/auth/logout");
     navigate("/signin");
-    console.log(response);
+    // console.log(response);
   };
 
   return (
     <>
-      <div className="navbar bg-base-100 navbar-center z">
+      <div className="navbar bg-base-100 navbar-center  border-b-gray-300 border-b-2 rounded-lg ">
         <div className="flex-1">
           <a className="btn btn-ghost text-xl">SupplyConnect</a>
         </div>
@@ -45,7 +47,7 @@ export default function () {
                   
               </li>
               <li>
-                <button onClick={logout}> Logout</button>
+                <button onClick={logout}>Logout</button>
               </li>
             </ul>
           </div>
