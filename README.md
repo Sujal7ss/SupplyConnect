@@ -39,14 +39,14 @@ npm install
 
 ```
 cd client
-npm start
+npm run dev
 ```
 
 <p>Backend</p>
 
 ```
 cd backend
-npm start
+npm run dev
 ```  
   
 <h2>💻 Built with</h2>

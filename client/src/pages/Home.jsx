@@ -24,10 +24,10 @@ const Home = () => {
         }}
       >
         <Link
-          to="/book-order"
-          class="bg-yellow-300  py-4 px-8 rounded-full shadow-lg flex items-center space-x-3"
+          to="/book_order"
+          className="bg-yellow-300  py-4 px-8 rounded-full shadow-lg flex items-center space-x-3"
         >
-          <span class="text-lg font-semibold ">SELECT PICKUP POINT</span>
+          <span className="text-lg font-semibold ">SELECT PICKUP POINT</span>
         </Link>
       </div>
     </>

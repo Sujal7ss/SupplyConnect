@@ -95,19 +95,11 @@ export default function OrderBooking() {
       setEstimatedCost(cost);
     }
   }, [distance, type]);
-  useEffect(() => {
-    if (startAddress && endAddress) {
-      setPickupLocation(startAddress);
-      setDropoffLocation(endAddress);
-    }
-  }, [startAddress, endAddress]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     toast.success("Order Created");
-    setTimeout(() => {
-      navigate("/");
-    }, 1000);
+   
     setLoading(true);
     setError("");
     setSuccess("");
@@ -125,9 +117,13 @@ export default function OrderBooking() {
         }
       );
       setSuccess("Ride booked successfully!");
+      
     } catch (err) {
       setError("Failed to book ride. Please try again.");
     } finally {
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
       setLoading(false);
     }
   };

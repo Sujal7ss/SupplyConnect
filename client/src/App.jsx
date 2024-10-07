@@ -28,7 +28,7 @@ function App() {
           </Route>
 
           {/* Order Booking Route with Map Context */}
-          <Route path="/book-order" element={<MapPr><OrderBooking /></MapPr>} />
+          <Route path="/book_order" element={<MapPr><OrderBooking /></MapPr>} />
 
           {/* Driver Details */}
           <Route path="driver/details" element={<DriverDetails />} />
