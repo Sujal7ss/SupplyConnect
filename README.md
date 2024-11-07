@@ -16,6 +16,13 @@ Here're some of the project's best features:
 *   Inventory and Supply Chain Management: Manage supplies and keep track of inventory based on previous orders to ensure future planning.
 *   Cost Optimization: Reduces the time and cost involved in finding a suitable delivery vehicle improving overall supply chain efficiency.
 
+### 📺 Video Tutorial
+
+Watch this video to learn more about SupplyConnect:
+
+[![Watch the video](https://img.youtube.com/vi/dzhyxFfUc2A/0.jpg)](https://www.youtube.com/watch?v=dzhyxFfUc2A)
+
+
 <h2>🛠️ Installation Steps:</h2>
 
 <p>1. Clone the repository</p>
