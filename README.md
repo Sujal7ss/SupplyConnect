@@ -55,8 +55,8 @@ npm run dev
 cd backend
 npm run dev
 ```  
-  <link href="https://youtu.be/dzhyxFfUc2A" autoplay=false/>
-<h2>💻 Built with</h2>/
+
+<h2>💻 Built with</h2>
 
 Technologies used in the project:
 
