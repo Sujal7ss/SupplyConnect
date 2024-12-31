@@ -142,7 +142,7 @@ export const login = async (req, res) => {
 
             supplier.password = undefined;
             let token = generateTokenAndSetCookie(supplier._id, supplier.type, res);
-            return res.status(200).json(new ApiResponse(200, {supplier,token }, "Login successful."));
+            return res.status(200).json(new ApiResponse(200, {supplier,token, useType: "supplier"}, "Login successful."));
         }
         else if(type === 'driver'){
             const driver = await Driver.findOne({ email });
@@ -155,7 +155,7 @@ export const login = async (req, res) => {
             }
             driver.password = undefined;
             let token = generateTokenAndSetCookie(driver._id, driver.type, res);
-            return res.status(200).json(new ApiResponse(200, {driver,token}, "Login successful."));
+            return res.status(200).json(new ApiResponse(200, {driver,token, useType: "driver"}, "Login successful."));
         }
     } catch (error) {
         console.log("Error in login route:", error.message);
