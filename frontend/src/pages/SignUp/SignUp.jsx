@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import SignupForm from "./SignupForm.jsx";
+import SupplierSignupForm from "./SupplierSignupForm.jsx";
 
 function Signup() {
   const [driverSelected, setDriverSelected] = useState(false);
@@ -25,7 +26,7 @@ function Signup() {
         <button onClick={()=>{handleSupplierSelection()}} className="w-56 h-56 bg-white rounded-full flex flex-row justify-center items-center">
           Supplier
         </button>
-        {supplierSelected && <SignupForm userType={'supplier'}/>}
+        {supplierSelected && <SupplierSignupForm userType={'supplier'}/>}
       </div>
     </div>
   );

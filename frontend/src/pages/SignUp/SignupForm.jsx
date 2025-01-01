@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/AuthProvider";
 import toast from 'react-hot-toast'
 
 export default function DriverSignUp() {
@@ -10,7 +9,6 @@ export default function DriverSignUp() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [step, setStep] = useState(1);
-  const { token, user } = useAuth();
 
   const [datauser, setUser] = useState({
     name: "",

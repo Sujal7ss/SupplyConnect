@@ -21,7 +21,7 @@ function Navbar() {
         
         <div className="flex gap-4 p-4">
           <Link to='/signup' className="border-2 border-text-primary p-2 rounded-md bg-secondary hover:bg-primary font-bold transition delay-100 ">SignUp</Link>
-          <Link to='/login' className="border-2 border-text-primary p-2 rounded-md bg-secondary hover:bg-primary font-bold transition delay-100 ">Login</Link>
+          <Link to='/dashboard' className="border-2 border-text-primary p-2 rounded-md bg-secondary hover:bg-primary font-bold transition delay-100 ">Login</Link>
         </div>
       </div>
     </div>

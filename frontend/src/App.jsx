@@ -5,9 +5,14 @@ import "./App.css";
 import Login from "./pages/Login/Login.jsx";
 import SignUp from "./pages/SignUp/SignUp.jsx";
 import Dashboard from "./components/Dashboard.jsx";
-import PrivateRoute from "./router/route";
 import AuthProvider from "./hooks/AuthProvider";
+import MapProvider from "./hooks/MapProvider.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
+
+import PrivateRoute, {
+  DriverProtected,
+  SupplierProtected,
+} from "./router/route";
 
 function App() {
   const [darkmode, setDarkmode] = useState(false);
@@ -31,15 +36,24 @@ function App() {
     <div className="App bg-primary text-text-primary h-screen w-full">
       <Router>
         <AuthProvider>
-          <Routes>
-          <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route element={<PrivateRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
-            {/* Other routes */}
-          </Routes>
+          <MapProvider>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+
+              {/* Driver routes */}
+              <Route element={<DriverProtected />}>
+                <Route path="/homepage" element={<Dashboard />} />
+              </Route>
+
+              {/* Supplier routes */}
+              <Route element={<SupplierProtected />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+              </Route>
+              {/* Other routes */}
+            </Routes>
+          </MapProvider>
         </AuthProvider>
       </Router>
     </div>

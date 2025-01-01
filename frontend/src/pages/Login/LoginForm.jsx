@@ -16,7 +16,6 @@ function LoginForm({userType}) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  console.log(email);
   const handleChange = (e) => {
     setEmail(e.target.value);
   };
@@ -34,7 +33,7 @@ function LoginForm({userType}) {
       : (confirmPasswordRef.current.type = "password");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if(!email || !password || !confirmPassword){
       return toast.error("Please fill all fields");
@@ -42,10 +41,15 @@ function LoginForm({userType}) {
     if(password !== confirmPassword){
       return toast.error("Passwords do not match");
     }
-    setLoading(true);
-    loginAction(userType, {email, password});
-
-
+    try {
+      setLoading(true);
+      await loginAction(userType, { email, password });
+      navigate("/dashboard"); // Ensure navigation after login
+    } catch (err) {
+      toast.error("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="w-11/12 p-2 h-96">
