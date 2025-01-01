@@ -2,7 +2,7 @@
 import React from "react";
 import { useAuth } from "../hooks/AuthProvider";
 import { useMap } from "../hooks/MapProvider";
-
+import SupplierNavbar from "./SupplierNavbar.jsx";
 import SearchComponent from "./Search";
 import MapDisplay from "./MapDisplay"
 import RouteForm from "./RouteForm";
@@ -21,9 +21,7 @@ function Dashboard() {
   const { user } = useAuth();
   return (
     <div>
-      <SearchComponent />
-      <MapDisplay />
-      <RouteForm />
+      <SupplierNavbar />
 
     </div>
   );

@@ -5,8 +5,9 @@ import "./App.css";
 import Login from "./pages/Login/Login.jsx";
 import SignUp from "./pages/SignUp/SignUp.jsx";
 import Dashboard from "./components/Dashboard.jsx";
+import SupplierDashboard from "./components/SupplierDashboard.jsx";
 import AuthProvider from "./hooks/AuthProvider";
-import MapProvider from "./hooks/MapProvider.jsx";
+import MapPr from "./hooks/MapProvider.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 
 import PrivateRoute, {
@@ -36,7 +37,7 @@ function App() {
     <div className="App bg-primary text-text-primary h-screen w-full">
       <Router>
         <AuthProvider>
-          <MapProvider>
+          <MapPr>
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
@@ -49,11 +50,11 @@ function App() {
 
               {/* Supplier routes */}
               <Route element={<SupplierProtected />}>
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard" element={<SupplierDashboard />} />
               </Route>
               {/* Other routes */}
             </Routes>
-          </MapProvider>
+          </MapPr>
         </AuthProvider>
       </Router>
     </div>
