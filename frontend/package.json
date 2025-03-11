@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
     "axios": "^1.7.9",
     "maplibre-gl": "^5.0.0",
     "ola-map-sdk": "^1.1.5",

@@ -20,7 +20,7 @@ import {
 import "maplibre-gl/dist/maplibre-gl.css";
 export const MapContext = createContext({});
 
-export  const MapPr = ({ children }) => {
+export const MapPr = ({ children }) => {
   const [map, setMap] = useState(null);
   const [firstMarker, setFirstMarker] = useState(null);
   const [secondMarker, setSecondMarker] = useState(null);
@@ -78,6 +78,7 @@ export  const MapPr = ({ children }) => {
         center: [0, 0],
         zoom: 14,
         transformRequest,
+        keyboard: true,
       });
 
       const geolocate = new GeolocateControl({
@@ -153,18 +154,17 @@ export  const MapPr = ({ children }) => {
       } else {
         setAutocompleteResults([]);
         map.removeLayer("route");
-        if (e.target.id === "start_location") {
-          e.value = null;
+
+        if (e.target === startboxref.current) {
           setstartaddress(null);
           if (firstMarker) firstMarker.remove();
           setFirstMarker(null);
-        }
-        if (e.target.id === "endlocation") {
-          e.value = null;
+        } else if (e.target === endboxref.current) {
           setendAddress(null);
           if (secondMarker) secondMarker.remove();
           setSecondMarker(null);
         }
+
         if (!(firstMarker || secondMarker)) {
           map.flyTo({
             center: [userLocation.longitude, userLocation.latitude],
@@ -217,7 +217,7 @@ export  const MapPr = ({ children }) => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    
+    console.log(firstMarker)
     if (firstMarker && secondMarker) {
       const startLngLat = firstMarker.getLngLat();
       const endLngLat = secondMarker.getLngLat();
@@ -288,12 +288,10 @@ export  const MapPr = ({ children }) => {
       } catch (error) {
         console.error("Error fetching directions:", error);
       }
-    }
-    else{
+    } else {
       console.log("not set");
     }
   };
-  
 
   return (
     <MapContext.Provider
@@ -317,7 +315,7 @@ export  const MapPr = ({ children }) => {
         firstMarker,
         secondMarker,
         setFirstMarker,
-        setSecondMarker
+        setSecondMarker,
       }}
     >
       {children}
@@ -325,5 +323,5 @@ export  const MapPr = ({ children }) => {
   );
 };
 
-export default MapPr
+export default MapPr;
 export const useMap = () => useContext(MapContext);
