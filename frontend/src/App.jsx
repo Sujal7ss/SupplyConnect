@@ -5,7 +5,7 @@ import "./App.css";
 import Login from "./pages/Login/Login.jsx";
 import SignUp from "./pages/SignUp/SignUp.jsx";
 import Dashboard from "./components/Dashboard.jsx";
-import SupplierDashboard from "./components/SupplierDashboard.jsx";
+import SupplierDashboard from "./pages/SupplierDashboard.jsx";
 import AuthProvider from "./hooks/AuthProvider";
 import MapPr from "./hooks/MapProvider.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
