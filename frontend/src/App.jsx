@@ -49,9 +49,9 @@ function App() {
               </Route>
 
               {/* Supplier routes */}
-              <Route element={<SupplierProtected />}>
+              {/* <Route element={<SupplierProtected />}> */}
                 <Route path="/dashboard" element={<SupplierDashboard />} />
-              </Route>
+              {/* </Route> */}
               {/* Other routes */}
             </Routes>
           </MapPr>

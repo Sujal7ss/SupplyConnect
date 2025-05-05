@@ -1,20 +1,45 @@
 const OrderCard = ({ order, onViewBids }) => {
-    return (
-      <div className=" bg-secondary bg-opacity-20 backdrop-blur-md shadow-lg rounded-lg p-4 border border-secondary  hover:bg-opacity-40">
-        <h3 className="text-text-secondary font-semibold text-lg">Order #{order.id}</h3>
-        <p className="text-text-primary">📍 From: <span className="font-medium">{order.pickup}</span></p>
-        <p className="text-text-primary">📦 To: <span className="font-medium">{order.destination}</span></p>
-        <p className="text-text-primary">🚚 Bids: <span className="font-medium">{order.bids.length}</span></p>
-  
-        <button 
-          className="mt-3 bg-text-secondary text-white px-4 py-2 rounded-lg w-full "
+  const statusColors = {
+    created: "bg-yellow-200 text-yellow-800",
+    assigned: "bg-blue-200 text-blue-800",
+    completed: "bg-green-200 text-green-800",
+  };
+
+  return (
+    <div className="bg-secondary bg-opacity-20 backdrop-blur-md shadow-md rounded-xl p-4 border border-secondary hover:bg-opacity-40 transition duration-200">
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="text-text-secondary font-semibold text-lg">
+          Order #{order.id}
+        </h3>
+        <span
+          className={`text-xs font-medium px-2 py-1 rounded-full ${
+            statusColors[order.status] || "bg-gray-200 text-gray-800"
+          }`}
+        >
+          {order.status.toUpperCase()}
+        </span>
+      </div>
+
+      <p className="text-text-primary text-sm">
+        📍 <span className="font-medium">From:</span> {order.pickup}
+      </p>
+      <p className="text-text-primary text-sm">
+        📦 <span className="font-medium">To:</span> {order.destination}
+      </p>
+      <p className="text-text-primary text-sm">
+        🚚 <span className="font-medium">Bids:</span> {order.bids.length}
+      </p>
+
+      {order.bids.length > 0 && (
+        <button
+          className="mt-4 bg-text-secondary hover:bg-opacity-90 text-white text-sm px-4 py-2 rounded-lg w-full transition"
           onClick={() => onViewBids(order.id)}
         >
           View Bids
         </button>
-      </div>
-    );
-  };
-  
-  export default OrderCard;
-  
+      )}
+    </div>
+  );
+};
+
+export default OrderCard;

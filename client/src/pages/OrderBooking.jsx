@@ -99,7 +99,7 @@ export default function OrderBooking() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     toast.success("Order Created");
-   
+
     setLoading(true);
     setError("");
     setSuccess("");
@@ -117,7 +117,6 @@ export default function OrderBooking() {
         }
       );
       setSuccess("Ride booked successfully!");
-      
     } catch (err) {
       setError("Failed to book ride. Please try again.");
     } finally {
@@ -185,31 +184,25 @@ export default function OrderBooking() {
               }`}
             >
               <ul
-                className={`mt-4 space-y-1 list-none list-inside w-52${
+                className={`mt-4 space-y-1 list-none list-inside w-52 ${
                   autocompleteResults.length === 0 ? "hidden" : ""
                 }`}
                 id="suggestions"
                 ref={suggestionsRef}
               >
-                {startAddress === null
-                  ? autocompleteResults.map((place, index) => (
-                      <li
-                        key={index}
-                        className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/50 rounded-md cursor-pointer text-gray-800 text-start break-word"
-                        onClick={() => handlesuggestionstart(place)}
-                      >
-                        {place.description}
-                      </li>
-                    ))
-                  : autocompleteResults.map((place, index) => (
-                      <li
-                        key={index}
-                        className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/50 rounded-md cursor-pointer text-gray-800 text-start break-word"
-                        onClick={() => handlesuggestionend(place)}
-                      >
-                        {place.description}
-                      </li>
-                    ))}
+                {autocompleteResults.map((result, index) => (
+                  <li
+                    key={index}
+                    className="p-2 bg-white/10 backdrop-blur-md hover:bg-white/50 rounded-md cursor-pointer text-gray-800 text-start break-word"
+                    onClick={() =>
+                      startboxref.current.id === "start_location"
+                        ? handlesuggestionstart(result)
+                        : handlesuggestionend(result)
+                    }
+                  >
+                    {result.description}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

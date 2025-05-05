@@ -5,6 +5,8 @@ import Driver from "../models/Driver.js";
 
 const protectRoute = async (req, res, next) => {
     try {
+        console.log("Inside protectedRoute middleware");
+        console.log(req.cookies)
         const token = req.cookies.jwt;
         const typeOfUser = req.cookies.typeofUser
         let user = null;
@@ -15,8 +17,7 @@ const protectRoute = async (req, res, next) => {
         if(!userId){
             return res.status(401).json({ error : "Unauthorized : Invalid token"})
         }
-        console.log(userId);
-        console.log(typeOfUser);
+
         if(typeOfUser === 'supplier'){
             user = await Supplier.findOne({_id: userId}).select("-password");
             if (!user) {

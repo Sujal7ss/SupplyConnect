@@ -135,28 +135,41 @@ export const getAllOrders = asyncHandler(async (req, res) => {
 // Get Orders for Logged-in User
 export const MyOrders = asyncHandler(async (req, res) => {
   try {
+    console.log(req.user)
     const curruser = req.user;
 
-    // Check user type and return appropriate error if access is denied
-    if (curruser.type === 'driver') {
-      return res.status(403).json(new ApiError(403, "Driver can't access supplier orders."));
+    // ❌ Restrict access for drivers
+    if (curruser.type === "driver") {
+      return res.status(403).json({ success: false, message: "Drivers can't access supplier orders." });
     }
 
-    // Fetch orders for the supplier
-    const data = await Order.find({ supplierId: curruser._id });
+    // ✅ Pagination (default: page 1, limit 10)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    // Handle case where no orders are found
-    if (!data || data.length === 0) {
-      return res.status(404).json(new ApiError(404, "No orders found."));
-    }
+    // ✅ Fetch orders for the supplier with pagination & sorting (latest orders first)
+    const orders = await Order.find({ supplierId: curruser._id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    // Return successful response with orders
-    res.status(200).json(new ApiResponse(200, data, "Your order details fetched successfully!"));
+    // ✅ Count total orders for pagination metadata
+    const totalOrders = await Order.countDocuments({ supplierId: curruser._id });
+
+    return res.status(200).json({
+      success: true,
+      orders,
+      totalPages: Math.ceil(totalOrders / limit),
+      currentPage: page,
+      message: "Your order details fetched successfully!",
+    });
   } catch (error) {
     console.error(error);
-    return res.status(500).json(new ApiError(500, error.message));
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
+
 // Get Bids for a Specific Order
 export const getBidsForOrder = asyncHandler(async (req, res) => {
   try {

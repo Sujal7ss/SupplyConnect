@@ -7,28 +7,31 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('accessToken') || '');
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);  
+    const [isLoggedIn, setIsLoggedIn] = useState(!!token);
 
     const storeTokenInLS = (serverToken) => {
         localStorage.setItem('accessToken', serverToken);
         setToken(serverToken);
     }
 
-    let isLoggedIn = !!token;
-
     const logout = () => {
         localStorage.removeItem('accessToken');
         setToken("");
-    }
+        setUser(null);
+    };
 
     const userAuthentication = async () => {
         try {
-            const url = import.meta.env.BACKEND_URL;
+            const url = import.meta.env.VITE_BACKEND_URL;
             const response = await axios.get(`${url}/api/auth/getuser`, {
                 headers: {
-                    'Authorization': `${token}`
-                }                
+                    'Authorization': `Bearer ${token}`
+                },
+                withCredentials: true      
             });
-            const userData = response.data;
+            console.log("response", response);
+            const userData = response.data.data;
+
             if (userData) {
                 setUser(userData);
             } else {
@@ -42,8 +45,16 @@ export const AuthProvider = ({ children }) => {
         }
     };
     useEffect(() => {
-        userAuthentication();
-    },[token])
+        if (token) {
+            userAuthentication();
+        } else {
+            setUser(null);
+            setLoading(false);
+        }
+    }, [token]);
+    useEffect(() => {
+        setIsLoggedIn(!!token);
+    }, [token]);
     return (
         <AuthContext.Provider value={{ storeTokenInLS, isLoggedIn, logout, user, loading, token}}>
             {children}

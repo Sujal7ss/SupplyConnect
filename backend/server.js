@@ -23,9 +23,12 @@ app.use(cookieParser());
 app.use("/api/auth", AuthRoutes)
 app.use("/api/", Bidroutes)
 // app.use("/api/driver", ProtectRoutes, Driverroutes)
-app.use("/api/driver" , OrderRoutes)
+app.use("/api/orders" , OrderRoutes)
 app.use("/api/", supplierRoutes)
 
+app.get('/', (req, res)=>{
+    res.send('Hello World!')
+})
 app.listen(PORT, ()=>{
     console.log(`Server is runnning on port ${PORT}`)
     connectDB();

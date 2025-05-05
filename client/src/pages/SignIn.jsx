@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link, useNavigate} from "react-router-dom"; // Import Link from React Router
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 
 export default function SignIn() {
@@ -11,8 +11,9 @@ export default function SignIn() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const { storeTokenInLS} = useAuth();
+  const { storeTokenInLS } = useAuth();
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -20,19 +21,20 @@ export default function SignIn() {
     setSuccess("");
 
     try {
-      // const response = await axios.post("/api/auth/login", {
-      //   email,
-      //   password,
-      //   type,
-      // });
+      const url = import.meta.env.VITE_BACKEND_URL;
+      const response = await axios.post(`${url}/api/auth/login`, {
+        email,
+        password,
+        type,
+      });
+      storeTokenInLS(response.data.data.token);
       setSuccess("Sign In successful!");
-      // storeTokenInLS(response.data.data.token);
+
       setTimeout(() => {
         navigate("/");
       }, 1000);
-
     } catch (err) {
-      setError("Sign In failed. Please try again.");
+      setError(err.response?.data?.message || "Sign In failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -40,6 +42,7 @@ export default function SignIn() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-md p-8 bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-xl mx-auto min-h-screen">
+    
       <h1 className="text-3xl font-extrabold mb-6 text-gray-900">Sign In</h1>
       <form onSubmit={handleSubmit} className="w-full bg-white p-6 rounded-lg shadow-lg space-y-6">
         <div className="mb-6">
@@ -106,8 +109,14 @@ export default function SignIn() {
           <Link to="/forgot-password" className="text-green-600 hover:underline text-sm">
             Forgot Password?
           </Link>
-          <Link to="/signup" className="text-green-600 hover:underline text-sm">
-            Don't have an account? Sign Up
+          <div className="text-green-600 hover:underline text-sm">
+            Don't have an account?
+          </div>
+          <Link to="/signup/driver" className="text-green-600 hover:underline text-sm">
+            Sign Up as Driver
+          </Link>
+          <Link to="/signup/supplier" className="text-green-600 hover:underline text-sm">
+          Sign Up as Supplier
           </Link>
         </div>
       </form>

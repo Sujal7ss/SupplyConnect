@@ -47,15 +47,16 @@ export default function SupplierSignUp() {
     }
 
     try {
-      // const response = await axios.post('/api/auth/signup/supplier', datauser);
-      // console.log(response);
+      const response = await axios.post('/api/auth/signup/supplier', datauser);
+      console.log(response);
       setSuccess("Sign Up successful!");
-      // storeTokenInLS(response.data.data.token);
+      storeTokenInLS(response.data.data.token);
+
       setTimeout(() => {
         navigate("/signin");
       }, 1000);
     } catch (err) {
-      setError("Signup failed. Please try again.");
+      setError(err.response?.data?.message || "Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -66,7 +67,7 @@ export default function SupplierSignUp() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-md p-8 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-xl mx-auto min-h-screen">
-      <h1 className="text-3xl font-extrabold mb-6 text-gray-900">Sign Up</h1>
+      <h1 className="text-3xl font-extrabold mb-6 text-gray-900">Sign Up For Supplier</h1>
       <form onSubmit={handleSubmit} className="w-full bg-white p-6 rounded-lg shadow-lg space-y-6">
         {step === 1 && (
           <>
@@ -115,18 +116,18 @@ export default function SupplierSignUp() {
                   className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
                   style={{ top: '50%', transform: 'translateY(-50%)' }}
                 >
-                  <i className={`fas ${passwordVisible ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                  <i className={`fa ${passwordVisible ? 'fa-eye-slash' : 'fa-eye'}`}></i>
                 </button>
               </div>
             </div>
             <div className="mb-6 relative">
-              <label htmlFor="confirm-password" className="block text-sm font-semibold text-gray-800">
+              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-800">
                 Confirm Password
               </label>
               <div className="relative">
                 <input
                   type={confirmPasswordVisible ? "text" : "password"}
-                  id="confirm-password"
+                  id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -138,7 +139,7 @@ export default function SupplierSignUp() {
                   className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
                   style={{ top: '50%', transform: 'translateY(-50%)' }}
                 >
-                  <i className={`fas ${confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                  <i className={`fa ${confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'}`}></i>
                 </button>
               </div>
             </div>

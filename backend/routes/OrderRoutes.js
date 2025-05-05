@@ -7,7 +7,7 @@ router.post('/orders/CreateNewOrder' ,  CreateOrder);
 router.get('/orders/:orderId', orderDetails);
 router.put('/orders/:orderId', updateorderdetails);
 router.get('/orders', getAllOrders);
-router.get('/myOrder', MyOrders);
+router.post('/myOrder', MyOrders);
 router.put('/orders/getbids/:orderId', getBidsForOrder);
 
 
