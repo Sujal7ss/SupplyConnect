@@ -5,7 +5,8 @@ import connectDB from "./db/connectDB.js"
 import supplierRoutes from "./routes/supplierRoutes.js";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import OrderRoutes from "./routes/OrderRoutes.js"
-import Bidroutes from  "./routes/BidRoutes.js"
+// import Bidroutes from  "./routes/BidRoutes.js"
+
 import cors from "cors"
 dotenv.config();
 const app = express();
@@ -21,7 +22,7 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", AuthRoutes)
-app.use("/api/", Bidroutes)
+// app.use("/api/", Bidroutes)
 // app.use("/api/driver", ProtectRoutes, Driverroutes)
 app.use("/api/orders" , OrderRoutes)
 app.use("/api/", supplierRoutes)
