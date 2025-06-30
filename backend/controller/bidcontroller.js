@@ -2,7 +2,7 @@ import { ApiResponse } from "../lib/utils/ApiResponse.js";
 import { asyncHandler } from "../lib/utils/asyncHandler.js";
 import { ApiError } from "../lib/utils/error.js";
 import { Bid } from "../models/bid.js";
-import Order from "../models/order.js";
+import Order from "../models/Order.js";
 import { v4 as uuidv4 } from "uuid"; // Updated import for uuid
 import mongoose from "mongoose";
 // Generate a new bid

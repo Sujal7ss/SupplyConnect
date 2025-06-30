@@ -1,63 +1,94 @@
-import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import "./App.css";
-
-import Login from "./pages/Login/Login.jsx";
-import SignUp from "./pages/SignUp/SignUp.jsx";
-import Dashboard from "./components/Dashboard.jsx";
-import SupplierDashboard from "./pages/SupplierDashboard.jsx";
-import AuthProvider from "./hooks/AuthProvider";
-import MapPr from "./hooks/MapProvider.jsx";
-import LandingPage from "./pages/LandingPage.jsx";
-
-import PrivateRoute, {
-  DriverProtected,
-  SupplierProtected,
-} from "./router/route";
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { MapPr } from "./contexts/MapContext";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import SupplierDashboard from "./pages/supplier/SupplierDashboard";
+import DriverDashboard from "./pages/driver/DriverDashboard";
+import CreateOrderPage from "./pages/supplier/CreateOrderPage";
+import OrderDetailsPage from "./pages/OrderDetailsPage";
+import ProfilePage from "./pages/ProfilePage";
+import NotFoundPage from "./pages/NotFoundPage";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+import Loader from "./components/common/Loader";
 
 function App() {
-  const [darkmode, setDarkmode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let savedMode = localStorage.getItem("displayMode");
+    // Simulate initial app loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
 
-    if (!savedMode) {
-      savedMode = "light";
-      setDarkmode(false);
-      localStorage.setItem("displayMode", savedMode);
-    }
-    setDarkmode(savedMode === "dark" ? true : false);
+    return () => clearTimeout(timer);
   }, []);
 
-  const toggleDisplayMode = () => {
-    setDarkmode(!darkmode);
-  };
+  if (isLoading) {
+    return <Loader fullScreen />;
+  }
 
   return (
-    <div className="App bg-primary text-text-primary h-screen w-full">
-      <Router>
-        <AuthProvider>
-          <MapPr>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
+    <AuthProvider>
+      <MapPr>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login\" replace />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-              {/* Driver routes */}
-              <Route element={<DriverProtected />}>
-                <Route path="/homepage" element={<Dashboard />} />
-              </Route>
+            {/* Supplier Routes */}
+            <Route
+              path="/supplier/*"
+              element={
+                <ProtectedRoute allowedRole="supplier">
+                  <Routes>
+                    <Route path="/" element={<SupplierDashboard />} />
+                    <Route path="create-order" element={<CreateOrderPage />} />
+                    <Route
+                      path="orders/:orderId"
+                      element={<OrderDetailsPage userType="supplier" />}
+                    />
+                    <Route
+                      path="profile"
+                      element={<ProfilePage userType="supplier" />}
+                    />
+                  </Routes>
+                </ProtectedRoute>
+              }
+            />
 
-              {/* Supplier routes */}
-              {/* <Route element={<SupplierProtected />}> */}
-                <Route path="/dashboard" element={<SupplierDashboard />} />
-              {/* </Route> */}
-              {/* Other routes */}
-            </Routes>
-          </MapPr>
-        </AuthProvider>
-      </Router>
-    </div>
+            {/* Driver Routes */}
+            <Route
+              path="/driver/*"
+              element={
+                <ProtectedRoute allowedRole="driver">
+                  <Routes>
+                    <Route path="/" element={<DriverDashboard />} />
+                    <Route
+                      path="orders/:orderId"
+                      element={<OrderDetailsPage userType="driver" />}
+                    />
+                    <Route
+                      path="profile"
+                      element={<ProfilePage userType="driver" />}
+                    />
+                  </Routes>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Router>
+      </MapPr>
+    </AuthProvider>
   );
 }
 

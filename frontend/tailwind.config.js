@@ -1,22 +1,25 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class',
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx}",
   ],
   theme: {
     extend: {
       colors: {
-        'primary': '#FAFFC5',
-        'secondary': '#A9BFA8',
-        'text-primary': '#5E686D',
-        'text-secondary': '#3A3960',
-
-      }
+        primary: "hsl(var(--primary))",
+        'primary-light': "hsl(var(--primary-light))",
+        secondary: "hsl(var(--secondary))",
+        accent: "hsl(var(--accent))",
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        error: "hsl(var(--error))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        muted: "hsl(var(--muted))",
+        'muted-foreground': "hsl(var(--muted-foreground))",
+      },
     },
   },
   plugins: [],
-  
 }
-
