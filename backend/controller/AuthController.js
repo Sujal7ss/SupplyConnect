@@ -4,7 +4,7 @@ import Driver from '../models/Driver.js';
 import bcrypt from 'bcryptjs';
 import { generateTokenAndSetCookie } from '../lib/utils/generateTokenAndSetCookies.js';
 import { ApiError } from '../lib/utils/error.js';
-import { asyncHandler } from '../lib/utils/asyncHandler.js';
+import { asyncHandler } from '../lib/utils/AsyncHandler.js';
 import { ApiResponse } from '../lib/utils/ApiResponse.js';
 import jwt from 'jsonwebtoken';
 

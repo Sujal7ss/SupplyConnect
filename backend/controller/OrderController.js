@@ -1,5 +1,5 @@
 import { ApiResponse } from "../lib/utils/ApiResponse.js";
-import { asyncHandler } from "../lib/utils/asyncHandler.js";
+import { asyncHandler } from "../lib/utils/AsyncHandler.js";
 import { ApiError } from "../lib/utils/error.js";
 import { Bid } from "../models/bid.js";
 import Order from "../models/Order.js";
